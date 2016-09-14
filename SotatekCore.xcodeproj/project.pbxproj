@@ -1,0 +1,630 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		27A154F71D81248E000DCA0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A154F61D81248E000DCA0D /* AppDelegate.swift */; };
+		27A154F91D81248E000DCA0D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A154F81D81248E000DCA0D /* ViewController.swift */; };
+		27A154FC1D81248E000DCA0D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27A154FA1D81248E000DCA0D /* Main.storyboard */; };
+		27A154FE1D81248E000DCA0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27A154FD1D81248E000DCA0D /* Assets.xcassets */; };
+		27A155011D81248E000DCA0D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27A154FF1D81248E000DCA0D /* LaunchScreen.storyboard */; };
+		27A1550C1D81248E000DCA0D /* SotatekCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1550B1D81248E000DCA0D /* SotatekCoreTests.swift */; };
+		27A155171D81248E000DCA0D /* SotatekCoreUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A155161D81248E000DCA0D /* SotatekCoreUITests.swift */; };
+		27A155601D81259C000DCA0D /* BaseCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1555F1D81259C000DCA0D /* BaseCache.swift */; };
+		27A155631D8125B9000DCA0D /* BaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A155621D8125B9000DCA0D /* BaseController.swift */; };
+		27A155661D8125CF000DCA0D /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A155651D8125CF000DCA0D /* BaseEntity.swift */; };
+		27A155691D812606000DCA0D /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A155681D812606000DCA0D /* Notifier.swift */; };
+		27A1556B1D812615000DCA0D /* Observer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1556A1D812615000DCA0D /* Observer.swift */; };
+		27A1556E1D812631000DCA0D /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1556D1D812631000DCA0D /* BaseService.swift */; };
+		27A155731D812699000DCA0D /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A155721D812699000DCA0D /* BaseViewController.swift */; };
+		27A155751D81659B000DCA0D /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A155741D81659B000DCA0D /* Array.swift */; };
+		27A155D21D88F0CA000DCA0D /* BaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A155D11D88F0CA000DCA0D /* BaseRequest.swift */; };
+		27A1561E1D88FE5B000DCA0D /* BaseRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1561D1D88FE5B000DCA0D /* BaseRepository.swift */; };
+		27A1562F1D894A5C000DCA0D /* CoreUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1562E1D894A5C000DCA0D /* CoreUtil.swift */; };
+		27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A156361D89695D000DCA0D /* ViewControllerDelegate.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		27A155081D81248E000DCA0D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27A154EB1D81248E000DCA0D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 27A154F21D81248E000DCA0D;
+			remoteInfo = SotatekCore;
+		};
+		27A155131D81248E000DCA0D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27A154EB1D81248E000DCA0D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 27A154F21D81248E000DCA0D;
+			remoteInfo = SotatekCore;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		27A154F31D81248E000DCA0D /* SotatekCore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SotatekCore.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		27A154F61D81248E000DCA0D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		27A154F81D81248E000DCA0D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		27A154FB1D81248E000DCA0D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		27A154FD1D81248E000DCA0D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		27A155001D81248E000DCA0D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		27A155021D81248E000DCA0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		27A155071D81248E000DCA0D /* SotatekCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SotatekCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		27A1550B1D81248E000DCA0D /* SotatekCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SotatekCoreTests.swift; sourceTree = "<group>"; };
+		27A1550D1D81248E000DCA0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		27A155121D81248E000DCA0D /* SotatekCoreUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SotatekCoreUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		27A155161D81248E000DCA0D /* SotatekCoreUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SotatekCoreUITests.swift; sourceTree = "<group>"; };
+		27A155181D81248E000DCA0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		27A1555F1D81259C000DCA0D /* BaseCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCache.swift; sourceTree = "<group>"; };
+		27A155621D8125B9000DCA0D /* BaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseController.swift; sourceTree = "<group>"; };
+		27A155651D8125CF000DCA0D /* BaseEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseEntity.swift; sourceTree = "<group>"; };
+		27A155681D812606000DCA0D /* Notifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifier.swift; sourceTree = "<group>"; };
+		27A1556A1D812615000DCA0D /* Observer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observer.swift; sourceTree = "<group>"; };
+		27A1556D1D812631000DCA0D /* BaseService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
+		27A155721D812699000DCA0D /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		27A155741D81659B000DCA0D /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		27A155D11D88F0CA000DCA0D /* BaseRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
+		27A1561D1D88FE5B000DCA0D /* BaseRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRepository.swift; sourceTree = "<group>"; };
+		27A1562E1D894A5C000DCA0D /* CoreUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreUtil.swift; sourceTree = "<group>"; };
+		27A156361D89695D000DCA0D /* ViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerDelegate.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		27A154F01D81248E000DCA0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27A155041D81248E000DCA0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27A1550F1D81248E000DCA0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		27A154EA1D81248E000DCA0D = {
+			isa = PBXGroup;
+			children = (
+				27A154F51D81248E000DCA0D /* SotatekCore */,
+				27A1550A1D81248E000DCA0D /* SotatekCoreTests */,
+				27A155151D81248E000DCA0D /* SotatekCoreUITests */,
+				27A154F41D81248E000DCA0D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		27A154F41D81248E000DCA0D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				27A154F31D81248E000DCA0D /* SotatekCore.app */,
+				27A155071D81248E000DCA0D /* SotatekCoreTests.xctest */,
+				27A155121D81248E000DCA0D /* SotatekCoreUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		27A154F51D81248E000DCA0D /* SotatekCore */ = {
+			isa = PBXGroup;
+			children = (
+				27A155CD1D88EF5B000DCA0D /* Repository */,
+				27A155701D812681000DCA0D /* View */,
+				27A1556F1D812677000DCA0D /* Util */,
+				27A1556C1D81261D000DCA0D /* Service */,
+				27A155671D8125D3000DCA0D /* Event */,
+				27A155641D8125BD000DCA0D /* Entity */,
+				27A155611D8125A3000DCA0D /* Controller */,
+				27A154F61D81248E000DCA0D /* AppDelegate.swift */,
+				27A154F81D81248E000DCA0D /* ViewController.swift */,
+				27A154FA1D81248E000DCA0D /* Main.storyboard */,
+				27A154FD1D81248E000DCA0D /* Assets.xcassets */,
+				27A154FF1D81248E000DCA0D /* LaunchScreen.storyboard */,
+				27A155021D81248E000DCA0D /* Info.plist */,
+			);
+			path = SotatekCore;
+			sourceTree = "<group>";
+		};
+		27A1550A1D81248E000DCA0D /* SotatekCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				27A1550B1D81248E000DCA0D /* SotatekCoreTests.swift */,
+				27A1550D1D81248E000DCA0D /* Info.plist */,
+			);
+			path = SotatekCoreTests;
+			sourceTree = "<group>";
+		};
+		27A155151D81248E000DCA0D /* SotatekCoreUITests */ = {
+			isa = PBXGroup;
+			children = (
+				27A155161D81248E000DCA0D /* SotatekCoreUITests.swift */,
+				27A155181D81248E000DCA0D /* Info.plist */,
+			);
+			path = SotatekCoreUITests;
+			sourceTree = "<group>";
+		};
+		27A1555E1D81257B000DCA0D /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				27A1555F1D81259C000DCA0D /* BaseCache.swift */,
+			);
+			name = Cache;
+			sourceTree = "<group>";
+		};
+		27A155611D8125A3000DCA0D /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				27A155621D8125B9000DCA0D /* BaseController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		27A155641D8125BD000DCA0D /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				27A155651D8125CF000DCA0D /* BaseEntity.swift */,
+			);
+			name = Entity;
+			sourceTree = "<group>";
+		};
+		27A155671D8125D3000DCA0D /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				27A155681D812606000DCA0D /* Notifier.swift */,
+				27A1556A1D812615000DCA0D /* Observer.swift */,
+			);
+			name = Event;
+			sourceTree = "<group>";
+		};
+		27A1556C1D81261D000DCA0D /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				27A1556D1D812631000DCA0D /* BaseService.swift */,
+			);
+			name = Service;
+			sourceTree = "<group>";
+		};
+		27A1556F1D812677000DCA0D /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				27A155741D81659B000DCA0D /* Array.swift */,
+				27A1562E1D894A5C000DCA0D /* CoreUtil.swift */,
+			);
+			name = Util;
+			sourceTree = "<group>";
+		};
+		27A155701D812681000DCA0D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				27A155721D812699000DCA0D /* BaseViewController.swift */,
+				27A156361D89695D000DCA0D /* ViewControllerDelegate.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		27A155CD1D88EF5B000DCA0D /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				27A155D01D88F0AB000DCA0D /* Request */,
+				27A1555E1D81257B000DCA0D /* Cache */,
+				27A1561D1D88FE5B000DCA0D /* BaseRepository.swift */,
+			);
+			name = Repository;
+			sourceTree = "<group>";
+		};
+		27A155D01D88F0AB000DCA0D /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				27A155D11D88F0CA000DCA0D /* BaseRequest.swift */,
+			);
+			name = Request;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		27A154F21D81248E000DCA0D /* SotatekCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27A1551B1D81248E000DCA0D /* Build configuration list for PBXNativeTarget "SotatekCore" */;
+			buildPhases = (
+				27A154EF1D81248E000DCA0D /* Sources */,
+				27A154F01D81248E000DCA0D /* Frameworks */,
+				27A154F11D81248E000DCA0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SotatekCore;
+			productName = SotatekCore;
+			productReference = 27A154F31D81248E000DCA0D /* SotatekCore.app */;
+			productType = "com.apple.product-type.application";
+		};
+		27A155061D81248E000DCA0D /* SotatekCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27A1551E1D81248E000DCA0D /* Build configuration list for PBXNativeTarget "SotatekCoreTests" */;
+			buildPhases = (
+				27A155031D81248E000DCA0D /* Sources */,
+				27A155041D81248E000DCA0D /* Frameworks */,
+				27A155051D81248E000DCA0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				27A155091D81248E000DCA0D /* PBXTargetDependency */,
+			);
+			name = SotatekCoreTests;
+			productName = SotatekCoreTests;
+			productReference = 27A155071D81248E000DCA0D /* SotatekCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		27A155111D81248E000DCA0D /* SotatekCoreUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27A155211D81248E000DCA0D /* Build configuration list for PBXNativeTarget "SotatekCoreUITests" */;
+			buildPhases = (
+				27A1550E1D81248E000DCA0D /* Sources */,
+				27A1550F1D81248E000DCA0D /* Frameworks */,
+				27A155101D81248E000DCA0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				27A155141D81248E000DCA0D /* PBXTargetDependency */,
+			);
+			name = SotatekCoreUITests;
+			productName = SotatekCoreUITests;
+			productReference = 27A155121D81248E000DCA0D /* SotatekCoreUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		27A154EB1D81248E000DCA0D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "Thanh Tran";
+				TargetAttributes = {
+					27A154F21D81248E000DCA0D = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					27A155061D81248E000DCA0D = {
+						CreatedOnToolsVersion = 7.3.1;
+						TestTargetID = 27A154F21D81248E000DCA0D;
+					};
+					27A155111D81248E000DCA0D = {
+						CreatedOnToolsVersion = 7.3.1;
+						TestTargetID = 27A154F21D81248E000DCA0D;
+					};
+				};
+			};
+			buildConfigurationList = 27A154EE1D81248E000DCA0D /* Build configuration list for PBXProject "SotatekCore" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 27A154EA1D81248E000DCA0D;
+			productRefGroup = 27A154F41D81248E000DCA0D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				27A154F21D81248E000DCA0D /* SotatekCore */,
+				27A155061D81248E000DCA0D /* SotatekCoreTests */,
+				27A155111D81248E000DCA0D /* SotatekCoreUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		27A154F11D81248E000DCA0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				27A155011D81248E000DCA0D /* LaunchScreen.storyboard in Resources */,
+				27A154FE1D81248E000DCA0D /* Assets.xcassets in Resources */,
+				27A154FC1D81248E000DCA0D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27A155051D81248E000DCA0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27A155101D81248E000DCA0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		27A154EF1D81248E000DCA0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				27A1556E1D812631000DCA0D /* BaseService.swift in Sources */,
+				27A155751D81659B000DCA0D /* Array.swift in Sources */,
+				27A155601D81259C000DCA0D /* BaseCache.swift in Sources */,
+				27A155691D812606000DCA0D /* Notifier.swift in Sources */,
+				27A155661D8125CF000DCA0D /* BaseEntity.swift in Sources */,
+				27A154F91D81248E000DCA0D /* ViewController.swift in Sources */,
+				27A1561E1D88FE5B000DCA0D /* BaseRepository.swift in Sources */,
+				27A1562F1D894A5C000DCA0D /* CoreUtil.swift in Sources */,
+				27A155731D812699000DCA0D /* BaseViewController.swift in Sources */,
+				27A155D21D88F0CA000DCA0D /* BaseRequest.swift in Sources */,
+				27A155631D8125B9000DCA0D /* BaseController.swift in Sources */,
+				27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */,
+				27A1556B1D812615000DCA0D /* Observer.swift in Sources */,
+				27A154F71D81248E000DCA0D /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27A155031D81248E000DCA0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				27A1550C1D81248E000DCA0D /* SotatekCoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27A1550E1D81248E000DCA0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				27A155171D81248E000DCA0D /* SotatekCoreUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		27A155091D81248E000DCA0D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 27A154F21D81248E000DCA0D /* SotatekCore */;
+			targetProxy = 27A155081D81248E000DCA0D /* PBXContainerItemProxy */;
+		};
+		27A155141D81248E000DCA0D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 27A154F21D81248E000DCA0D /* SotatekCore */;
+			targetProxy = 27A155131D81248E000DCA0D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		27A154FA1D81248E000DCA0D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				27A154FB1D81248E000DCA0D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		27A154FF1D81248E000DCA0D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				27A155001D81248E000DCA0D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		27A155191D81248E000DCA0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		27A1551A1D81248E000DCA0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		27A1551C1D81248E000DCA0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = SotatekCore/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sotatek.SotatekCore;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		27A1551D1D81248E000DCA0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = SotatekCore/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sotatek.SotatekCore;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		27A1551F1D81248E000DCA0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = SotatekCoreTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sotatek.SotatekCoreTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SotatekCore.app/SotatekCore";
+			};
+			name = Debug;
+		};
+		27A155201D81248E000DCA0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = SotatekCoreTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sotatek.SotatekCoreTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SotatekCore.app/SotatekCore";
+			};
+			name = Release;
+		};
+		27A155221D81248E000DCA0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = SotatekCoreUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sotatek.SotatekCoreUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = SotatekCore;
+			};
+			name = Debug;
+		};
+		27A155231D81248E000DCA0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = SotatekCoreUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sotatek.SotatekCoreUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = SotatekCore;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		27A154EE1D81248E000DCA0D /* Build configuration list for PBXProject "SotatekCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27A155191D81248E000DCA0D /* Debug */,
+				27A1551A1D81248E000DCA0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		27A1551B1D81248E000DCA0D /* Build configuration list for PBXNativeTarget "SotatekCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27A1551C1D81248E000DCA0D /* Debug */,
+				27A1551D1D81248E000DCA0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		27A1551E1D81248E000DCA0D /* Build configuration list for PBXNativeTarget "SotatekCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27A1551F1D81248E000DCA0D /* Debug */,
+				27A155201D81248E000DCA0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		27A155211D81248E000DCA0D /* Build configuration list for PBXNativeTarget "SotatekCoreUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27A155221D81248E000DCA0D /* Debug */,
+				27A155231D81248E000DCA0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 27A154EB1D81248E000DCA0D /* Project object */;
+}
