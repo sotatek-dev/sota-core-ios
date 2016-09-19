@@ -8,9 +8,13 @@
 
 import Foundation
 
-public class CoreUtil {
-    public static func currentTime() -> Int64 {
-        let time = NSDate().timeIntervalSince1970
+open class CoreUtil {
+    open static func currentTime() -> Int64 {
+        let time = Date().timeIntervalSince1970
         return Int64(time * 1000)
+    }
+    
+    open static func uuid() -> String {
+        return UUID().uuidString
     }
 }

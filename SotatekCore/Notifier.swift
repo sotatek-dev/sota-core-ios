@@ -8,27 +8,38 @@
 
 import Foundation
 
-public class Notifier {
-    static let instance = Notifier()
+open class Notifier {
+    open static let SERVICE_NOTIFIER = "service"
+    open static let CONTROLLER_NOTIFIER = "controller"
+    
+    fileprivate static var instances = [String: Notifier]()
+    open static func instance(_ name: String) -> Notifier {
+        var instance = instances[name]
+        if instance == nil {
+            instance = Notifier()
+            instances[name] = instance
+        }
+        return instance!
+    }
     
     var observers = [Observer]()
     
     init() {
     }
     
-    func addObserver(observer: Observer) {
-        if observers.indexOf({$0 === observer}) == nil {
+    func addObserver(_ observer: Observer) {
+        if observers.index(where: {$0 === observer}) == nil {
             observers.append(observer)
         }
     }
     
-    func removeObserver(observer: Observer) {
-        if let index = observers.indexOf({$0 === observer}) {
-            observers.removeAtIndex(index)
+    func removeObserver(_ observer: Observer) {
+        if let index = observers.index(where: {$0 === observer}) {
+            observers.remove(at: index)
         }
     }
     
-    func notifyObservers(command: String, data: AnyObject? = nil) {
+    func notifyObservers(_ command: String, data: AnyObject? = nil) {
         for observer in observers {
             observer.update(command, data: data)
         }

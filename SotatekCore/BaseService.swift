@@ -8,18 +8,18 @@
 
 import Foundation
 
-public class BaseService {
-    var notifier = Notifier.instance
+open class BaseService {
+    var notifier = Notifier.instance(Notifier.SERVICE_NOTIFIER)
     
-    func notifyObservers(command: String, data: AnyObject? = nil) {
+    func notifyObservers(_ command: String, data: AnyObject? = nil) {
         notifier.notifyObservers(command, data: data)
     }
     
-    func addObserver(observer: Observer) {
+    func addObserver(_ observer: Observer) {
         notifier.addObserver(observer)
     }
     
-    func removeObserver(observer: Observer) {
+    func removeObserver(_ observer: Observer) {
         notifier.removeObserver(observer)
     }
 }

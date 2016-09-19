@@ -8,11 +8,11 @@
 
 import Foundation
 
-public class BaseEntity: Comparable, Hashable {
-    public var id: Int64
-    public var compareValue: Int64 = 0
+open class BaseEntity: Comparable, Hashable {
+    open var id: Int64
+    open var compareValue: Int64 = 0
     
-    public var hashValue: Int {
+    open var hashValue: Int {
         get {
             return id.hashValue
         }

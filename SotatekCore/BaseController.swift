@@ -8,21 +8,25 @@
 
 import Foundation
 
-public class BaseController: Observer {
-    var notifier = Notifier.instance
+open class BaseController: Observer {
+    var notifier = Notifier.instance(Notifier.CONTROLLER_NOTIFIER)
     
-    func notifyObservers(command: String, data: AnyObject? = nil) {
+    init() {
+        Notifier.instance(Notifier.SERVICE_NOTIFIER).addObserver(self)
+    }
+    
+    func notifyObservers(_ command: String, data: AnyObject? = nil) {
         notifier.notifyObservers(command, data: data)
     }
     
-    func addObserver(observer: Observer) {
+    func addObserver(_ observer: Observer) {
         notifier.addObserver(observer)
     }
     
-    func removeObserver(observer: Observer) {
+    func removeObserver(_ observer: Observer) {
         notifier.removeObserver(observer)
     }
-    public func update(command: String, data: AnyObject?) {
+    open func update(_ command: String, data: AnyObject?) {
         
     }
 }

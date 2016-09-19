@@ -9,44 +9,54 @@
 import Foundation
 import UIKit
 
-public class BaseViewController: UIViewController, ViewControllerDelegate, Observer {
+open class BaseViewController: UIViewController, ViewControllerDelegate, Observer {
     var initData = [String: AnyObject]()
     var responseData = [String: AnyObject]()
     var delegate: ViewControllerDelegate?
     
-    public func update(command: String, data: AnyObject?) {
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Notifier.instance(Notifier.CONTROLLER_NOTIFIER).addObserver(self)
+    }
+    
+    override open func viewWillDisappear(_ animated: Bool)  {
+        super.viewWillDisappear(animated)
+        Notifier.instance(Notifier.CONTROLLER_NOTIFIER).removeObserver(self)
+    }
+    
+    open func update(_ command: String, data: AnyObject?) {
         
     }
     
-    func viewControllerDidDismiss(sender: UIViewController, _ data: [String: AnyObject] = [:]) {
+    func viewControllerDidDismiss(_ sender: UIViewController, _ data: [String: AnyObject] = [:]) {
         
     }
     
-    func showViewController(id: String, _ data: [String: AnyObject] = [String: AnyObject](), _ delegate: ViewControllerDelegate? = nil) {
+    func showViewController(_ id: String, _ data: [String: AnyObject] = [String: AnyObject](), _ delegate: ViewControllerDelegate? = nil) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(id) as! BaseViewController
+        let vc = storyboard.instantiateViewController(withIdentifier: id) as! BaseViewController
         vc.initData = data
         vc.delegate = delegate
-        self.presentViewController(vc, animated: true, completion: nil)
+        self.present(vc, animated: true, completion: nil)
     }
     
-    func showDialog(id: String, _ data: [String: AnyObject] = [String: AnyObject](), _ delegate: ViewControllerDelegate? = nil) {
+    func showDialog(_ id: String, _ data: [String: AnyObject] = [String: AnyObject](), _ delegate: ViewControllerDelegate? = nil) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(id) as! BaseViewController
+        let vc = storyboard.instantiateViewController(withIdentifier: id) as! BaseViewController
         vc.initData = data
         vc.delegate = delegate
-        self.presentViewController(vc, animated: true, completion: nil)
+        self.present(vc, animated: true, completion: nil)
     }
     
-    func showRootViewController(id: String, _ data: [String: AnyObject] = [String: AnyObject]()) {
+    func showRootViewController(_ id: String, _ data: [String: AnyObject] = [String: AnyObject]()) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewControllerWithIdentifier(id) as! BaseViewController
+        let vc = storyboard.instantiateViewController(withIdentifier: id) as! BaseViewController
         vc.initData = data
-        UIApplication.sharedApplication().keyWindow?.rootViewController = vc
+        UIApplication.shared.keyWindow?.rootViewController = vc
     }
     
-    func dismissViewController(data: [String: AnyObject] = [:]) {
+    func dismissViewController(_ data: [String: AnyObject] = [:]) {
         responseData = data
-        self.dismissViewControllerAnimated(true, completion: {});
+        self.dismiss(animated: true, completion: {});
     }
 }

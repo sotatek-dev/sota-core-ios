@@ -10,26 +10,26 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-public class BaseCache<T: BaseEntity> {
+open class BaseCache<T: BaseEntity> {
     var data = [T]()
     
-    public func save(entity: T) {
+    open func save(_ entity: T) {
         data.removeObject(entity)
         data.append(entity)
     }
     
-    public func save(entities: [T]) {
+    open func save(_ entities: [T]) {
         for entity in entities {
             save(entity)
         }
     }
     
-    public func remove(entity: T) -> T {
+    open func remove(_ entity: T) -> T {
         data.removeObject(entity)
         return entity
     }
     
-    public func get(id: Int64) -> T? {
+    open func get(_ id: Int64) -> T? {
         for entity in data {
             if entity.id == id {
                 return entity
@@ -37,57 +37,98 @@ public class BaseCache<T: BaseEntity> {
         }
         return nil
     }
+
     
-    public func getAll() -> [T] {
-        return [] + data
-    }
-    
-    public func clear() {
+    open func clear() {
         data.removeAll()
     }
     
-    public func saveAsync(entity: T) -> Observable<T> {
+    open func saveAsync(_ entity: T) -> Observable<T> {
         return Observable<T>.create({subscribe in
-            self.data.removeObject(entity)
-            self.data.append(entity)
+            self.save(entity)
             subscribe.onNext(entity)
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
         })
     }
     
-    public func saveAsync(entities: [T]) -> Observable<[T]> {
+    open func saveAsync(_ entities: [T]) -> Observable<[T]> {
         return Observable<[T]>.create({subscribe in
             self.save(entities)
             subscribe.onNext(entities)
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
         })
     }
     
-    public func removeAsync(entity: T) -> Observable<Bool> {
-        return Observable<Bool>.create({subscribe in
-            self.remove(entity)
+    open func updateAsync(_ entity: T) -> Observable<T> {
+        return Observable<T>.create({subscribe in
+            //TODO implement
+            _ = self.save(entity)
+            subscribe.onNext(entity)
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
         })
     }
     
-    public func getAsync(id: Int64) -> Observable<T> {
+    open func removeAsync(_ entity: T) -> Observable<T> {
+        return Observable<T>.create({subscribe in
+            _ = self.remove(entity)
+            subscribe.onNext(entity)
+            subscribe.onCompleted()
+            return Disposables.create()
+        })
+    }
+    
+    open func getAsync(_ id: Int64) -> Observable<T> {
         return Observable<T>.create({subscribe in
             if let entity = self.get(id) {
                 subscribe.onNext(entity)
             }
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
         })
     }
     
-    public func getAll() -> Observable<[T]> {
+    func getList(count: Int, options: [String: AnyObject] = [:]) -> [T] {
+        var result: [T];
+        result = Util.getHeadSubSet(data, count: count)
+        if result.count == count {
+            return result
+        }
+        else {
+            //TODO get from local db
+            return result
+        }
+    }
+    
+    func getNextList(pivot: T, count: Int, options: [String: AnyObject] = [:]) -> [T] {
+        var result: [T]
+        result = Util.getSetOfBig(data, pivot: pivot, count: count)
+        return result
+    }
+    
+    func getListAsync(count: Int, options: [String: AnyObject] = [:]) -> Observable<[T]> {
         return Observable<[T]>.create({subscribe in
-            subscribe.onNext([] + self.data)
+            let entities = self.getList(count: count, options: options)
+            print("Got \(entities.count) from cache")
+            if entities.count >= count {
+                subscribe.onNext(entities)
+            }
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
+        })
+    }
+    
+    func getNextListAsync(pivot: T, count: Int, options: [String: AnyObject] = [:]) -> Observable<[T]> {
+        return Observable<[T]>.create({subscribe in
+            let entities = self.getNextList(pivot: pivot, count: count, options: options)
+            print("Got \(entities.count) from cache")
+            if entities.count >= count {
+                subscribe.onNext(entities)
+            }
+            subscribe.onCompleted()
+            return Disposables.create()
         })
     }
 }

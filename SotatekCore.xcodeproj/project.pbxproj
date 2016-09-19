@@ -26,6 +26,11 @@
 		27A1561E1D88FE5B000DCA0D /* BaseRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1561D1D88FE5B000DCA0D /* BaseRepository.swift */; };
 		27A1562F1D894A5C000DCA0D /* CoreUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1562E1D894A5C000DCA0D /* CoreUtil.swift */; };
 		27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A156361D89695D000DCA0D /* ViewControllerDelegate.swift */; };
+		27A1564B1D8B9987000DCA0D /* First.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1564A1D8B9987000DCA0D /* First.swift */; };
+		27FEDAE21D8FBF9700DF68F1 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE11D8FBF9700DF68F1 /* Random.swift */; };
+		27FEDAE41D8FCCEB00DF68F1 /* BaseMapCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */; };
+		27FEDAE61D8FCE3B00DF68F1 /* MapCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE51D8FCE3B00DF68F1 /* MapCache.swift */; };
+		27FEDAEC1D8FDAB000DF68F1 /* CoreConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAEB1D8FDAB000DF68F1 /* CoreConstant.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +76,11 @@
 		27A1561D1D88FE5B000DCA0D /* BaseRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRepository.swift; sourceTree = "<group>"; };
 		27A1562E1D894A5C000DCA0D /* CoreUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreUtil.swift; sourceTree = "<group>"; };
 		27A156361D89695D000DCA0D /* ViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerDelegate.swift; sourceTree = "<group>"; };
+		27A1564A1D8B9987000DCA0D /* First.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = First.swift; sourceTree = "<group>"; };
+		27FEDAE11D8FBF9700DF68F1 /* Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
+		27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseMapCache.swift; sourceTree = "<group>"; };
+		27FEDAE51D8FCE3B00DF68F1 /* MapCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapCache.swift; sourceTree = "<group>"; };
+		27FEDAEB1D8FDAB000DF68F1 /* CoreConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreConstant.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +131,7 @@
 		27A154F51D81248E000DCA0D /* SotatekCore */ = {
 			isa = PBXGroup;
 			children = (
+				27A156491D8B9977000DCA0D /* Rx */,
 				27A155CD1D88EF5B000DCA0D /* Repository */,
 				27A155701D812681000DCA0D /* View */,
 				27A1556F1D812677000DCA0D /* Util */,
@@ -160,6 +171,8 @@
 			isa = PBXGroup;
 			children = (
 				27A1555F1D81259C000DCA0D /* BaseCache.swift */,
+				27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */,
+				27FEDAE51D8FCE3B00DF68F1 /* MapCache.swift */,
 			);
 			name = Cache;
 			sourceTree = "<group>";
@@ -202,6 +215,8 @@
 			children = (
 				27A155741D81659B000DCA0D /* Array.swift */,
 				27A1562E1D894A5C000DCA0D /* CoreUtil.swift */,
+				27FEDAE11D8FBF9700DF68F1 /* Random.swift */,
+				27FEDAEB1D8FDAB000DF68F1 /* CoreConstant.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -231,6 +246,14 @@
 				27A155D11D88F0CA000DCA0D /* BaseRequest.swift */,
 			);
 			name = Request;
+			sourceTree = "<group>";
+		};
+		27A156491D8B9977000DCA0D /* Rx */ = {
+			isa = PBXGroup;
+			children = (
+				27A1564A1D8B9987000DCA0D /* First.swift */,
+			);
+			name = Rx;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -369,11 +392,16 @@
 				27A155601D81259C000DCA0D /* BaseCache.swift in Sources */,
 				27A155691D812606000DCA0D /* Notifier.swift in Sources */,
 				27A155661D8125CF000DCA0D /* BaseEntity.swift in Sources */,
+				27FEDAE61D8FCE3B00DF68F1 /* MapCache.swift in Sources */,
+				27FEDAEC1D8FDAB000DF68F1 /* CoreConstant.swift in Sources */,
+				27A1564B1D8B9987000DCA0D /* First.swift in Sources */,
 				27A154F91D81248E000DCA0D /* ViewController.swift in Sources */,
 				27A1561E1D88FE5B000DCA0D /* BaseRepository.swift in Sources */,
+				27FEDAE21D8FBF9700DF68F1 /* Random.swift in Sources */,
 				27A1562F1D894A5C000DCA0D /* CoreUtil.swift in Sources */,
 				27A155731D812699000DCA0D /* BaseViewController.swift in Sources */,
 				27A155D21D88F0CA000DCA0D /* BaseRequest.swift in Sources */,
+				27FEDAE41D8FCCEB00DF68F1 /* BaseMapCache.swift in Sources */,
 				27A155631D8125B9000DCA0D /* BaseController.swift in Sources */,
 				27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */,
 				27A1556B1D812615000DCA0D /* Observer.swift in Sources */,
