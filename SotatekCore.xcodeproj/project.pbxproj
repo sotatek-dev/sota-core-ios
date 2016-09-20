@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		276A369C1D8FEBC80080A74A /* BaseListCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276A369B1D8FEBC80080A74A /* BaseListCache.swift */; };
 		27A154F71D81248E000DCA0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A154F61D81248E000DCA0D /* AppDelegate.swift */; };
 		27A154F91D81248E000DCA0D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A154F81D81248E000DCA0D /* ViewController.swift */; };
 		27A154FC1D81248E000DCA0D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27A154FA1D81248E000DCA0D /* Main.storyboard */; };
@@ -29,7 +30,6 @@
 		27A1564B1D8B9987000DCA0D /* First.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1564A1D8B9987000DCA0D /* First.swift */; };
 		27FEDAE21D8FBF9700DF68F1 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE11D8FBF9700DF68F1 /* Random.swift */; };
 		27FEDAE41D8FCCEB00DF68F1 /* BaseMapCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */; };
-		27FEDAE61D8FCE3B00DF68F1 /* MapCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE51D8FCE3B00DF68F1 /* MapCache.swift */; };
 		27FEDAEC1D8FDAB000DF68F1 /* CoreConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAEB1D8FDAB000DF68F1 /* CoreConstant.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		276A369B1D8FEBC80080A74A /* BaseListCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseListCache.swift; sourceTree = "<group>"; };
 		27A154F31D81248E000DCA0D /* SotatekCore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SotatekCore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27A154F61D81248E000DCA0D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		27A154F81D81248E000DCA0D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -79,7 +80,6 @@
 		27A1564A1D8B9987000DCA0D /* First.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = First.swift; sourceTree = "<group>"; };
 		27FEDAE11D8FBF9700DF68F1 /* Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseMapCache.swift; sourceTree = "<group>"; };
-		27FEDAE51D8FCE3B00DF68F1 /* MapCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapCache.swift; sourceTree = "<group>"; };
 		27FEDAEB1D8FDAB000DF68F1 /* CoreConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreConstant.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -172,7 +172,7 @@
 			children = (
 				27A1555F1D81259C000DCA0D /* BaseCache.swift */,
 				27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */,
-				27FEDAE51D8FCE3B00DF68F1 /* MapCache.swift */,
+				276A369B1D8FEBC80080A74A /* BaseListCache.swift */,
 			);
 			name = Cache;
 			sourceTree = "<group>";
@@ -392,7 +392,6 @@
 				27A155601D81259C000DCA0D /* BaseCache.swift in Sources */,
 				27A155691D812606000DCA0D /* Notifier.swift in Sources */,
 				27A155661D8125CF000DCA0D /* BaseEntity.swift in Sources */,
-				27FEDAE61D8FCE3B00DF68F1 /* MapCache.swift in Sources */,
 				27FEDAEC1D8FDAB000DF68F1 /* CoreConstant.swift in Sources */,
 				27A1564B1D8B9987000DCA0D /* First.swift in Sources */,
 				27A154F91D81248E000DCA0D /* ViewController.swift in Sources */,
@@ -406,6 +405,7 @@
 				27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */,
 				27A1556B1D812615000DCA0D /* Observer.swift in Sources */,
 				27A154F71D81248E000DCA0D /* AppDelegate.swift in Sources */,
+				276A369C1D8FEBC80080A74A /* BaseListCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

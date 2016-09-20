@@ -11,36 +11,43 @@ import RxSwift
 import RxCocoa
 
 open class BaseCache<T: BaseEntity> {
-    var data = [T]()
+    
+    private func fail() {
+        assert(false, "Please extend your cache from BaseListCache or BastMapCache.")
+    }
     
     open func save(_ entity: T) {
-        data.removeObject(entity)
-        data.append(entity)
+        fail()
+    }
+    
+    open func remove(_ entity: T) -> T {
+        fail()
+        return entity
+    }
+    
+    open func get(_ id: Int64) -> T? {
+        fail()
+        return nil
+    }
+    
+    func getList(count: Int, options: [String: AnyObject] = [:]) -> [T] {
+        fail()
+        return []
+    }
+    
+    func getNextList(pivot: T, count: Int, options: [String: AnyObject] = [:]) -> [T] {
+        fail()
+        return[]
+    }
+    
+    open func clear() {
+        fail()
     }
     
     open func save(_ entities: [T]) {
         for entity in entities {
             save(entity)
         }
-    }
-    
-    open func remove(_ entity: T) -> T {
-        data.removeObject(entity)
-        return entity
-    }
-    
-    open func get(_ id: Int64) -> T? {
-        for entity in data {
-            if entity.id == id {
-                return entity
-            }
-        }
-        return nil
-    }
-
-    
-    open func clear() {
-        data.removeAll()
     }
     
     open func saveAsync(_ entity: T) -> Observable<T> {
@@ -88,24 +95,6 @@ open class BaseCache<T: BaseEntity> {
             subscribe.onCompleted()
             return Disposables.create()
         })
-    }
-    
-    func getList(count: Int, options: [String: AnyObject] = [:]) -> [T] {
-        var result: [T];
-        result = Util.getHeadSubSet(data, count: count)
-        if result.count == count {
-            return result
-        }
-        else {
-            //TODO get from local db
-            return result
-        }
-    }
-    
-    func getNextList(pivot: T, count: Int, options: [String: AnyObject] = [:]) -> [T] {
-        var result: [T]
-        result = Util.getSetOfBig(data, pivot: pivot, count: count)
-        return result
     }
     
     func getListAsync(count: Int, options: [String: AnyObject] = [:]) -> Observable<[T]> {
