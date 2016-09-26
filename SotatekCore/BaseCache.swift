@@ -2,7 +2,7 @@
 //  BaseCache.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/8/16.
+//  Created by Thanh Tran on 9/8/16.
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 
 open class BaseCache<T: BaseEntity> {
+    var storage: BaseStorage<T>!
     
     private func fail() {
         assert(false, "Please extend your cache from BaseListCache or BastMapCache.")
@@ -30,12 +31,12 @@ open class BaseCache<T: BaseEntity> {
         return nil
     }
     
-    func getList(count: Int, options: [String: AnyObject] = [:]) -> [T] {
+    func getList(count: Int, options: [String: Any] = [:]) -> [T] {
         fail()
         return []
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: AnyObject] = [:]) -> [T] {
+    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> [T] {
         fail()
         return[]
     }
@@ -97,7 +98,7 @@ open class BaseCache<T: BaseEntity> {
         })
     }
     
-    func getListAsync(count: Int, options: [String: AnyObject] = [:]) -> Observable<[T]> {
+    func getListAsync(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         return Observable<[T]>.create({subscribe in
             let entities = self.getList(count: count, options: options)
             print("Got \(entities.count) from cache")
@@ -109,7 +110,7 @@ open class BaseCache<T: BaseEntity> {
         })
     }
     
-    func getNextListAsync(pivot: T, count: Int, options: [String: AnyObject] = [:]) -> Observable<[T]> {
+    func getNextListAsync(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         return Observable<[T]>.create({subscribe in
             let entities = self.getNextList(pivot: pivot, count: count, options: options)
             print("Got \(entities.count) from cache")

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2722B21A1D93E85800A264F3 /* BaseStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2722B2191D93E85800A264F3 /* BaseStorage.swift */; };
 		276A369C1D8FEBC80080A74A /* BaseListCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276A369B1D8FEBC80080A74A /* BaseListCache.swift */; };
 		27A154F71D81248E000DCA0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A154F61D81248E000DCA0D /* AppDelegate.swift */; };
 		27A154F91D81248E000DCA0D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A154F81D81248E000DCA0D /* ViewController.swift */; };
@@ -51,6 +52,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2722B2191D93E85800A264F3 /* BaseStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseStorage.swift; sourceTree = "<group>"; };
 		276A369B1D8FEBC80080A74A /* BaseListCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseListCache.swift; sourceTree = "<group>"; };
 		27A154F31D81248E000DCA0D /* SotatekCore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SotatekCore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27A154F61D81248E000DCA0D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +110,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2722B2181D93E0F900A264F3 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				2722B2191D93E85800A264F3 /* BaseStorage.swift */,
+			);
+			name = Storage;
+			sourceTree = "<group>";
+		};
 		27A154EA1D81248E000DCA0D = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +243,7 @@
 		27A155CD1D88EF5B000DCA0D /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				2722B2181D93E0F900A264F3 /* Storage */,
 				27A155D01D88F0AB000DCA0D /* Request */,
 				27A1555E1D81257B000DCA0D /* Cache */,
 				27A1561D1D88FE5B000DCA0D /* BaseRepository.swift */,
@@ -320,10 +331,11 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0730;
-				ORGANIZATIONNAME = "Thanh Tran";
+				ORGANIZATIONNAME = SotaTek;
 				TargetAttributes = {
 					27A154F21D81248E000DCA0D = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 7982PXQXC8;
 					};
 					27A155061D81248E000DCA0D = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -403,6 +415,7 @@
 				27FEDAE41D8FCCEB00DF68F1 /* BaseMapCache.swift in Sources */,
 				27A155631D8125B9000DCA0D /* BaseController.swift in Sources */,
 				27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */,
+				2722B21A1D93E85800A264F3 /* BaseStorage.swift in Sources */,
 				27A1556B1D812615000DCA0D /* Observer.swift in Sources */,
 				27A154F71D81248E000DCA0D /* AppDelegate.swift in Sources */,
 				276A369C1D8FEBC80080A74A /* BaseListCache.swift in Sources */,
@@ -549,6 +562,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 7982PXQXC8;
 				INFOPLIST_FILE = SotatekCore/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sotatek.SotatekCore;
@@ -560,6 +574,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 7982PXQXC8;
 				INFOPLIST_FILE = SotatekCore/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sotatek.SotatekCore;

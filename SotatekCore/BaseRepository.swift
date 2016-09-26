@@ -2,8 +2,8 @@
 //  BaseRepository.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/14/16.
-//  Copyright © 2016 Thanh Tran. All rights reserved.
+//  Created by Thanh Tran on 9/14/16.
+//  Copyright © 2016 SotaTek. All rights reserved.
 //
 
 import Foundation
@@ -122,7 +122,7 @@ open class BaseRepository<T: BaseEntity> {
         return Observable.first(cachedEntity, remoteEntity)
     }
     
-    func getList(count: Int, options: [String: AnyObject] = [:]) -> Observable<[T]> {
+    func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
         let remoteEntitiesObserver = request.getList(count: count, options: options).flatMap({(entities: [T]) -> Observable<[T]> in
             return self.cache.saveAsync(entities)
@@ -130,7 +130,7 @@ open class BaseRepository<T: BaseEntity> {
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: AnyObject] = [:]) -> Observable<[T]> {
+    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getNextListAsync(pivot: pivot, count: count, options: options)
         let remoteEntitiesObserver = request.getNextList(pivot: pivot, count: count, options: options).flatMap({(entities: [T]) -> Observable<[T]> in
             return self.cache.saveAsync(entities)

@@ -2,8 +2,8 @@
 //  First.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/16/16.
-//  Copyright © 2016 Thanh Tran. All rights reserved.
+//  Created by Thanh Tran on 9/16/16.
+//  Copyright © 2016 SotaTek. All rights reserved.
 //
 
 import Foundation

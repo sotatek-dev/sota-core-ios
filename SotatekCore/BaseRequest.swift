@@ -2,8 +2,8 @@
 //  BaseRequest.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/14/16.
-//  Copyright © 2016 Thanh Tran. All rights reserved.
+//  Created by Thanh Tran on 9/14/16.
+//  Copyright © 2016 SotaTek. All rights reserved.
 //
 
 import Foundation
@@ -60,7 +60,7 @@ open class BaseRequest<T: BaseEntity> {
         })
     }
     
-    func getList(count: Int, options: [String: AnyObject]) -> Observable<[T]> {
+    func getList(count: Int, options: [String: Any]) -> Observable<[T]> {
         return Observable<[T]>.create({subscribe in
             self.delay({
                 var entities = [T]()
@@ -75,7 +75,7 @@ open class BaseRequest<T: BaseEntity> {
         })
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: AnyObject]) -> Observable<[T]> {
+    func getNextList(pivot: T, count: Int, options: [String: Any]) -> Observable<[T]> {
         return Observable<[T]>.create({subscribe in
             self.delay({
                 var entities = [T]()
@@ -90,9 +90,10 @@ open class BaseRequest<T: BaseEntity> {
         })
     }
     
-    func createDummyEntity(_ id: Int64, options: [String: AnyObject] = [:]) -> T? {
+    func createDummyEntity(_ id: Int64, options: [String: Any] = [:]) -> T? {
+        self.id += 1
         let contact = ContactEntity(id: id, name: "Contact \(id)", avatarPath: "", online: true)
-        let conversation = ConversationEntity(id: id, ownerId: 0, name: "Conversation \(id)", participantId: 1, createdAt: 0, unreadCount: 0, lastUpdate: 0, status: 0)
+        let conversation = ConversationEntity(id: id, ownerId: 0, name: "Conversation \(id)", participantId: 1, createdAt: 0, unreadCount: 0, lastUpdate: 0, status: Int64(0))
         let message = MessageEntity(id: self.id, conversationId: 0, timestamp: CoreUtil.currentTime() + id, text: "Message \(id)", senderId: 0, status: 0)
         
         if let contact = contact as? T {
@@ -105,7 +106,7 @@ open class BaseRequest<T: BaseEntity> {
         }
         else if let m = message as? T {
             print("Get message \(id) from server")
-            message.conversationId = options[CoreConstant.CACHE_GROUP_ID_VALUE] as! Int64
+            message.conversationId = options[CoreConstant.REPOSITORY_GROUP_ID] as! Int64
             return m
         }
         return nil

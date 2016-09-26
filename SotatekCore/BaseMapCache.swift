@@ -2,8 +2,8 @@
 //  BaseMapCache.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/19/16.
-//  Copyright © 2016 Thanh Tran. All rights reserved.
+//  Created by Thanh Tran on 9/19/16.
+//  Copyright © 2016 SotaTek. All rights reserved.
 //
 
 import Foundation
@@ -12,7 +12,7 @@ import Foundation
 //  BaseCache.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/8/16.
+//  Created by Thanh Tran on 9/8/16.
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
@@ -33,6 +33,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         list.removeObject(entity)
         list.append(entity)
         map[key] = list
+        storage.save(entity)
     }
     
     open override func save(_ entities: [TEntity]) {
@@ -46,6 +47,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         if var list = map[key] {
             list.removeObject(entity)
         }
+        _ = storage.remove(entity)
         return entity
     }
     
@@ -57,39 +59,40 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
                 }
             }
         }
-        return nil
+        return storage.get(id)
     }
     
     open override func clear() {
         map.removeAll()
+        storage.clear()
     }
     
-    override func getList(count: Int, options: [String: AnyObject] = [:]) -> [TEntity] {
-        let groupId = options[CoreConstant.CACHE_GROUP_ID_VALUE] as! TGroupId
-        var result: [TEntity];
+    override func getList(count: Int, options: [String: Any] = [:]) -> [TEntity] {
+        let groupId = options[CoreConstant.REPOSITORY_GROUP_ID] as! TGroupId
+        var result: [TEntity] = [];
         if let list = map[groupId] {
             result = Util.getHeadSubSet(list, count: count)
         }
-        else {
-            result = []
+        if result.count < count {
+            result = storage.getList(count: count, options: options)
+            if result.count < count {
+                result = []
+            }
         }
-        if result.count == count {
-            return result
-        }
-        else {
-            //TODO get from local db
-            return result
-        }
+        return result
     }
     
-    override func getNextList(pivot: TEntity, count: Int, options: [String: AnyObject] = [:]) -> [TEntity] {
-        let groupId = options[CoreConstant.CACHE_GROUP_ID_VALUE] as! TGroupId
-        var result: [TEntity]
+    override func getNextList(pivot: TEntity, count: Int, options: [String: Any] = [:]) -> [TEntity] {
+        let groupId = options[CoreConstant.REPOSITORY_GROUP_ID] as! TGroupId
+        var result: [TEntity] = []
         if let list = map[groupId] {
             result = Util.getSetOfBig(list, pivot: pivot, count: count)
         }
-        else {
-            result = []
+        if result.count < count {
+            result = storage.getNextList(pivot: pivot, count: count, options: options)
+            if result.count < count {
+                result = []
+            }
         }
         return result
     }
