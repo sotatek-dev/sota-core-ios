@@ -8,19 +8,44 @@
 
 import Foundation
 import SQLite
+import SwiftyJSON
 
-open class BaseEntity: Comparable, Hashable {
+open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     open var id: Int64
     open var compareValue: Int64 = 0
     
-    open var hashValue: Int {
+    override open var hashValue: Int {
         get {
             return id.hashValue
         }
     }
     
+    open static var entityName: String {
+        get {
+            return String(describing: self)
+        }
+    }
+    
+    open static var pluralName: String {
+        get {
+            return entityName + "s"
+        }
+    }
+    
     public init(id: Int64) {
         self.id = id
+    }
+    
+    open func encode(with aCoder: NSCoder) {
+        aCoder.encode(id, forKey: "id")
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        self.id = aDecoder.decodeInt64(forKey: "id")
+    }
+    
+    public required init(fromJson json: JSON!) {
+        self.id = json["id"].int64Value
     }
     
     public func clone() -> BaseEntity {

@@ -8,9 +8,9 @@
 
 import Foundation
 import RxSwift
-import RxCocoa
+import SwiftyJSON
 
-open class BaseCache<T: BaseEntity> {
+open class BaseCache<T: BaseEntity>: Cache {
     var storage: BaseStorage<T>!
     
     private func fail() {
@@ -43,6 +43,16 @@ open class BaseCache<T: BaseEntity> {
     
     open func clear() {
         fail()
+    }
+    
+    func save(_ json: JSON) -> AnyObject {
+        let e = T(fromJson: json)
+        self.save(e)
+        return e
+    }
+    
+    func isCacheForEntity(name: String) -> Bool {
+        return T.entityName == name || T.pluralName == name
     }
     
     open func save(_ entities: [T]) {

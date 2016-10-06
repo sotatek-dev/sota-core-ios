@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 open class CoreUtil {
     open static func currentTime() -> Int64 {
@@ -16,5 +17,10 @@ open class CoreUtil {
     
     open static func uuid() -> String {
         return UUID().uuidString
+    }
+    
+    open static func createViewController(storyboardName: String, id: String) -> UIViewController {
+        let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
+        return storyboard.instantiateViewController(withIdentifier: id)
     }
 }

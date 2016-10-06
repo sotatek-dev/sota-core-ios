@@ -8,8 +8,9 @@
 
 import Foundation
 import RxSwift
+import SwiftyJSON
 
-open class BaseRequest<T: BaseEntity> {
+open class BaseRequest<T> {
     var NETWORK_DELAY: Int64 = 1
     var id: Int64 = 0
     
@@ -17,7 +18,7 @@ open class BaseRequest<T: BaseEntity> {
         return Observable<T>.create({subscribe in
             self.delay({
                 self.id += 1
-                entity.id = self.id
+//                entity.id = self.id
                 subscribe.onNext(entity)
                 subscribe.onCompleted()
             })
@@ -50,40 +51,50 @@ open class BaseRequest<T: BaseEntity> {
         })
     }
     
-    open func get(_ id: Int64) -> Observable<T> {
-        return Observable<T>.create({subscribe in
+    open func get(_ id: Int64) -> Observable<JSON> {
+        return Observable<JSON>.create({subscribe in
             self.delay({
-                subscribe.onNext(self.createDummyEntity(id)!)
+                //subscribe.onNext(self.createDummyEntity(id)!)
+                subscribe.onNext(JSON.parse(self.readFile(name: "")))
                 subscribe.onCompleted()
             })
             return Disposables.create()
         })
     }
     
-    func getList(count: Int, options: [String: Any]) -> Observable<[T]> {
-        return Observable<[T]>.create({subscribe in
+    func getList(count: Int, options: [String: Any]) -> Observable<JSON> {
+        return Observable<JSON>.create({subscribe in
             self.delay({
-                var entities = [T]()
-                for i in 0..<count {
-                    entities.append(self.createDummyEntity(Int64(i), options: options)!)
-                }
-                print("Got \(entities.count) from server")
-                subscribe.onNext(entities)
+//                var entities = [T]()
+//                for i in 0..<count {
+//                    entities.append(self.createDummyEntity(Int64(i), options: options)!)
+//                }
+//                print("Got \(entities.count) from server")
+//                subscribe.onNext(entities)
+                let json = self.readFile(name: "media-list")
+                print(json)
+                
+                let response = Response(fromJson: JSON.parse(json))
+                print(response)
+
+                subscribe.onNext(response.data)
                 subscribe.onCompleted()
             })
             return Disposables.create()
         })
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: Any]) -> Observable<[T]> {
-        return Observable<[T]>.create({subscribe in
+    func getNextList(pivot: T, count: Int, options: [String: Any]) -> Observable<JSON> {
+        return Observable<JSON>.create({subscribe in
             self.delay({
-                var entities = [T]()
-                for i in 0..<count {
-                    entities.append(self.createDummyEntity(Int64(i), options: options)!)
-                }
-                print("Got \(entities.count) from server")
-                subscribe.onNext(entities)
+                //                var entities = [T]()
+                //                for i in 0..<count {
+                //                    entities.append(self.createDummyEntity(Int64(i), options: options)!)
+                //                }
+                //                print("Got \(entities.count) from server")
+                //                subscribe.onNext(entities)
+                
+                subscribe.onNext(JSON.parse(self.readFile(name: "")))
                 subscribe.onCompleted()
             })
             return Disposables.create()
@@ -120,5 +131,19 @@ open class BaseRequest<T: BaseEntity> {
                 f()
             })
         }
+    }
+    
+    func readFile(name: String) -> String {
+        if let filepath = Bundle.main.path(forResource: name, ofType: "js") {
+            do {
+                let contents = try String(contentsOfFile: filepath)
+                return contents
+            } catch {
+                // contents could not be loaded
+            }
+        } else {
+            // example.txt not found!
+        }
+        return ""
     }
 }

@@ -29,6 +29,12 @@
 		27A1562F1D894A5C000DCA0D /* CoreUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1562E1D894A5C000DCA0D /* CoreUtil.swift */; };
 		27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A156361D89695D000DCA0D /* ViewControllerDelegate.swift */; };
 		27A1564B1D8B9987000DCA0D /* First.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1564A1D8B9987000DCA0D /* First.swift */; };
+		27A1B5181DA3B96400B9BD8B /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1B5171DA3B96400B9BD8B /* Cache.swift */; };
+		27A1B51C1DA3BE0500B9BD8B /* Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1B51B1DA3BE0500B9BD8B /* Serializable.swift */; };
+		27A1B5241DA4948300B9BD8B /* BaseDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A1B5231DA4948300B9BD8B /* BaseDto.swift */; };
+		27D57D3F1DA3467E00028910 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D57D3E1DA3467E00028910 /* BaseView.swift */; };
+		27D57D531DA3687500028910 /* RemoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D57D521DA3687500028910 /* RemoteRepository.swift */; };
+		27D57D831DA3B38300028910 /* CacheFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D57D821DA3B38300028910 /* CacheFactory.swift */; };
 		27FEDAE21D8FBF9700DF68F1 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE11D8FBF9700DF68F1 /* Random.swift */; };
 		27FEDAE41D8FCCEB00DF68F1 /* BaseMapCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */; };
 		27FEDAEC1D8FDAB000DF68F1 /* CoreConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAEB1D8FDAB000DF68F1 /* CoreConstant.swift */; };
@@ -80,6 +86,12 @@
 		27A1562E1D894A5C000DCA0D /* CoreUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreUtil.swift; sourceTree = "<group>"; };
 		27A156361D89695D000DCA0D /* ViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerDelegate.swift; sourceTree = "<group>"; };
 		27A1564A1D8B9987000DCA0D /* First.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = First.swift; sourceTree = "<group>"; };
+		27A1B5171DA3B96400B9BD8B /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		27A1B51B1DA3BE0500B9BD8B /* Serializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializable.swift; sourceTree = "<group>"; };
+		27A1B5231DA4948300B9BD8B /* BaseDto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseDto.swift; sourceTree = "<group>"; };
+		27D57D3E1DA3467E00028910 /* BaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
+		27D57D521DA3687500028910 /* RemoteRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteRepository.swift; sourceTree = "<group>"; };
+		27D57D821DA3B38300028910 /* CacheFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheFactory.swift; sourceTree = "<group>"; };
 		27FEDAE11D8FBF9700DF68F1 /* Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseMapCache.swift; sourceTree = "<group>"; };
 		27FEDAEB1D8FDAB000DF68F1 /* CoreConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreConstant.swift; sourceTree = "<group>"; };
@@ -143,11 +155,13 @@
 			children = (
 				27A156491D8B9977000DCA0D /* Rx */,
 				27A155CD1D88EF5B000DCA0D /* Repository */,
-				27A155701D812681000DCA0D /* View */,
+				27D57D3D1DA3463A00028910 /* View */,
+				27A155701D812681000DCA0D /* ViewController */,
 				27A1556F1D812677000DCA0D /* Util */,
 				27A1556C1D81261D000DCA0D /* Service */,
 				27A155671D8125D3000DCA0D /* Event */,
 				27A155641D8125BD000DCA0D /* Entity */,
+				27A1B5221DA4944E00B9BD8B /* Dto */,
 				27A155611D8125A3000DCA0D /* Controller */,
 				27A154F61D81248E000DCA0D /* AppDelegate.swift */,
 				27A154F81D81248E000DCA0D /* ViewController.swift */,
@@ -183,6 +197,8 @@
 				27A1555F1D81259C000DCA0D /* BaseCache.swift */,
 				27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */,
 				276A369B1D8FEBC80080A74A /* BaseListCache.swift */,
+				27D57D821DA3B38300028910 /* CacheFactory.swift */,
+				27A1B5171DA3B96400B9BD8B /* Cache.swift */,
 			);
 			name = Cache;
 			sourceTree = "<group>";
@@ -199,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				27A155651D8125CF000DCA0D /* BaseEntity.swift */,
+				27A1B51B1DA3BE0500B9BD8B /* Serializable.swift */,
 			);
 			name = Entity;
 			sourceTree = "<group>";
@@ -231,13 +248,13 @@
 			name = Util;
 			sourceTree = "<group>";
 		};
-		27A155701D812681000DCA0D /* View */ = {
+		27A155701D812681000DCA0D /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
 				27A155721D812699000DCA0D /* BaseViewController.swift */,
 				27A156361D89695D000DCA0D /* ViewControllerDelegate.swift */,
 			);
-			name = View;
+			name = ViewController;
 			sourceTree = "<group>";
 		};
 		27A155CD1D88EF5B000DCA0D /* Repository */ = {
@@ -247,6 +264,7 @@
 				27A155D01D88F0AB000DCA0D /* Request */,
 				27A1555E1D81257B000DCA0D /* Cache */,
 				27A1561D1D88FE5B000DCA0D /* BaseRepository.swift */,
+				27D57D521DA3687500028910 /* RemoteRepository.swift */,
 			);
 			name = Repository;
 			sourceTree = "<group>";
@@ -265,6 +283,22 @@
 				27A1564A1D8B9987000DCA0D /* First.swift */,
 			);
 			name = Rx;
+			sourceTree = "<group>";
+		};
+		27A1B5221DA4944E00B9BD8B /* Dto */ = {
+			isa = PBXGroup;
+			children = (
+				27A1B5231DA4948300B9BD8B /* BaseDto.swift */,
+			);
+			name = Dto;
+			sourceTree = "<group>";
+		};
+		27D57D3D1DA3463A00028910 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				27D57D3E1DA3467E00028910 /* BaseView.swift */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -408,6 +442,10 @@
 				27A1564B1D8B9987000DCA0D /* First.swift in Sources */,
 				27A154F91D81248E000DCA0D /* ViewController.swift in Sources */,
 				27A1561E1D88FE5B000DCA0D /* BaseRepository.swift in Sources */,
+				27D57D831DA3B38300028910 /* CacheFactory.swift in Sources */,
+				27A1B5181DA3B96400B9BD8B /* Cache.swift in Sources */,
+				27D57D531DA3687500028910 /* RemoteRepository.swift in Sources */,
+				27A1B5241DA4948300B9BD8B /* BaseDto.swift in Sources */,
 				27FEDAE21D8FBF9700DF68F1 /* Random.swift in Sources */,
 				27A1562F1D894A5C000DCA0D /* CoreUtil.swift in Sources */,
 				27A155731D812699000DCA0D /* BaseViewController.swift in Sources */,
@@ -417,6 +455,8 @@
 				27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */,
 				2722B21A1D93E85800A264F3 /* BaseStorage.swift in Sources */,
 				27A1556B1D812615000DCA0D /* Observer.swift in Sources */,
+				27A1B51C1DA3BE0500B9BD8B /* Serializable.swift in Sources */,
+				27D57D3F1DA3467E00028910 /* BaseView.swift in Sources */,
 				27A154F71D81248E000DCA0D /* AppDelegate.swift in Sources */,
 				276A369C1D8FEBC80080A74A /* BaseListCache.swift in Sources */,
 			);

@@ -15,7 +15,7 @@ public class BaseStorage<T: BaseEntity> {
     
     public init(_ db: Connection) {
         self.db = db
-        table = Table(String(describing: T.self))
+        table = Table(T.entityName)
         try! _ = db.run(table.create(ifNotExists: true) { t in
             T.createTable(builder: t)
         })

@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import SwiftyJSON
 
 open class BaseRepository<T: BaseEntity> {
     var settingCacheSingleEntity = true
@@ -113,27 +114,70 @@ open class BaseRepository<T: BaseEntity> {
     
     open func get(_ id: Int64) -> Observable<T> {
         let cachedEntity = cache.getAsync(id)
-        let remoteEntity = request.get(id).map({(e: T) -> T in
-            if self.settingCacheSingleEntity {
-                self.cache.save(e)
-            }
-            return e
+        let remoteEntity = request.get(id).map({(json: JSON) -> T in
+            let entity = self.saveJsonObject(json)
+            return entity
         })
         return Observable.first(cachedEntity, remoteEntity)
     }
     
+    private func saveJsonObject(_ json: JSON) -> T {
+        var entity: T!
+        if json[T.entityName].exists() {
+            for (key,subJson): (String, JSON) in json {
+                let baseCache = CacheFactory.getCache(forEntity: key)
+                let e = baseCache!.save(subJson)
+                if T.entityName == key {
+                    entity = e as! T
+                }
+            }
+        }
+        else {
+            entity = T(fromJson: json)
+            if self.settingCacheSingleEntity {
+                self.cache.save(entity)
+            }
+        }
+        return entity
+    }
+    
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
-        let remoteEntitiesObserver = request.getList(count: count, options: options).flatMap({(entities: [T]) -> Observable<[T]> in
-            return self.cache.saveAsync(entities)
+        let remoteEntitiesObserver = request.getList(count: count, options: options).map({(json: JSON) -> [T] in
+            return self.saveJsonList(json)
         })
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
     }
     
+    private func saveJsonList(_ json: JSON) -> [T] {
+        var entities = [T]()
+        for (key,subJson): (String, JSON) in json {
+            let shouldAddToResult = T.entityName == key
+            let baseCache = CacheFactory.getCache(forEntity: key)
+            
+            if let jsonArray = subJson.array {
+                for jsonObject in jsonArray {
+                    let e = baseCache!.save(jsonObject)
+                    if shouldAddToResult {
+                        entities.append(e as! T)
+                    }
+                }
+            }
+            else {
+                let e = baseCache!.save(subJson)
+                if shouldAddToResult {
+                    entities.append(e as! T)
+                }
+
+            }
+        }
+        return entities
+    }
+    
     func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getNextListAsync(pivot: pivot, count: count, options: options)
-        let remoteEntitiesObserver = request.getNextList(pivot: pivot, count: count, options: options).flatMap({(entities: [T]) -> Observable<[T]> in
-            return self.cache.saveAsync(entities)
+        let remoteEntitiesObserver = request.getNextList(pivot: pivot, count: count, options: options).map({(json: JSON) -> [T] in
+            return self.saveJsonList(json)
         })
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
     }
