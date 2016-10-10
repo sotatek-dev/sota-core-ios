@@ -14,7 +14,7 @@ open class BaseCache<T: BaseEntity>: Cache {
     var storage: BaseStorage<T>!
     
     private func fail() {
-        assert(false, "Please extend your cache from BaseListCache or BastMapCache.")
+        fatalError("Please extend your cache from BaseListCache or BastMapCache.")
     }
     
     open func save(_ entity: T) {
@@ -37,6 +37,11 @@ open class BaseCache<T: BaseEntity>: Cache {
     }
     
     func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> [T] {
+        fail()
+        return[]
+    }
+    
+    func getAll(options: [String: Any] = [:]) -> [T] {
         fail()
         return[]
     }
@@ -125,6 +130,17 @@ open class BaseCache<T: BaseEntity>: Cache {
             let entities = self.getNextList(pivot: pivot, count: count, options: options)
             print("Got \(entities.count) from cache")
             if entities.count >= count {
+                subscribe.onNext(entities)
+            }
+            subscribe.onCompleted()
+            return Disposables.create()
+        })
+    }
+    
+    func getAllAsync(options: [String: Any] = [:]) -> Observable<[T]> {
+        return Observable<[T]>.create({subscribe in
+            let entities = self.getAll(options: options)
+            if entities.count > 0 {
                 subscribe.onNext(entities)
             }
             subscribe.onCompleted()

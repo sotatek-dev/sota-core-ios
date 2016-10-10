@@ -15,6 +15,9 @@ class BaseDto: NSObject, NSCoding, Serializable {
             var name = String(describing: self)
             let lowercase = String(name[name.startIndex]).lowercased()
             name.replaceSubrange(name.startIndex...name.startIndex, with: lowercase)
+            if name.hasSuffix("Dto") {
+                name = name.substring(to: name.index(name.endIndex, offsetBy: -"Dto".characters.count))
+            }
             return name
         }
     }

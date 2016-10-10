@@ -8,6 +8,6 @@
 
 import Foundation
 
-public protocol Observer: class {
+@objc public protocol Observer: class {
     func update(_ command: String, data: AnyObject?)
 }

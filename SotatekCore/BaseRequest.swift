@@ -14,6 +14,11 @@ open class BaseRequest<T> {
     var NETWORK_DELAY: Int64 = 1
     var id: Int64 = 0
     
+    open var mockEntity = ""
+    open var mockList = ""
+    open var mockNextList = ""
+    open var mockAll = ""
+    
     open func create(_ entity: T) -> Observable<T> {
         return Observable<T>.create({subscribe in
             self.delay({
@@ -71,13 +76,15 @@ open class BaseRequest<T> {
 //                }
 //                print("Got \(entities.count) from server")
 //                subscribe.onNext(entities)
-                let json = self.readFile(name: "media-list")
-                print(json)
-                
-                let response = Response(fromJson: JSON.parse(json))
-                print(response)
-
-                subscribe.onNext(response.data)
+                if !self.mockList.isEmpty {
+                    let json = self.readFile(name: self.mockList)
+                    print(json)
+                    
+                    let response = Response(fromJson: JSON.parse(json))
+                    print(response)
+                    
+                    subscribe.onNext(response.data)
+                }
                 subscribe.onCompleted()
             })
             return Disposables.create()
@@ -95,6 +102,24 @@ open class BaseRequest<T> {
                 //                subscribe.onNext(entities)
                 
                 subscribe.onNext(JSON.parse(self.readFile(name: "")))
+                subscribe.onCompleted()
+            })
+            return Disposables.create()
+        })
+    }
+    
+    func getAll(options: [String: Any]) -> Observable<JSON> {
+        return Observable<JSON>.create({subscribe in
+            self.delay({
+                if !self.mockAll.isEmpty {
+                    let json = self.readFile(name: self.mockAll)
+                    print(json)
+                    
+                    let response = Response(fromJson: JSON.parse(json))
+                    print(response)
+                    
+                    subscribe.onNext(response.data)
+                }
                 subscribe.onCompleted()
             })
             return Disposables.create()

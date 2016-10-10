@@ -25,9 +25,9 @@ class RemoteRepository<T: Serializable> {
 
     }
     
-    func getList(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
-        return request.getList(count: count, options: options).map({(json: JSON) -> ListDto<T> in
-            return ListDto<T>(fromJson: json)
+    func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
+        return request.getList(count: count, options: options).map({(json: JSON) -> [T] in
+            return ListDto<T>(fromJson: json).data
         })
     }
     
@@ -41,9 +41,9 @@ class RemoteRepository<T: Serializable> {
         return entities
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
-        return request.getNextList(pivot: pivot, count: count, options: options).map({(json: JSON) -> ListDto<T> in
-            return ListDto<T>(fromJson: json)
+    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
+        return request.getNextList(pivot: pivot, count: count, options: options).map({(json: JSON) -> [T] in
+            return ListDto<T>(fromJson: json).data
         })
 
     }

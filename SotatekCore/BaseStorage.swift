@@ -63,6 +63,14 @@ public class BaseStorage<T: BaseEntity> {
         return toEntities(query)
     }
     
+    func getAll(options: [String: Any] = [:]) -> [T] {
+        var query = table!
+        if let filter = options[CoreConstant.REPOSITORY_DB_FILTER] as? Expression<Bool> {
+            query = table.filter(filter)
+        }
+        return toEntities(query)
+    }
+    
     func getFilter(pivot: T, options: [String: Any] = [:]) -> Expression<Bool> {
         var filter: Expression<Bool> = pivot.nextFilter
         if let originFilter = options[CoreConstant.REPOSITORY_DB_FILTER] as? Expression<Bool> {

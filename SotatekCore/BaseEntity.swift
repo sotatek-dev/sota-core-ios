@@ -22,7 +22,13 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     
     open static var entityName: String {
         get {
-            return String(describing: self)
+            var name = String(describing: self)
+            let lowercase = String(name[name.startIndex]).lowercased()
+            name.replaceSubrange(name.startIndex...name.startIndex, with: lowercase)
+            if name.hasSuffix("Entity") {
+                name = name.substring(to: name.index(name.endIndex, offsetBy: -"Entity".characters.count))
+            }
+            return name
         }
     }
     

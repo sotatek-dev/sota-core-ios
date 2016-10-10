@@ -152,7 +152,7 @@ open class BaseRepository<T: BaseEntity> {
     private func saveJsonList(_ json: JSON) -> [T] {
         var entities = [T]()
         for (key,subJson): (String, JSON) in json {
-            let shouldAddToResult = T.entityName == key
+            let shouldAddToResult = T.entityName == key || T.pluralName == key
             let baseCache = CacheFactory.getCache(forEntity: key)
             
             if let jsonArray = subJson.array {
@@ -177,6 +177,14 @@ open class BaseRepository<T: BaseEntity> {
     func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getNextListAsync(pivot: pivot, count: count, options: options)
         let remoteEntitiesObserver = request.getNextList(pivot: pivot, count: count, options: options).map({(json: JSON) -> [T] in
+            return self.saveJsonList(json)
+        })
+        return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
+    }
+    
+    func getAll(options: [String: Any] = [:]) -> Observable<[T]> {
+        let cachedEntitiesObserver = cache.getAllAsync(options: options)
+        let remoteEntitiesObserver = request.getAll(options: options).map({(json: JSON) -> [T] in
             return self.saveJsonList(json)
         })
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)

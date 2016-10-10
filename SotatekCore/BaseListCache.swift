@@ -62,6 +62,14 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         return result
     }
     
+    open override func getAll(options: [String: Any] = [:]) -> [T] {
+        var result = data
+        if data.count == 0 {
+            result = storage.getAll()
+        }
+        return result
+    }
+    
     open override func clear() {
         data.removeAll()
         storage.clear()

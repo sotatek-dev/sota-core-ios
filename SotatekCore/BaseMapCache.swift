@@ -96,4 +96,13 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         }
         return result
     }
+    
+    open override func getAll(options: [String: Any] = [:]) -> [TEntity] {
+        let groupId = options[CoreConstant.REPOSITORY_GROUP_ID] as! TGroupId
+        var result = map[groupId] ?? []
+        if result.count == 0 {
+            result = storage.getAll(options: options)
+        }
+        return result
+    }
 }
