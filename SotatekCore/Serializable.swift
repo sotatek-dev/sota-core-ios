@@ -7,8 +7,16 @@
 //
 
 import Foundation
-import SwiftyJson
+import SwiftyJSON
 
-protocol Serializable {
+public protocol Serializable: class {
+    static var entityName: String {
+        get
+    }
+    
+    static var pluralName: String {
+        get
+    }
+    
     init(fromJson json: JSON!)
 }

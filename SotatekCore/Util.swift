@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-open class CoreUtil {
+open class Util {
     open static func currentTime() -> Int64 {
         let time = Date().timeIntervalSince1970
         return Int64(time * 1000)

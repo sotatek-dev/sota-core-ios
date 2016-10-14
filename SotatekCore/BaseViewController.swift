@@ -19,17 +19,19 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Notifier.instance(Notifier.CONTROLLER_NOTIFIER).addObserver(self)
+        Notifier.controllerNoitfier.addObserver(self)
         for view in views {
+            view.addObserver(self)
             view.viewDidAppear()
         }
     }
     
     override open func viewWillDisappear(_ animated: Bool)  {
         super.viewWillDisappear(animated)
-        Notifier.instance(Notifier.CONTROLLER_NOTIFIER).removeObserver(self)
+        Notifier.controllerNoitfier.removeObserver(self)
         for view in views {
             view.viewWillDisappear()
+            view.removeObserver(self)
         }
     }
     
@@ -41,31 +43,31 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         
     }
     
-    func viewControllerDidDismiss(_ sender: UIViewController, _ data: [String: AnyObject] = [:]) {
+    func viewControllerDidDismiss(sender: UIViewController, data: [String: AnyObject] = [:]) {
         
     }
     
-    func showViewController(_ id: String, _ data: [String: AnyObject] = [String: AnyObject](), _ delegate: ViewControllerDelegate? = nil) {
-        let vc = CoreUtil.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
+    func showViewController(_ id: String, data: [String: AnyObject] = [String: AnyObject](), delegate: ViewControllerDelegate? = nil) {
+        let vc = Util.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
         vc.initData = data
         vc.delegate = delegate
         self.present(vc, animated: true, completion: nil)
     }
     
-    func showDialog(_ id: String, _ data: [String: AnyObject] = [String: AnyObject](), _ delegate: ViewControllerDelegate? = nil) {
-        let vc = CoreUtil.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
+    func showDialog(_ id: String, data: [String: AnyObject] = [String: AnyObject](), delegate: ViewControllerDelegate? = nil) {
+        let vc = Util.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
         vc.initData = data
         vc.delegate = delegate
         self.present(vc, animated: true, completion: nil)
     }
     
-    func showRootViewController(_ id: String, _ data: [String: AnyObject] = [String: AnyObject]()) {
-        let vc = CoreUtil.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
+    func showRootViewController(_ id: String, data: [String: AnyObject] = [String: AnyObject]()) {
+        let vc = Util.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
         vc.initData = data
         UIApplication.shared.keyWindow?.rootViewController = vc
     }
     
-    func dismissViewController(_ data: [String: AnyObject] = [:]) {
+    func dismissViewController(data: [String: AnyObject] = [:]) {
         responseData = data
         self.dismiss(animated: true, completion: {});
     }

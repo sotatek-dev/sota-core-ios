@@ -9,8 +9,12 @@
 import Foundation
 
 open class Notifier {
-    open static let SERVICE_NOTIFIER = "service"
-    open static let CONTROLLER_NOTIFIER = "controller"
+    //open static let SERVICE_NOTIFIER = "service"
+    //open static let CONTROLLER_NOTIFIER = "controller"
+    
+    open static let serviceNotifier = Notifier.instance("controller")
+    open static let controllerNoitfier = Notifier.instance("service")
+    open static let socketNoitfier = Notifier.instance("socket")
     
     fileprivate static var instances = [String: Notifier]()
     open static func instance(_ name: String) -> Notifier {

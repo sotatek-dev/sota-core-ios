@@ -80,7 +80,7 @@ open class BaseRequest<T> {
                     let json = self.readFile(name: self.mockList)
                     print(json)
                     
-                    let response = Response(fromJson: JSON.parse(json))
+                    let response = HttpResponse(fromJson: JSON.parse(json))
                     print(response)
                     
                     subscribe.onNext(response.data)
@@ -115,7 +115,7 @@ open class BaseRequest<T> {
                     let json = self.readFile(name: self.mockAll)
                     print(json)
                     
-                    let response = Response(fromJson: JSON.parse(json))
+                    let response = HttpResponse(fromJson: JSON.parse(json))
                     print(response)
                     
                     subscribe.onNext(response.data)
@@ -130,7 +130,7 @@ open class BaseRequest<T> {
         self.id += 1
         let contact = ContactEntity(id: id, name: "Contact \(id)", avatarPath: "", online: true)
         let conversation = ConversationEntity(id: id, ownerId: 0, name: "Conversation \(id)", participantId: 1, createdAt: 0, unreadCount: 0, lastUpdate: 0, status: Int64(0))
-        let message = MessageEntity(id: self.id, conversationId: 0, timestamp: CoreUtil.currentTime() + id, text: "Message \(id)", senderId: 0, status: 0)
+        let message = MessageEntity(id: self.id, conversationId: 0, timestamp: Util.currentTime() + id, text: "Message \(id)", senderId: 0, status: 0)
         
         if let contact = contact as? T {
             print("Get contact \(id) from server")
@@ -142,7 +142,7 @@ open class BaseRequest<T> {
         }
         else if let m = message as? T {
             print("Get message \(id) from server")
-            message.conversationId = options[CoreConstant.REPOSITORY_GROUP_ID] as! Int64
+            message.conversationId = options[Constant.REPOSITORY_GROUP_ID] as! Int64
             return m
         }
         return nil
