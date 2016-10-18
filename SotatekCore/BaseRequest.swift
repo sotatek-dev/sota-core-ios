@@ -11,7 +11,7 @@ import RxSwift
 import SwiftyJSON
 
 open class BaseRequest<T> {
-    var NETWORK_DELAY: Int = 1
+    var networkDelay: Int = 1
     var id: Int = 0
     
     open var mockEntity = ""
@@ -148,7 +148,7 @@ open class BaseRequest<T> {
     func delay(_ f: @escaping () -> Void) {
         let qualityOfServiceClass = DispatchQoS.QoSClass.background
         let backgroundQueue = DispatchQueue.global(qos: qualityOfServiceClass)
-        backgroundQueue.asyncAfter(deadline: .now() + Double(NETWORK_DELAY)) {
+        backgroundQueue.asyncAfter(deadline: .now() + Double(networkDelay)) {
             DispatchQueue.main.async(execute: { () -> Void in
                 f()
             })
