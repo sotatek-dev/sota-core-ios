@@ -28,7 +28,7 @@ open class BaseService: Observer {
     }
     open func update(_ command: String, data: AnyObject?) {
         switch command {
-        case Constant.COMMAND_RECEIVE_DATA:
+        case Constant.commandReceiveData:
             onReceiveData(data as! SocketData)
         default:
             break

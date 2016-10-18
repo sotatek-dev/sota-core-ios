@@ -19,4 +19,6 @@ public protocol Serializable: class {
     }
     
     init(fromJson json: JSON!)
+    
+    func toDictionary() -> Dictionary<String, Any>
 }

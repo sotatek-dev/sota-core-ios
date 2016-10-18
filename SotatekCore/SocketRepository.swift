@@ -45,15 +45,17 @@ class SocketRepository {
 //            else
             if let dtoType = dtoTypes[key] {
                 let dto = dtoType.init(fromJson: subJson)
-                notifier.notifyObservers(Constant.COMMAND_RECEIVE_DATA, data: SocketData(name: key, data: dto))
-            }
-            else if let entityType = entityTypes[key] {
+                notifier.notifyObservers(Constant.commandReceiveData, data: SocketData(name: key, data: dto))
+            } else if let entityType = entityTypes[key] {
                 let entity = entityType.init(fromJson: subJson)
-                notifier.notifyObservers(Constant.COMMAND_RECEIVE_DATA, data: SocketData(name: key, data: entity))
-            }
-            else {
+                notifier.notifyObservers(Constant.commandReceiveData, data: SocketData(name: key, data: entity))
+            } else {
                 print("Unknown data type: \(key)")
             }
         }
+    }
+    
+    open func send(_ data: Serializable) {
+        socketRequest.send(data)
     }
 }

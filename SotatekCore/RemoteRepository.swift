@@ -17,7 +17,7 @@ class RemoteRepository<T: Serializable> {
         self.request = request
     }
     
-    open func get(_ id: Int64) -> Observable<T> {
+    open func get(_ id: Int) -> Observable<T> {
         return request.get(id).map({(json: JSON) -> T in
             let entity = T(fromJson: json)
             return entity

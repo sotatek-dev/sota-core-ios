@@ -24,8 +24,7 @@ public class BaseStorage<T: BaseEntity> {
     open func save(_ entity: T) {
         if get(entity.id) != nil {
             try! _ = db.run(table.update(entity.columnValues))
-        }
-        else {
+        } else {
             try! _ = db.run(table.insert(entity.columnValues))
         }
     }
@@ -36,19 +35,18 @@ public class BaseStorage<T: BaseEntity> {
         return entity
     }
     
-    open func get(_ id: Int64) -> T? {
+    open func get(_ id: Int) -> T? {
         let filter = table.filter(T.idColumn == id)
         if let row = try! db.pluck(filter) {
             return (T.toEntity(row) as! T)
-        }
-        else {
+        } else {
             return nil
         }
     }
     
     func getList(count: Int, options: [String: Any] = [:]) -> [T] {
         var query = table!
-        if let filter = options[Constant.REPOSITORY_DB_FILTER] as? Expression<Bool> {
+        if let filter = options[Constant.repositoryDbFilter] as? Expression<Bool> {
             query = table.filter(filter)
         }
         query = query.limit(count)
@@ -65,7 +63,7 @@ public class BaseStorage<T: BaseEntity> {
     
     func getAll(options: [String: Any] = [:]) -> [T] {
         var query = table!
-        if let filter = options[Constant.REPOSITORY_DB_FILTER] as? Expression<Bool> {
+        if let filter = options[Constant.repositoryDbFilter] as? Expression<Bool> {
             query = table.filter(filter)
         }
         return toEntities(query)
@@ -73,7 +71,7 @@ public class BaseStorage<T: BaseEntity> {
     
     func getFilter(pivot: T, options: [String: Any] = [:]) -> Expression<Bool> {
         var filter: Expression<Bool> = pivot.nextFilter
-        if let originFilter = options[Constant.REPOSITORY_DB_FILTER] as? Expression<Bool> {
+        if let originFilter = options[Constant.repositoryDbFilter] as? Expression<Bool> {
             filter = originFilter && filter
         }
         return filter

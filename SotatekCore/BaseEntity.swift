@@ -11,8 +11,8 @@ import SQLite
 import SwiftyJSON
 
 open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
-    open var id: Int64
-    open var compareValue: Int64 = 0
+    open var id: Int
+    open var compareValue: Int = 0
     
     override open var hashValue: Int {
         get {
@@ -38,7 +38,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
         }
     }
     
-    public init(id: Int64) {
+    public init(id: Int) {
         self.id = id
     }
     
@@ -47,21 +47,27 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     }
     
     public required init?(coder aDecoder: NSCoder) {
-        self.id = aDecoder.decodeInt64(forKey: "id")
+        self.id = aDecoder.decodeInteger(forKey: "id")
     }
     
     public required init(fromJson json: JSON!) {
-        self.id = json["id"].int64Value
+        self.id = json["id"].intValue
+    }
+    
+    public func toDictionary() -> [String: Any] {
+        var dictionary = [String: Any]()
+        dictionary["id"] = id
+        return dictionary
     }
     
     public func clone() -> BaseEntity {
         return BaseEntity(id: self.id)
     }
     
-    public static let idColumn = Expression<Int64>("id")
+    public static let idColumn = Expression<Int>("id")
     
     open class func createTable(builder: TableBuilder) {
-        builder.column(Expression<Int64>("id"))
+        builder.column(Expression<Int>("id"))
     }
     
     open class func toEntity(_ row: Row) -> BaseEntity {

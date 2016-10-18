@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 open class Util {
-    open static func currentTime() -> Int64 {
+    open static func currentTime() -> Int {
         let time = Date().timeIntervalSince1970
-        return Int64(time * 1000)
+        return Int(time * 1000)
     }
     
     open static func uuid() -> String {

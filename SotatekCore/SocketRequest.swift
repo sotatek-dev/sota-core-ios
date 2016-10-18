@@ -19,6 +19,14 @@ public class SocketRequest {
         
     }
     
+    open func send(_ data: Serializable) {
+        if let message = data as? ChatLineEntity {
+            message.id = Util.currentTime()
+            let socketData = SocketData(name: "chatLine", data: message)
+            notifier.notifyObservers(Constant.commandReceiveData, data: socketData)
+        }
+    }
+    
     func startMock() {
         let startTime = Util.currentTime()
         _ = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(notify), userInfo: nil, repeats: true)
@@ -29,7 +37,7 @@ public class SocketRequest {
         let time = Util.currentTime()
         let chatLine = ChatLineEntity(id: id, mediaId: 0, userId: 0, type: 0, content: "Message \(id)", createdAt: time, updatedAt: time)
         let socketData = SocketData(name: "chatLine", data: chatLine)
-        notifier.notifyObservers(Constant.COMMAND_RECEIVE_DATA, data: socketData)
+        notifier.notifyObservers(Constant.commandReceiveData, data: socketData)
         
     }
 }

@@ -11,8 +11,8 @@ import RxSwift
 import SwiftyJSON
 
 open class BaseRequest<T> {
-    var NETWORK_DELAY: Int64 = 1
-    var id: Int64 = 0
+    var NETWORK_DELAY: Int = 1
+    var id: Int = 0
     
     open var mockEntity = ""
     open var mockList = ""
@@ -46,8 +46,7 @@ open class BaseRequest<T> {
             self.delay({
                 if Int.random() % 2 == 0 {
                     subscribe.onNext(entity)
-                }
-                else {
+                } else {
                     subscribe.onError(NSError())
                 }
                 subscribe.onCompleted()
@@ -56,7 +55,7 @@ open class BaseRequest<T> {
         })
     }
     
-    open func get(_ id: Int64) -> Observable<JSON> {
+    open func get(_ id: Int) -> Observable<JSON> {
         return Observable<JSON>.create({subscribe in
             self.delay({
                 //subscribe.onNext(self.createDummyEntity(id)!)
@@ -72,7 +71,7 @@ open class BaseRequest<T> {
             self.delay({
 //                var entities = [T]()
 //                for i in 0..<count {
-//                    entities.append(self.createDummyEntity(Int64(i), options: options)!)
+//                    entities.append(self.createDummyEntity(Int(i), options: options)!)
 //                }
 //                print("Got \(entities.count) from server")
 //                subscribe.onNext(entities)
@@ -96,7 +95,7 @@ open class BaseRequest<T> {
             self.delay({
                 //                var entities = [T]()
                 //                for i in 0..<count {
-                //                    entities.append(self.createDummyEntity(Int64(i), options: options)!)
+                //                    entities.append(self.createDummyEntity(Int(i), options: options)!)
                 //                }
                 //                print("Got \(entities.count) from server")
                 //                subscribe.onNext(entities)
@@ -126,23 +125,21 @@ open class BaseRequest<T> {
         })
     }
     
-    func createDummyEntity(_ id: Int64, options: [String: Any] = [:]) -> T? {
+    func createDummyEntity(_ id: Int, options: [String: Any] = [:]) -> T? {
         self.id += 1
         let contact = ContactEntity(id: id, name: "Contact \(id)", avatarPath: "", online: true)
-        let conversation = ConversationEntity(id: id, ownerId: 0, name: "Conversation \(id)", participantId: 1, createdAt: 0, unreadCount: 0, lastUpdate: 0, status: Int64(0))
+        let conversation = ConversationEntity(id: id, ownerId: 0, name: "Conversation \(id)", participantId: 1, createdAt: 0, unreadCount: 0, lastUpdate: 0, status: Int(0))
         let message = MessageEntity(id: self.id, conversationId: 0, timestamp: Util.currentTime() + id, text: "Message \(id)", senderId: 0, status: 0)
         
         if let contact = contact as? T {
             print("Get contact \(id) from server")
             return contact
-        }
-        else if let conversation = conversation as? T {
+        } else if let conversation = conversation as? T {
             print("Get conversation \(id) from server")
             return conversation
-        }
-        else if let m = message as? T {
+        } else if let m = message as? T {
             print("Get message \(id) from server")
-            message.conversationId = options[Constant.REPOSITORY_GROUP_ID] as! Int64
+            message.conversationId = options[Constant.repositoryGroupId] as! Int
             return m
         }
         return nil

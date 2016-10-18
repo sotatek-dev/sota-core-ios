@@ -9,10 +9,10 @@
 import Foundation
 
 class Constant {
-    static let REPOSITORY_GROUP_ID = "GROUP_ID"
-    static let REPOSITORY_REQUEST_PARAMS = "REQUEST_PARAMS"
-    static let REPOSITORY_DB_FILTER = "DB_FILTER"
-    static let REPOSITORY_CACHE_FILTER = "CACHE_FILTER"
+    static let repositoryGroupId = "GROUP_ID"
+    static let repositoryRequestParams = "REQUEST_PARAMS"
+    static let repositoryDbFilter = "DB_FILTER"
+    static let repositoryCacheFilter = "CACHE_FILTER"
     
-    static let COMMAND_RECEIVE_DATA = "S_RECEIVE_DATA"
+    static let commandReceiveData = "sReceiveData"
 }

@@ -112,7 +112,7 @@ open class BaseRepository<T: BaseEntity> {
         )
     }
     
-    open func get(_ id: Int64) -> Observable<T> {
+    open func get(_ id: Int) -> Observable<T> {
         let cachedEntity = cache.getAsync(id)
         let remoteEntity = request.get(id).map({(json: JSON) -> T in
             let entity = self.saveJsonObject(json)
@@ -131,8 +131,7 @@ open class BaseRepository<T: BaseEntity> {
                     entity = e as! T
                 }
             }
-        }
-        else {
+        } else {
             entity = T(fromJson: json)
             if self.settingCacheSingleEntity {
                 self.cache.save(entity)
@@ -162,8 +161,7 @@ open class BaseRepository<T: BaseEntity> {
                         entities.append(e as! T)
                     }
                 }
-            }
-            else {
+            } else {
                 let e = baseCache!.save(subJson)
                 if shouldAddToResult {
                     entities.append(e as! T)

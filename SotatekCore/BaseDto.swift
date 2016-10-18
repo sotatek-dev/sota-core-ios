@@ -36,4 +36,9 @@ class BaseDto: NSObject, NSCoding, Serializable {
     
     public required init(fromJson json: JSON!) {
     }
+    
+    public func toDictionary() -> [String : Any] {
+        let dictionary = [String: Any]()
+        return dictionary
+    }
 }
