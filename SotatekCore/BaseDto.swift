@@ -31,6 +31,8 @@ class BaseDto: NSObject, NSCoding, Serializable {
     open func encode(with aCoder: NSCoder) {
     }
     
+    override init() {}
+    
     public required init?(coder aDecoder: NSCoder) {
     }
     
