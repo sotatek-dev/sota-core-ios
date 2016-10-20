@@ -58,8 +58,10 @@ open class BaseRequest<T> {
     open func get(_ id: Int) -> Observable<JSON> {
         return Observable<JSON>.create({subscribe in
             self.delay({
+                [weak self] in
+                guard let this = self else { return }
                 //subscribe.onNext(self.createDummyEntity(id)!)
-                subscribe.onNext(JSON.parse(self.readFile(name: "")))
+                subscribe.onNext(JSON.parse(this.readFile(name: "\(this.mockEntity)-{id}-get")))
                 subscribe.onCompleted()
             })
             return Disposables.create()
