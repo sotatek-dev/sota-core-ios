@@ -11,6 +11,8 @@ import Foundation
 public protocol Observer: class {
     func update(_ command: String, data: AnyObject?)
     func update(_ command: Command, data: AnyObject?)
+    func addObserver(_ observer: Observer)
+    func removeObserver(_ observer: Observer)
 }
 
 extension Observer {
@@ -21,4 +23,7 @@ extension Observer {
     }
     
     public func update(_ command: Command, data: AnyObject?){}
+    
+    func addObserver(_ observer: Observer) {}
+    func removeObserver(_ observer: Observer) {}
 }
