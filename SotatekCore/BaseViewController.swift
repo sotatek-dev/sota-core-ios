@@ -39,14 +39,6 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         views.append(view)
     }
     
-    open func update(_ command: String, data: AnyObject?) {
-        
-    }
-    
-    func viewControllerDidDismiss(sender: UIViewController, data: [String: AnyObject] = [:]) {
-        
-    }
-    
     func showViewController(_ id: String, data: [String: AnyObject] = [String: AnyObject](), delegate: ViewControllerDelegate? = nil) {
         let vc = Util.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
         vc.initData = data
@@ -69,6 +61,9 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     
     func dismissViewController(data: [String: AnyObject] = [:]) {
         responseData = data
-        self.dismiss(animated: true, completion: {});
+        self.dismiss(animated: true, completion: {
+            [unowned self] in
+            self.delegate?.viewControllerDidDismiss?(sender: self, data: data)
+        })
     }
 }
