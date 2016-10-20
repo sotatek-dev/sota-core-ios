@@ -24,6 +24,6 @@ extension Observer {
     
     public func update(_ command: Command, data: AnyObject?){}
     
-    func addObserver(_ observer: Observer) {}
-    func removeObserver(_ observer: Observer) {}
+    public func addObserver(_ observer: Observer) {}
+    public func removeObserver(_ observer: Observer) {}
 }

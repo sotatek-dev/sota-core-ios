@@ -19,11 +19,11 @@ open class BaseController: Observer {
         notifier.notifyObservers(command, data: data)
     }
     
-    func addObserver(_ observer: Observer) {
+    public func addObserver(_ observer: Observer) {
         notifier.addObserver(observer)
     }
     
-    func removeObserver(_ observer: Observer) {
+    public func removeObserver(_ observer: Observer) {
         notifier.removeObserver(observer)
     }
     open func update(_ command: String, data: AnyObject?) {
