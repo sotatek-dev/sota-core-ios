@@ -26,11 +26,11 @@ extension UIView: Observer {
         return Notifier.instance(getNotifierName())
     }
     
-    public func addObserver(_ observer: Observer) {
+    func addObserver(_ observer: Observer) {
         getNotifier().addObserver(observer)
     }
     
-    public func removeObserver(_ observer: Observer) {
+    func removeObserver(_ observer: Observer) {
         getNotifier().removeObserver(observer)
     }
     

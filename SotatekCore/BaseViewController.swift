@@ -12,7 +12,7 @@ import UIKit
 open class BaseViewController: UIViewController, ViewControllerDelegate, Observer {
     var initData = [String: AnyObject]()
     var responseData = [String: AnyObject]()
-    var delegate: ViewControllerDelegate?
+    weak var delegate: ViewControllerDelegate?
     var storyboardName: String = "Main"
     
     var views = [UIView]()
