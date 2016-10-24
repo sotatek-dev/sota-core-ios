@@ -26,7 +26,4 @@ open class BaseController: Observer {
     public func removeObserver(_ observer: Observer) {
         notifier.removeObserver(observer)
     }
-    open func update(_ command: String, data: AnyObject?) {
-        
-    }
 }
