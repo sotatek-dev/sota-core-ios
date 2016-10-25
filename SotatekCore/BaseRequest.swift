@@ -9,8 +9,9 @@
 import Foundation
 import RxSwift
 import SwiftyJSON
+import SwiftHTTP
 
-open class BaseRequest<T> {
+open class BaseRequest<T: Serializable> {
     var networkDelay: Int = 1
     var id: Int = 0
     
@@ -18,6 +19,18 @@ open class BaseRequest<T> {
     open var mockList = ""
     open var mockNextList = ""
     open var mockAll = ""
+    
+    open var entityUrl: String {
+        get {
+            return AppConfig.server + T.entityName
+        }
+    }
+    
+    open var listUrl: String {
+        get {
+            return AppConfig.server + T.pluralName
+        }
+    }
     
     open func create(_ entity: T) -> Observable<T> {
         return Observable<T>.create({subscribe in
@@ -70,41 +83,56 @@ open class BaseRequest<T> {
     
     func getList(count: Int, options: [String: Any]) -> Observable<JSON> {
         return Observable<JSON>.create({subscribe in
-            self.delay({
-//                var entities = [T]()
-//                for i in 0..<count {
-//                    entities.append(self.createDummyEntity(Int(i), options: options)!)
-//                }
-//                print("Got \(entities.count) from server")
-//                subscribe.onNext(entities)
-                if !self.mockList.isEmpty {
+            if AppConfig.useMockResponse && !self.mockList.isEmpty {
+                self.delay({
                     let json = self.readFile(name: self.mockList)
                     print(json)
-                    
                     let response = HttpResponse(fromJson: JSON.parse(json))
-                    print(response)
-                    
                     subscribe.onNext(response.data)
-                }
-                subscribe.onCompleted()
-            })
+                    subscribe.onCompleted()
+                })
+            } else {
+                self.executeRequest(method: .GET, url: self.listUrl, params: [:], {response in
+                    if let error = response.error {
+                        print(error)
+                        subscribe.on(.error(error))
+                    } else {
+                        let json = response.text!
+                        print(json)
+                        let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
+                        subscribe.onNext(jsonResponse.data)
+                    }
+                    subscribe.onCompleted()
+                })
+            }
             return Disposables.create()
         })
     }
     
     func getNextList(pivot: T, count: Int, options: [String: Any]) -> Observable<JSON> {
         return Observable<JSON>.create({subscribe in
-            self.delay({
-                //                var entities = [T]()
-                //                for i in 0..<count {
-                //                    entities.append(self.createDummyEntity(Int(i), options: options)!)
-                //                }
-                //                print("Got \(entities.count) from server")
-                //                subscribe.onNext(entities)
-                
-                subscribe.onNext(JSON.parse(self.readFile(name: "")))
-                subscribe.onCompleted()
-            })
+            if AppConfig.useMockResponse && !self.mockNextList.isEmpty {
+                self.delay({
+                    let json = self.readFile(name: self.mockNextList)
+                    print(json)
+                    let response = HttpResponse(fromJson: JSON.parse(json))
+                    subscribe.onNext(response.data)
+                    subscribe.onCompleted()
+                })
+            } else {
+                self.executeRequest(method: .GET, url: self.listUrl, params: [:], {response in
+                    if let error = response.error {
+                        print(error)
+                        subscribe.on(.error(error))
+                    } else {
+                        let json = response.text!
+                        print(json)
+                        let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
+                        subscribe.onNext(jsonResponse.data)
+                    }
+                    subscribe.onCompleted()
+                })
+            }
             return Disposables.create()
         })
     }
@@ -169,5 +197,18 @@ open class BaseRequest<T> {
             // example.txt not found!
         }
         return ""
+    }
+    
+    func executeRequest(method: HTTPVerb, url: String, params: [String: AnyObject], _ completionHandler:@escaping ((Response) -> Void)) {
+        do {
+            var requestParams = params
+            requestParams[Constant.requestAuthToken] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoic2FpdGFtYUBvbmUuY29tIiwiZXhwIjoxNDc3ODg0NTI4MDMyfQ.A5USU0dDvhVuzHX3t0XoyRSPghqwpZaj-TeNh84kwI4" as AnyObject?
+            print(url)
+            print(requestParams)
+            let opt = try HTTP.New(url, method: method, parameters: requestParams)
+            opt.start(completionHandler)
+        } catch let error {
+            print("got an error creating the request: \(error)")
+        }
     }
 }

@@ -12,6 +12,7 @@ import SwiftyJSON
 
 class RemoteRepository<T: Serializable> {
     var request: BaseRequest<T>!
+    let notifier = Notifier.repositoryNotifier
     
     init(request: BaseRequest<T>) {
         self.request = request
@@ -27,7 +28,9 @@ class RemoteRepository<T: Serializable> {
     
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         return request.getList(count: count, options: options).map({(json: JSON) -> [T] in
-            return ListDto<T>(fromJson: json).data
+            let listDto = ListDto<T>(fromJson: json)
+            self.updateGlobalData(listDto)
+            return listDto.data
         })
     }
     
@@ -43,8 +46,15 @@ class RemoteRepository<T: Serializable> {
     
     func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         return request.getNextList(pivot: pivot, count: count, options: options).map({(json: JSON) -> [T] in
-            return ListDto<T>(fromJson: json).data
+            let listDto = ListDto<T>(fromJson: json)
+            self.updateGlobalData(listDto)
+            return listDto.data
         })
-
+    }
+    
+    func updateGlobalData(_ listDto: ListDto<T>) {
+        if let data = listDto.global {
+            notifier.notifyObservers(Constant.commandReceiveGlobalData, data: data)
+        }
     }
 }
