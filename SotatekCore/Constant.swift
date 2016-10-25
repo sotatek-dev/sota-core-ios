@@ -14,5 +14,5 @@ class Constant {
     static let repositoryDbFilter = "DB_FILTER"
     static let repositoryCacheFilter = "CACHE_FILTER"
     
-    static let commandReceiveData = "sReceiveData"
+    static let commandReceiveData = 1000
 }
