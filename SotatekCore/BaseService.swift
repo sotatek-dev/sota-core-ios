@@ -29,14 +29,14 @@ open class BaseService: Observer {
     
     open func update(_ command: Int, data: AnyObject?) {
         switch command {
-        case Constant.commandReceiveData:
-            onReceiveData(data as! SocketData)
+        case Constant.commandReceiveSocketData:
+            onReceiveSocketData(data as! SocketData)
         default:
             break
         }
     }
     
-    open func onReceiveData(_ socketData: SocketData) {
+    open func onReceiveSocketData(_ socketData: SocketData) {
         
     }
 }

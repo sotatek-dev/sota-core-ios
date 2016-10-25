@@ -13,6 +13,8 @@ class Constant {
     static let repositoryRequestParams = "REQUEST_PARAMS"
     static let repositoryDbFilter = "DB_FILTER"
     static let repositoryCacheFilter = "CACHE_FILTER"
+    static let requestAuthToken = "auth_token"
     
-    static let commandReceiveData = 1000
+    static let commandReceiveSocketData = 1000
+    static let commandReceiveGlobalData = 1001
 }

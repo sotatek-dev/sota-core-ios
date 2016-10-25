@@ -15,6 +15,7 @@ open class Notifier {
     open static let serviceNotifier = Notifier.instance("controller")
     open static let controllerNoitfier = Notifier.instance("service")
     open static let socketNoitfier = Notifier.instance("socket")
+    open static let repositoryNotifier = Notifier.instance("repository")
     
     fileprivate static var instances = [String: Notifier]()
     open static func instance(_ name: String) -> Notifier {

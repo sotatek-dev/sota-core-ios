@@ -23,7 +23,7 @@ public class SocketRequest {
         if let message = data as? ChatLineEntity {
             message.id = Util.currentTime()
             let socketData = SocketData(name: "chatLine", data: message)
-            notifier.notifyObservers(Constant.commandReceiveData, data: socketData)
+            notifier.notifyObservers(Constant.commandReceiveSocketData, data: socketData)
         }
     }
     
@@ -33,11 +33,12 @@ public class SocketRequest {
     }
     
     @objc func notify() {
+        
         let id = Util.currentTime()
         let time = Util.currentTime()
         let chatLine = ChatLineEntity(id: id, mediaId: 0, userId: 0, type: 0, content: "Message \(id)", createdAt: time, updatedAt: time)
         let socketData = SocketData(name: "chatLine", data: chatLine)
-        notifier.notifyObservers(Constant.commandReceiveData, data: socketData)
+        notifier.notifyObservers(Constant.commandReceiveSocketData, data: socketData)
         
     }
 }

@@ -36,7 +36,7 @@ class SocketRepository {
         entityTypes[type.self.entityName] = type
     }
     
-    open func onReceiveData(json: JSON) {
+    open func onReceiveSocketData(json: JSON) {
         for (key,subJson): (String, JSON) in json {
 //            if let baseCache = CacheFactory.getCache(forEntity: key) {
 //                let entity = baseCache.save(subJson) as! Serializable
@@ -45,10 +45,10 @@ class SocketRepository {
 //            else
             if let dtoType = dtoTypes[key] {
                 let dto = dtoType.init(fromJson: subJson)
-                notifier.notifyObservers(Constant.commandReceiveData, data: SocketData(name: key, data: dto))
+                notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: key, data: dto))
             } else if let entityType = entityTypes[key] {
                 let entity = entityType.init(fromJson: subJson)
-                notifier.notifyObservers(Constant.commandReceiveData, data: SocketData(name: key, data: entity))
+                notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: key, data: entity))
             } else {
                 print("Unknown data type: \(key)")
             }
