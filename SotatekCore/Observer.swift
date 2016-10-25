@@ -9,5 +9,5 @@
 import Foundation
 
 public protocol Observer: class {
-    func update(_ command: String, data: AnyObject?)
+    func update(_ command: Int, data: AnyObject?)
 }

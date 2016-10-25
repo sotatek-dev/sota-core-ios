@@ -15,6 +15,6 @@ class Constant {
     static let repositoryCacheFilter = "CACHE_FILTER"
     static let requestAuthToken = "auth_token"
     
-    static let commandReceiveSocketData = "sReceiveSocketData"
-    static let commandReceiveGlobalData = "sReceiveGlobalData"
+    static let commandReceiveSocketData = 1000
+    static let commandReceiveGlobalData = 1001
 }

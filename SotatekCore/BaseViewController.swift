@@ -66,4 +66,6 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
             self.delegate?.viewControllerDidDismiss?(sender: self, data: data)
         })
     }
+    
+    public func update(_ command: Int, data: AnyObject?) {}
 }
