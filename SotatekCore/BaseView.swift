@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension UIView: Observer {
+extension UIView {
     open func viewDidAppear() {
         
     }
@@ -34,11 +34,8 @@ extension UIView: Observer {
         getNotifier().removeObserver(observer)
     }
     
-    func notifyObservers(_ command: String, data: AnyObject? = nil) {
+    @nonobjc
+    func notifyObservers(_ command: Int, data: AnyObject? = nil) {
         getNotifier().notifyObservers(command, data: data)
-    }
-    
-    func notifyObservers(_ command: Command, data: AnyObject? = nil) {
-        getNotifier().notifyObservers(command.rawValue, data: data)
     }
 }
