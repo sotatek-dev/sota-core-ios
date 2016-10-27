@@ -154,6 +154,8 @@ for (var i in data) {
 code += ']\n}\n}\n';
 
 code += '}\n';
+
+code = code.replace(/"desc"/g, '"description"');
 document.getElementById('output').value = code;
 }
 </script>

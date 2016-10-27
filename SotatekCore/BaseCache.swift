@@ -13,6 +13,10 @@ import SwiftyJSON
 open class BaseCache<T: BaseEntity>: Cache {
     var storage: BaseStorage<T>!
     
+    init(storage: BaseStorage<T>) {
+        self.storage = storage
+    }
+    
     private func fail() {
         fatalError("Please extend your cache from BaseListCache or BastMapCache.")
     }

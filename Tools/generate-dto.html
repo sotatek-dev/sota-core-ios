@@ -107,6 +107,8 @@ code += '}\n';
 
 code += '}\n';
 
+code = code.replace(/"desc"/g, '"description"');
+
 document.getElementById('code').innerText = code;
 </script>
 <body>

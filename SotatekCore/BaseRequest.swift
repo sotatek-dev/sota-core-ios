@@ -22,7 +22,7 @@ open class BaseRequest<T: Serializable> {
     
     open var entityUrl: String {
         get {
-            return AppConfig.server + T.entityName
+            return AppConfig.server + T.pluralName
         }
     }
     
@@ -70,15 +70,30 @@ open class BaseRequest<T: Serializable> {
     
     open func get(_ id: Int) -> Observable<HttpResponse> {
         return Observable<HttpResponse>.create({subscribe in
-            self.delay({
-                [weak self] in
-                guard let this = self else { return }
-                //subscribe.onNext(self.createDummyEntity(id)!)
-                let json = this.readFile(name: "\(this.mockEntity)-{id}-get")
-                let response = HttpResponse(fromJson: JSON.parse(json))
-                subscribe.onNext(response)
-                subscribe.onCompleted()
-            })
+            if AppConfig.useMockResponse && !self.mockEntity.isEmpty {
+                self.delay({
+                    [weak self] in
+                    guard let this = self else { return }
+                    //subscribe.onNext(self.createDummyEntity(id)!)
+                    let json = this.readFile(name: this.mockEntity)
+                    let response = HttpResponse(fromJson: JSON.parse(json))
+                    subscribe.onNext(response)
+                    subscribe.onCompleted()
+                })
+            } else {
+                self.executeRequest(method: .GET, url: "\(self.entityUrl)/\(id)", params: [:], {response in
+                    if let error = response.error {
+                        print(error)
+                        subscribe.on(.error(error))
+                    } else {
+                        let json = response.text!
+                        print(json)
+                        let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
+                        subscribe.onNext(jsonResponse)
+                    }
+                    subscribe.onCompleted()
+                })
+            }
             return Disposables.create()
         })
     }
