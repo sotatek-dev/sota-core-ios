@@ -12,6 +12,7 @@ import SwiftyJSON
 
 open class BaseCache<T: BaseEntity>: Cache {
     var storage: BaseStorage<T>!
+    var liveTime: Int = 1000 * 60 * 15 // 15 minutes
     
     init(storage: BaseStorage<T>) {
         self.storage = storage
@@ -54,8 +55,17 @@ open class BaseCache<T: BaseEntity>: Cache {
         fail()
     }
     
+    func updateValidTime(_ entity: T) {
+        if liveTime > 0 {
+            entity.validTime = Util.currentTime() + liveTime
+        } else {
+            entity.validTime = Int.max
+        }
+    }
+    
     func save(_ json: JSON) -> AnyObject {
         let e = T(fromJson: json)
+        updateValidTime(e)
         self.save(e)
         return e
     }

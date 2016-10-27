@@ -13,6 +13,7 @@ import SwiftyJSON
 open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     open var id: Int
     open var compareValue: Int = 0
+    open var validTime: Int = 0
     
     override open var hashValue: Int {
         get {
@@ -44,10 +45,12 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     
     open func encode(with aCoder: NSCoder) {
         aCoder.encode(id, forKey: "id")
+        aCoder.encode(validTime, forKey: "validTime")
     }
     
     public required init?(coder aDecoder: NSCoder) {
         self.id = aDecoder.decodeInteger(forKey: "id")
+        self.validTime = aDecoder.decodeInteger(forKey: "validTime")
     }
     
     public required init(fromJson json: JSON!) {
@@ -61,23 +64,31 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     }
     
     public func clone() -> BaseEntity {
-        return BaseEntity(id: self.id)
+        let entity = BaseEntity(id: self.id)
+        entity.validTime = validTime
+        return entity
     }
     
     public static let idColumn = Expression<Int>("id")
+    public static let validTimeColumn = Expression<Int>("validTime")
     
     open class func createTable(builder: TableBuilder) {
         builder.column(Expression<Int>("id"))
+        builder.column(Expression<Int>("validTime"))
     }
     
     open class func toEntity(_ row: Row) -> BaseEntity {
         let e = BaseEntity(id: row[BaseEntity.idColumn])
+        e.validTime = row[BaseEntity.validTimeColumn]
         return e
     }
     
     open var columnValues: [Setter]! {
         get {
-            return []
+            return [
+                BaseEntity.idColumn <- self.id,
+                BaseEntity.validTimeColumn <- self.validTime
+            ]
         }
     }
     

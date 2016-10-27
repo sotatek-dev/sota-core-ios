@@ -56,6 +56,7 @@ for (var i in data) {
 }
 data = data2;
 
+var firstProperty = true;
 
 var code = '';
 
@@ -136,19 +137,27 @@ for (var i in data) {
 code += '}\n\n\n';
 
 code += 'override public class func toEntity(_ row: Row) -> ' + className+ ' {\n';
-code += 'return ' + className + '(\n';
+code += 'let entity = ' + className + '(\n';
 code += 'id: row[ContactEntity.idColumn]'
 for (var i in data) {
 	code += ',\n' + i + ': row[' + className + '.' + i + 'Column]'
 }
-code += ')\n}\n\n';
+code += ')\n'
+code += 'entity.validTime = row[BaseEntity.validTimeColumn]\n';
+code += 'return entity\n';
+code += '}\n\n';
 
 code += 'override open var columnValues: [Setter]! {\n';
 code += 'get {\n';
-code += 'return [\n';
-code += 'BaseEntity.idColumn <- self.id';
+code += 'return super.columnValues + [';
+firstProperty = true
 for (var i in data) {
-	code += ',\n' + className + '.' + i + 'Column <- self.' + i
+	if (firstProperty) {
+		firstProperty = false;
+		code += '\n' + className + '.' + i + 'Column <- self.' + i
+	} else {
+		code += ',\n' + className + '.' + i + 'Column <- self.' + i
+	}
 }
 
 code += ']\n}\n}\n';
