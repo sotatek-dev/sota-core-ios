@@ -1,20 +1,16 @@
 <body>
 <div id="code"></div>
 <script type="text/javascript">
-	var className = 'UserEntity';
+	var className = 'BannerDto';
 	var data = {
-    "username": "saitama",
-    "firstName": "Stupid",
-    "lastName": "Crazy",
-    "fullName": "Caped Baldy",
-    "avatarUrl": "http://i3.kym-cdn.com/photos/images/original/001/050/209/b01.png",
-    "balance": 10000,
-    "fansCount": 1234,
-    "premiumFansCount": 123,
-    "trophiesCount": 12,
-    "totalDonation": 999999,
-    "description": "zZz"
-  }
+        "id": 1,
+        "url": "a",
+        "name": "Banner 1",
+        "description": "",
+        "thumbnailUrl": "https://b2b.bbanner.co.uk/Content/images/banner.jpg",
+        "startedAt": 1477447438564,
+        "endedAt": 1508983438564
+      }
 
 function getType(v) {
 	var type = typeof v
@@ -34,19 +30,28 @@ function getTypeLowerCase(v) {
 	return type.charAt(0).toLowerCase() + type.slice(1);
 }
 
+var data2 = {}
+for (var i in data) {
+	if (i == 'description') {
+		data2['desc'] = data[i];
+	} else {
+		data2[i] = data[i];
+	}
+}
+data = data2;
+
 var code = '';
 
-code += 'import SQLite\n';
 code += 'import SwiftyJSON\n\n';
-code += 'class ' + className + ': BaseEntity {\n';
+code += 'class ' + className + ': BaseDto {\n';
 
 for (var i in data) {
 	code += 'var ' + i + ': ' + getType(data[i]) + '\n';
 }
 
-code += '\n\n';
+code += '\n';
 
-code += 'init (id: Int64';
+code += 'init (';
 for (var i in data) {
 	code += ', ' + i + ': ' + getType(data[i])
 }
@@ -55,9 +60,9 @@ code += ') {\n';
 for (var i in data) {
 	code += 'self.' + i + ' = ' + i + '\n';
 }
-code += 'super.init(id: id)\n';
+code += 'super.init()\n';
 
-code += '}\n\n';
+code += '}\n';
 
 code += 'public override func encode(with aCoder: NSCoder) {\n';
 code +='super.encode(with: aCoder)\n';
@@ -71,6 +76,9 @@ for (var i in data) {
 	var type = getType(data[i])
 	if (type == 'String') {
 		code += 'self.' + i + ' = aDecoder.decodeObject(forKey: "' + i + '") as! String\n';
+	}
+	else if (type == 'Int') {
+		code += 'self.' + i + ' = aDecoder.decodeInteger(forKey: "' + i + '")\n';
 	}
 	else {
 		code += 'self.' + i + ' = aDecoder.decode' + type + '(forKey: "' + i + '")\n';
@@ -86,48 +94,19 @@ for (var i in data) {
 code += 'super.init(fromJson: json)\n';
 code += '}\n\n';
 
-code += 'func toDictionary() -> NSDictionary {\n';
-code += 'let dictionary = NSMutableDictionary()\n';
+code += 'override func toDictionary() -> [String: Any] {\n';
+code += 'var dictionary = [String: Any]()\n';
 for (var i in data) {
 	//code += 'if ' + i + ' != nil {\n';
 	code += 'dictionary["' + i + '"] = ' + i + '\n';
 	//code += '}\n';
 }
 code += 'return dictionary\n';
-code += '}\n\n';
+code += '}\n';
 
-for (var i in data) {
-	code += 'static let ' + i + 'Column = Expression<' + getType(data[i])  + '>("' + i + '")\n'
-}
-
-code += '\n';
-
-code += 'open override class func createTable(builder: TableBuilder) {\n'
-code += 'BaseEntity.createTable(builder: builder)\n'
-for (var i in data) {
-	code += 'builder.column('  + className + '.' + i + 'Column)\n';
-}
-code += '}\n\n\n';
-
-code += 'override public class func toEntity(_ row: Row) -> ' + className+ ' {\n';
-code += 'return ' + className + '(\n';
-code += 'id: row[ContactEntity.idColumn]'
-for (var i in data) {
-	code += ',\n' + i + ': row[' + className + '.' + i + 'Column]'
-}
-code += ')\n\n}\n\n';
-
-code += 'override open var columnValues: [Setter]! {\n';
-code += 'get {\n';
-code += 'return [\n';
-code += 'BaseEntity.idColumn <- self.id';
-for (var i in data) {
-	code += ',\n' + className + '.' + i + 'Column <- self.' + i
-}
-
-code += ']\n}\n}\n';
 
 code += '}\n';
+
 document.getElementById('code').innerText = code;
 </script>
 <body>
