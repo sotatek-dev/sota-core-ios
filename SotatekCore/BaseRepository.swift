@@ -114,10 +114,13 @@ open class BaseRepository<T: BaseEntity> {
     
     open func get(_ id: Int) -> Observable<T> {
         let cachedEntity = cache.getAsync(id)
-        let remoteEntity = request.get(id).map({(json: JSON) -> T in
-            let entity = self.saveJsonObject(json)
-            return entity
-        })
+        let remoteEntity = request.get(id)
+            .flatMap(processMeta)
+            .map({(json: JSON) -> T in
+                let entity = self.saveJsonObject(json)
+                return entity
+            }
+        )
         return Observable.first(cachedEntity, remoteEntity)
     }
     
@@ -142,17 +145,23 @@ open class BaseRepository<T: BaseEntity> {
     
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
-        let remoteEntitiesObserver = request.getList(count: count, options: options).map({(json: JSON) -> [T] in
-            return self.saveJsonList(json)
-        })
+        let remoteEntitiesObserver = request.getList(count: count, options: options)
+            .flatMap(processMeta)
+            .map({(json: JSON) -> [T] in
+                return self.saveJsonList(json)
+            }
+        )
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
     }
     
-    private func saveJsonList(_ json: JSON) -> [T] {
+    func saveJsonList(_ json: JSON) -> [T] {
         var entities = [T]()
         for (key,subJson): (String, JSON) in json {
             let shouldAddToResult = T.entityName == key || T.pluralName == key
             let baseCache = CacheFactory.getCache(forEntity: key)
+            guard baseCache != nil else {
+                continue
+            }
             
             if let jsonArray = subJson.array {
                 for jsonObject in jsonArray {
@@ -174,17 +183,27 @@ open class BaseRepository<T: BaseEntity> {
     
     func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getNextListAsync(pivot: pivot, count: count, options: options)
-        let remoteEntitiesObserver = request.getNextList(pivot: pivot, count: count, options: options).map({(json: JSON) -> [T] in
-            return self.saveJsonList(json)
-        })
+        let remoteEntitiesObserver = request.getNextList(pivot: pivot, count: count, options: options)
+            .flatMap(processMeta)
+            .map({(json: JSON) -> [T] in
+                return self.saveJsonList(json)
+            }
+        )
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
     }
     
     func getAll(options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getAllAsync(options: options)
-        let remoteEntitiesObserver = request.getAll(options: options).map({(json: JSON) -> [T] in
-            return self.saveJsonList(json)
-        })
+        let remoteEntitiesObserver = request.getAll(options: options)
+            .flatMap(processMeta)
+            .map({(json: JSON) -> [T] in
+                return self.saveJsonList(json)
+            }
+        )
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
+    }
+    
+    open func processMeta(response: HttpResponse) -> Observable<JSON> {
+        return Observable.just(response.data)
     }
 }

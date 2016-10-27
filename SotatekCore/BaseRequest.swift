@@ -68,27 +68,29 @@ open class BaseRequest<T: Serializable> {
         })
     }
     
-    open func get(_ id: Int) -> Observable<JSON> {
-        return Observable<JSON>.create({subscribe in
+    open func get(_ id: Int) -> Observable<HttpResponse> {
+        return Observable<HttpResponse>.create({subscribe in
             self.delay({
                 [weak self] in
                 guard let this = self else { return }
                 //subscribe.onNext(self.createDummyEntity(id)!)
-                subscribe.onNext(JSON.parse(this.readFile(name: "\(this.mockEntity)-{id}-get")))
+                let json = this.readFile(name: "\(this.mockEntity)-{id}-get")
+                let response = HttpResponse(fromJson: JSON.parse(json))
+                subscribe.onNext(response)
                 subscribe.onCompleted()
             })
             return Disposables.create()
         })
     }
     
-    func getList(count: Int, options: [String: Any]) -> Observable<JSON> {
-        return Observable<JSON>.create({subscribe in
+    func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
+        return Observable<HttpResponse>.create({subscribe in
             if AppConfig.useMockResponse && !self.mockList.isEmpty {
                 self.delay({
                     let json = self.readFile(name: self.mockList)
                     print(json)
                     let response = HttpResponse(fromJson: JSON.parse(json))
-                    subscribe.onNext(response.data)
+                    subscribe.onNext(response)
                     subscribe.onCompleted()
                 })
             } else {
@@ -100,7 +102,7 @@ open class BaseRequest<T: Serializable> {
                         let json = response.text!
                         print(json)
                         let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-                        subscribe.onNext(jsonResponse.data)
+                        subscribe.onNext(jsonResponse)
                     }
                     subscribe.onCompleted()
                 })
@@ -109,14 +111,14 @@ open class BaseRequest<T: Serializable> {
         })
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: Any]) -> Observable<JSON> {
-        return Observable<JSON>.create({subscribe in
+    func getNextList(pivot: T, count: Int, options: [String: Any]) -> Observable<HttpResponse> {
+        return Observable<HttpResponse>.create({subscribe in
             if AppConfig.useMockResponse && !self.mockNextList.isEmpty {
                 self.delay({
                     let json = self.readFile(name: self.mockNextList)
                     print(json)
                     let response = HttpResponse(fromJson: JSON.parse(json))
-                    subscribe.onNext(response.data)
+                    subscribe.onNext(response)
                     subscribe.onCompleted()
                 })
             } else {
@@ -128,7 +130,7 @@ open class BaseRequest<T: Serializable> {
                         let json = response.text!
                         print(json)
                         let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-                        subscribe.onNext(jsonResponse.data)
+                        subscribe.onNext(jsonResponse)
                     }
                     subscribe.onCompleted()
                 })
@@ -137,8 +139,8 @@ open class BaseRequest<T: Serializable> {
         })
     }
     
-    func getAll(options: [String: Any]) -> Observable<JSON> {
-        return Observable<JSON>.create({subscribe in
+    func getAll(options: [String: Any]) -> Observable<HttpResponse> {
+        return Observable<HttpResponse>.create({subscribe in
             self.delay({
                 if !self.mockAll.isEmpty {
                     let json = self.readFile(name: self.mockAll)
@@ -147,7 +149,7 @@ open class BaseRequest<T: Serializable> {
                     let response = HttpResponse(fromJson: JSON.parse(json))
                     print(response)
                     
-                    subscribe.onNext(response.data)
+                    subscribe.onNext(response)
                 }
                 subscribe.onCompleted()
             })
@@ -202,7 +204,7 @@ open class BaseRequest<T: Serializable> {
     func executeRequest(method: HTTPVerb, url: String, params: [String: AnyObject], _ completionHandler:@escaping ((Response) -> Void)) {
         do {
             var requestParams = params
-            requestParams[Constant.requestAuthToken] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoic2FpdGFtYUBvbmUuY29tIiwiZXhwIjoxNDc3ODg0NTI4MDMyfQ.A5USU0dDvhVuzHX3t0XoyRSPghqwpZaj-TeNh84kwI4" as AnyObject?
+            requestParams[Constant.requestAuthToken] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoic2FpdGFtYUBvbmUuY29tIiwiZXhwIjoxNDc3OTk3MjU4NzYxfQ.RvjsOJJlzSd4QTGV3nuUd5QvV6jKAUCphkBlxcx2wqs" as AnyObject?
             print(url)
             print(requestParams)
             let opt = try HTTP.New(url, method: method, parameters: requestParams)

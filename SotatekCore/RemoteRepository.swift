@@ -19,19 +19,25 @@ class RemoteRepository<T: Serializable> {
     }
     
     open func get(_ id: Int) -> Observable<T> {
-        return request.get(id).map({(json: JSON) -> T in
-            let entity = T(fromJson: json)
-            return entity
-        })
+        return request.get(id)
+            .flatMap(processMeta)
+            .map({(json: JSON) -> T in
+                let entity = T(fromJson: json)
+                return entity
+            }
+        )
 
     }
     
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
-        return request.getList(count: count, options: options).map({(json: JSON) -> [T] in
-            let listDto = ListDto<T>(fromJson: json)
-            self.updateGlobalData(listDto)
-            return listDto.data
-        })
+        return request.getList(count: count, options: options)
+            .flatMap(processMeta)
+            .map({(json: JSON) -> [T] in
+                let listDto = ListDto<T>(fromJson: json)
+                self.updateGlobalData(listDto)
+                return listDto.data
+            }
+        )
     }
     
     func convertJsonToList(_ json: JSON) -> [T] {
@@ -45,16 +51,23 @@ class RemoteRepository<T: Serializable> {
     }
     
     func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
-        return request.getNextList(pivot: pivot, count: count, options: options).map({(json: JSON) -> [T] in
-            let listDto = ListDto<T>(fromJson: json)
-            self.updateGlobalData(listDto)
-            return listDto.data
-        })
+        return request.getNextList(pivot: pivot, count: count, options: options)
+            .flatMap(processMeta)
+            .map({(json: JSON) -> [T] in
+                let listDto = ListDto<T>(fromJson: json)
+                self.updateGlobalData(listDto)
+                return listDto.data
+            }
+        )
     }
     
     func updateGlobalData(_ listDto: ListDto<T>) {
         if let data = listDto.global {
             notifier.notifyObservers(Constant.commandReceiveGlobalData, data: data)
         }
+    }
+    
+    open func processMeta(response: HttpResponse) -> Observable<JSON> {
+        return Observable.just(response.data)
     }
 }
