@@ -30,12 +30,19 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
     }
     
     open override func get(_ id: Int) -> T? {
+        var result: T?
         for entity in data {
             if entity.id == id {
-                return entity
+                result = entity
             }
         }
-        return storage.get(id)
+        result = storage.get(id)
+        if let result = result {
+            if result.validTime > Util.currentTime() {
+                return nil
+            }
+        }
+        return result
     }
     
     open override func getList(count: Int, options: [String: Any] = [:]) -> [T] {

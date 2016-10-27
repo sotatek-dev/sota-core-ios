@@ -135,9 +135,10 @@ open class BaseRepository<T: BaseEntity> {
                 }
             }
         } else {
-            entity = T(fromJson: json)
             if self.settingCacheSingleEntity {
-                self.cache.save(entity)
+                entity = self.cache.save(json) as! T
+            } else {
+                entity = T(fromJson: json)
             }
         }
         return entity
