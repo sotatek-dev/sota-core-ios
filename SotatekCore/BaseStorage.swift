@@ -46,7 +46,7 @@ public class BaseStorage<T: BaseEntity> {
     
     func getList(count: Int, options: [String: Any] = [:]) -> [T] {
         var query = table!
-        if let filter = options[Constant.repositoryDbFilter] as? Expression<Bool> {
+        if let filter = options[Constant.RepositoryParam.dbFilter] as? Expression<Bool> {
             query = table.filter(filter)
         }
         query = query.limit(count)
@@ -63,7 +63,7 @@ public class BaseStorage<T: BaseEntity> {
     
     func getAll(options: [String: Any] = [:]) -> [T] {
         var query = table!
-        if let filter = options[Constant.repositoryDbFilter] as? Expression<Bool> {
+        if let filter = options[Constant.RepositoryParam.dbFilter] as? Expression<Bool> {
             query = table.filter(filter)
         }
         return toEntities(query)
@@ -71,7 +71,7 @@ public class BaseStorage<T: BaseEntity> {
     
     func getFilter(pivot: T, options: [String: Any] = [:]) -> Expression<Bool> {
         var filter: Expression<Bool> = pivot.nextFilter
-        if let originFilter = options[Constant.repositoryDbFilter] as? Expression<Bool> {
+        if let originFilter = options[Constant.RepositoryParam.dbFilter] as? Expression<Bool> {
             filter = originFilter && filter
         }
         return filter

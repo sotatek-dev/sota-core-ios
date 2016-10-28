@@ -129,19 +129,12 @@ open class BaseCache<T: BaseEntity>: Cache {
     
     func getListAsync(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         return Observable<[T]>.create({subscribe in
-            let entities = self.getList(count: count, options: options)
-            print("Got \(entities.count) from cache")
-            if entities.count >= count {
-                subscribe.onNext(entities)
+            var entities: [T]!
+            if let pivot = options[Constant.RepositoryParam.pivot] as? T {
+                entities = self.getNextList(pivot: pivot, count: count, options: options)
+            } else {
+                entities = self.getList(count: count, options: options)
             }
-            subscribe.onCompleted()
-            return Disposables.create()
-        })
-    }
-    
-    func getNextListAsync(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
-        return Observable<[T]>.create({subscribe in
-            let entities = self.getNextList(pivot: pivot, count: count, options: options)
             print("Got \(entities.count) from cache")
             if entities.count >= count {
                 subscribe.onNext(entities)

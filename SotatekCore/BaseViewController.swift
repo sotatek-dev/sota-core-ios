@@ -10,10 +10,9 @@ import Foundation
 import UIKit
 
 open class BaseViewController: UIViewController, ViewControllerDelegate, Observer {
-    var initData = [String: AnyObject]()
-    var responseData = [String: AnyObject]()
+    var initData = [String: Any]()
+    var responseData = [String: Any]()
     weak var delegate: ViewControllerDelegate?
-    var storyboardName: String = "Main"
     
     var views = [UIView]()
     
@@ -39,33 +38,36 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         views.append(view)
     }
     
-    func showViewController(_ id: String, data: [String: AnyObject] = [String: AnyObject](), delegate: ViewControllerDelegate? = nil) {
-        let vc = Util.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
-        vc.initData = data
-        vc.delegate = delegate
-        self.present(vc, animated: true, completion: nil)
-    }
-    
-    func showDialog(_ id: String, data: [String: AnyObject] = [String: AnyObject](), delegate: ViewControllerDelegate? = nil) {
-        let vc = Util.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
-        vc.initData = data
-        vc.delegate = delegate
-        self.present(vc, animated: true, completion: nil)
-    }
-    
-    func showRootViewController(_ id: String, data: [String: AnyObject] = [String: AnyObject]()) {
-        let vc = Util.createViewController(storyboardName: storyboardName, id: id) as! BaseViewController
-        vc.initData = data
-        UIApplication.shared.keyWindow?.rootViewController = vc
-    }
-    
-    func dismissViewController(data: [String: AnyObject] = [:]) {
+    func dismissViewController(data: [String: Any] = [:]) {
         responseData = data
         self.dismiss(animated: true, completion: {
             [unowned self] in
             self.delegate?.viewControllerDidDismiss?(sender: self, data: data)
-        })
+            })
     }
     
     public func update(_ command: Int, data: AnyObject?) {}
+}
+
+extension UIViewController {
+    
+    func showViewController(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
+        let vc = Util.createViewController(storyboardName: Constant.storyboardName, id: id) as! BaseViewController
+        vc.initData = data
+        vc.delegate = delegate
+        self.present(vc, animated: true, completion: nil)
+    }
+    
+    func showDialog(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
+        let vc = Util.createViewController(storyboardName: Constant.storyboardName, id: id) as! BaseViewController
+        vc.initData = data
+        vc.delegate = delegate
+        self.present(vc, animated: true, completion: nil)
+    }
+    
+    func showRootViewController(_ id: String, data: [String: Any] = [String: Any]()) {
+        let vc = Util.createViewController(storyboardName: Constant.storyboardName, id: id) as! BaseViewController
+        vc.initData = data
+        UIApplication.shared.keyWindow?.rootViewController = vc
+    }
 }

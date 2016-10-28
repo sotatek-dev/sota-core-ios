@@ -50,16 +50,11 @@ class RemoteRepository<T: Serializable> {
         return entities
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
-        return request.getNextList(pivot: pivot, count: count, options: options)
-            .flatMap(processMeta)
-            .map({(json: JSON) -> [T] in
-                let listDto = ListDto<T>(fromJson: json)
-                self.updateGlobalData(listDto)
-                return listDto.data
-            }
-        )
-    }
+//    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
+//        var newOptions = options
+//        newOptions[Constant.RepositoryParam.pivot] = pivot
+//        return getList(count: count, options: newOptions)
+//    }
     
     func updateGlobalData(_ listDto: ListDto<T>) {
         if let data = listDto.global {
