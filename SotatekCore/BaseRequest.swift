@@ -98,46 +98,27 @@ open class BaseRequest<T: Serializable> {
         })
     }
     
-    func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
-        return Observable<HttpResponse>.create({subscribe in
-            if AppConfig.useMockResponse && !self.mockList.isEmpty {
-                self.delay({
-                    let json = self.readFile(name: self.mockList)
-                    print(json)
-                    let response = HttpResponse(fromJson: JSON.parse(json))
-                    subscribe.onNext(response)
-                    subscribe.onCompleted()
-                })
-            } else {
-                self.executeRequest(method: .GET, url: self.listUrl, params: [:], {response in
-                    if let error = response.error {
-                        print(error)
-                        subscribe.on(.error(error))
-                    } else {
-                        let json = response.text!
-                        print(json)
-                        let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-                        subscribe.onNext(jsonResponse)
-                    }
-                    subscribe.onCompleted()
-                })
-            }
-            return Disposables.create()
-        })
+    func getRequestParams(options: [String: Any]) -> [String: Any] {
+        return [:]
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: Any]) -> Observable<HttpResponse> {
+    func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
+        let params = getRequestParams(options: options)
+        return getList(url: self.listUrl, params: params, mockFile: self.mockList)
+    }
+    
+    func getList(url: String, params: [String: Any], mockFile: String = "") -> Observable<HttpResponse> {
         return Observable<HttpResponse>.create({subscribe in
-            if AppConfig.useMockResponse && !self.mockNextList.isEmpty {
+            if AppConfig.useMockResponse && !mockFile.isEmpty {
                 self.delay({
-                    let json = self.readFile(name: self.mockNextList)
+                    let json = self.readFile(name: mockFile)
                     print(json)
                     let response = HttpResponse(fromJson: JSON.parse(json))
                     subscribe.onNext(response)
                     subscribe.onCompleted()
                 })
             } else {
-                self.executeRequest(method: .GET, url: self.listUrl, params: [:], {response in
+                self.executeRequest(method: .GET, url: url, params: [:], {response in
                     if let error = response.error {
                         print(error)
                         subscribe.on(.error(error))
@@ -186,7 +167,7 @@ open class BaseRequest<T: Serializable> {
             return conversation
         } else if let m = message as? T {
             print("Get message \(id) from server")
-            message.conversationId = options[Constant.repositoryGroupId] as! Int
+            message.conversationId = options[Constant.RepositoryParam.groupId] as! Int
             return m
         }
         return nil

@@ -58,7 +58,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
     }
     
     override func getList(count: Int, options: [String: Any] = [:]) -> [TEntity] {
-        let groupId = options[Constant.repositoryGroupId] as! TGroupId
+        let groupId = options[Constant.RepositoryParam.groupId] as! TGroupId
         var result: [TEntity] = [];
         if let list = map[groupId] {
             result = Util.getHeadSubSet(list, count: count)
@@ -73,7 +73,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
     }
     
     override func getNextList(pivot: TEntity, count: Int, options: [String: Any] = [:]) -> [TEntity] {
-        let groupId = options[Constant.repositoryGroupId] as! TGroupId
+        let groupId = options[Constant.RepositoryParam.groupId] as! TGroupId
         var result: [TEntity] = []
         if let list = map[groupId] {
             result = Util.getSetOfBig(list, pivot: pivot, count: count)
@@ -88,7 +88,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
     }
     
     open override func getAll(options: [String: Any] = [:]) -> [TEntity] {
-        let groupId = options[Constant.repositoryGroupId] as! TGroupId
+        let groupId = options[Constant.RepositoryParam.groupId] as! TGroupId
         var result = map[groupId] ?? []
         if result.count == 0 {
             result = storage.getAll(options: options)

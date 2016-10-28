@@ -182,17 +182,6 @@ open class BaseRepository<T: BaseEntity> {
         return entities
     }
     
-    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
-        let cachedEntitiesObserver = cache.getNextListAsync(pivot: pivot, count: count, options: options)
-        let remoteEntitiesObserver = request.getNextList(pivot: pivot, count: count, options: options)
-            .flatMap(processMeta)
-            .map({(json: JSON) -> [T] in
-                return self.saveJsonList(json)
-            }
-        )
-        return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
-    }
-    
     func getAll(options: [String: Any] = [:]) -> Observable<[T]> {
         let cachedEntitiesObserver = cache.getAllAsync(options: options)
         let remoteEntitiesObserver = request.getAll(options: options)
