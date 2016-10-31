@@ -28,15 +28,19 @@ open class BaseRepository<T: BaseEntity> {
     
     private func createRemoteFirst(_ entity: T) -> Observable<T> {
         return self.request.create(entity)
-            .flatMap({saveEntity in
-                return self.cache.saveAsync(saveEntity)
+            .flatMap(processMeta)
+            .flatMap({(json: JSON) -> Observable<T> in
+                let savedEntity = T(fromJson: json)
+                return self.cache.saveAsync(savedEntity)
             })
     }
     
     private func createLocalFirst(_ entity: T) -> Observable<T> {
         let cachedEntity = cache.saveAsync(entity)
         let remoteEntity = request.create(entity)
-            .flatMap({savedEntity -> Observable<T> in
+            .flatMap(processMeta)
+            .flatMap({(json: JSON) -> Observable<T> in
+                let savedEntity = T(fromJson: json)
                 self.didCreateCompleted(savedEntity)
                 return self.cache.saveAsync(savedEntity)
             })

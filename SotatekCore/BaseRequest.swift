@@ -32,12 +32,24 @@ open class BaseRequest<T: Serializable> {
         }
     }
     
-    open func create(_ entity: T) -> Observable<T> {
-        return Observable<T>.create({subscribe in
-            self.delay({
-                self.id += 1
-//                entity.id = self.id
-                subscribe.onNext(entity)
+    open func create(_ entity: T) -> Observable<HttpResponse> {
+        return Observable<HttpResponse>.create({subscribe in
+//            self.delay({
+//                self.id += 1
+////                entity.id = self.id
+//                subscribe.onNext(entity)
+//                subscribe.onCompleted()
+//            })
+            self.executeRequest(method: .POST, url: self.entityUrl, params: entity.toDictionary() as [String : AnyObject], {response in
+                if let error = response.error {
+                    print(error)
+                    subscribe.on(.error(error))
+                } else {
+                    let json = response.text!
+                    print(json)
+                    let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
+                    subscribe.onNext(jsonResponse)
+                }
                 subscribe.onCompleted()
             })
             return Disposables.create()
