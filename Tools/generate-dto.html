@@ -1,5 +1,11 @@
 <body>
-<div id="code"></div>
+<input type='text' id='name'>
+<br /><br />
+<textarea id='code' rows="20" cols="100"></textarea>
+<br /><br />
+aaaaaaaaaaaaaaaaaaaaaabbbbbbbbaaaaaaaaaaaaaaaaaaaaaabbbbbbbb<input type="button" onclick="generate()" value="Generate"/><input type="button" onclick="copy()" value="Copy"/>
+<br /><br />
+<textarea id="output"></textarea>
 <script type="text/javascript">
 	var className = 'BannerDto';
 	var data = {
@@ -30,6 +36,13 @@ function getTypeLowerCase(v) {
 	return type.charAt(0).toLowerCase() + type.slice(1);
 }
 
+function getTypeUpperCase(v) {
+	return v.charAt(0).toUpperCase() + v.slice(1);
+}
+
+function generate() {
+className = getTypeUpperCase(document.getElementById('name').value) + 'Entity'
+data = JSON.parse(document.getElementById('code').value)
 var data2 = {}
 for (var i in data) {
 	if (i == 'description') {
@@ -108,7 +121,7 @@ code += '}\n';
 code += '}\n';
 
 code = code.replace(/"desc"/g, '"description"');
-
-document.getElementById('code').innerText = code;
+document.getElementById('output').value = code;
+}
 </script>
 <body>

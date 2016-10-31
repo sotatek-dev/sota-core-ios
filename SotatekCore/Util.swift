@@ -23,4 +23,18 @@ open class Util {
         let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
         return storyboard.instantiateViewController(withIdentifier: id)
     }
+    
+    static func readFile(name: String, type: String = "") -> String {
+        if let filepath = Bundle.main.path(forResource: name, ofType: type) {
+            do {
+                let contents = try String(contentsOfFile: filepath)
+                return contents
+            } catch {
+                // contents could not be loaded
+            }
+        } else {
+            // file not found!
+        }
+        return ""
+    }
 }
