@@ -24,7 +24,7 @@ open class Util {
         return storyboard.instantiateViewController(withIdentifier: id)
     }
     
-    static func readFile(name: String, type: String = "") -> String {
+    static func readTextFile(name: String, type: String = "") -> String {
         if let filepath = Bundle.main.path(forResource: name, ofType: type) {
             do {
                 let contents = try String(contentsOfFile: filepath)
@@ -36,5 +36,14 @@ open class Util {
             // file not found!
         }
         return ""
+    }
+    
+    static func readFile(name: String, type: String = "") -> NSData? {
+        if let filepath = Bundle.main.path(forResource: name, ofType: type) {
+            return NSData(contentsOfFile: filepath)
+        } else {
+            // file not found!
+        }
+        return nil
     }
 }

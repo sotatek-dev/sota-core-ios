@@ -18,14 +18,22 @@ class RemoteRepository<T: Serializable> {
         self.request = request
     }
     
+    open func create(_ object: T) -> Observable<T> {
+        return request.create(object)
+            .flatMap(processMeta)
+            .map({(json: JSON) -> T in
+                let entity = T(fromJson: json)
+                return entity
+            })
+    }
+    
     open func get(_ id: Int) -> Observable<T> {
         return request.get(id)
             .flatMap(processMeta)
             .map({(json: JSON) -> T in
                 let entity = T(fromJson: json)
                 return entity
-            }
-        )
+            })
 
     }
     
@@ -36,8 +44,7 @@ class RemoteRepository<T: Serializable> {
                 let listDto = ListDto<T>(fromJson: json)
                 self.updateGlobalData(listDto)
                 return listDto.data
-            }
-        )
+            })
     }
     
     func convertJsonToList(_ json: JSON) -> [T] {

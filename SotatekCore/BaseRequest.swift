@@ -33,27 +33,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     open func create(_ entity: T) -> Observable<HttpResponse> {
-        return Observable<HttpResponse>.create({subscribe in
-//            self.delay({
-//                self.id += 1
-////                entity.id = self.id
-//                subscribe.onNext(entity)
-//                subscribe.onCompleted()
-//            })
-            self.executeRequest(method: .POST, url: self.entityUrl, params: entity.toDictionary() as [String : AnyObject], {response in
-                if let error = response.error {
-                    print(error)
-                    subscribe.on(.error(error))
-                } else {
-                    let json = response.text!
-                    print(json)
-                    let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-                    subscribe.onNext(jsonResponse)
-                }
-                subscribe.onCompleted()
-            })
-            return Disposables.create()
-        })
+        return createResponseObservable(method: .POST, url: self.entityUrl, params: entity.toDictionary(), mockFile: "")
     }
     
     open func update(_ entity: T) -> Observable<T> {
@@ -81,33 +61,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     open func get(_ id: Int) -> Observable<HttpResponse> {
-        return Observable<HttpResponse>.create({subscribe in
-            if AppConfig.useMockResponse && !self.mockEntity.isEmpty {
-                self.delay({
-                    [weak self] in
-                    guard let this = self else { return }
-                    //subscribe.onNext(self.createDummyEntity(id)!)
-                    let json = this.readFile(name: this.mockEntity)
-                    let response = HttpResponse(fromJson: JSON.parse(json))
-                    subscribe.onNext(response)
-                    subscribe.onCompleted()
-                })
-            } else {
-                self.executeRequest(method: .GET, url: "\(self.entityUrl)/\(id)", params: [:], {response in
-                    if let error = response.error {
-                        print(error)
-                        subscribe.on(.error(error))
-                    } else {
-                        let json = response.text!
-                        print(json)
-                        let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-                        subscribe.onNext(jsonResponse)
-                    }
-                    subscribe.onCompleted()
-                })
-            }
-            return Disposables.create()
-        })
+        return createResponseObservable(method: .GET, url: "\(self.entityUrl)/\(id)", params: [:], mockFile: mockEntity)
     }
     
     func getRequestParams(options: [String: Any]) -> [String: Any] {
@@ -120,31 +74,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     func getList(url: String, params: [String: Any], mockFile: String = "") -> Observable<HttpResponse> {
-        return Observable<HttpResponse>.create({subscribe in
-            if AppConfig.useMockResponse && !mockFile.isEmpty {
-                self.delay({
-                    let json = self.readFile(name: mockFile)
-                    print(json)
-                    let response = HttpResponse(fromJson: JSON.parse(json))
-                    subscribe.onNext(response)
-                    subscribe.onCompleted()
-                })
-            } else {
-                self.executeRequest(method: .GET, url: url, params: [:], {response in
-                    if let error = response.error {
-                        print(error)
-                        subscribe.on(.error(error))
-                    } else {
-                        let json = response.text!
-                        print(json)
-                        let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-                        subscribe.onNext(jsonResponse)
-                    }
-                    subscribe.onCompleted()
-                })
-            }
-            return Disposables.create()
-        })
+        return createResponseObservable(method: .GET, url: url, params: [:], mockFile: mockFile)
     }
     
     func getAll(options: [String: Any]) -> Observable<HttpResponse> {
@@ -196,10 +126,23 @@ open class BaseRequest<T: Serializable> {
     }
     
     func readFile(name: String) -> String {
-        return Util.readFile(name: name, type: "js")
+        return Util.readTextFile(name: name, type: "js")
     }
     
-    func executeRequest(method: HTTPVerb, url: String, params: [String: AnyObject], _ completionHandler:@escaping ((Response) -> Void)) {
+    open func createResponseObservable(method: HTTPVerb, url: String, params: [String: Any], mockFile: String = "") -> Observable<HttpResponse> {
+        return Observable<HttpResponse>.create({subscribe in
+            if AppConfig.useMockResponse && !mockFile.isEmpty {
+                self.responseMockData(mockFile: mockFile, subscribe: subscribe)
+            } else {
+                self.executeRequest(method: method, url: url, params: params, {response in
+                    self.processResponse(response: response, subscribe: subscribe)
+                })
+            }
+            return Disposables.create()
+        })
+    }
+    
+    func executeRequest(method: HTTPVerb, url: String, params: [String: Any], _ completionHandler:@escaping ((Response) -> Void)) {
         do {
             var requestParams = params
             requestParams[Constant.requestAuthToken] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoic2FpdGFtYUBvbmUuY29tIiwiZXhwIjoxNDc4NDg4MzU3MTUyfQ.PHcR6IFxkw360ZPUvGAX8DbIMlXZQHIjWpHF1vG_clQ" as AnyObject?
@@ -210,5 +153,28 @@ open class BaseRequest<T: Serializable> {
         } catch let error {
             print("got an error creating the request: \(error)")
         }
+    }
+    
+    func processResponse(response: Response, subscribe: AnyObserver<HttpResponse>) {
+        if let error = response.error {
+            print(error)
+            subscribe.on(.error(error))
+        } else {
+            let json = response.text!
+            print(json)
+            let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
+            subscribe.onNext(jsonResponse)
+        }
+        subscribe.onCompleted()
+    }
+    
+    func responseMockData(mockFile: String, subscribe: AnyObserver<HttpResponse>) {
+        self.delay({
+            let json = self.readFile(name: mockFile)
+            print(json)
+            let response = HttpResponse(fromJson: JSON.parse(json))
+            subscribe.onNext(response)
+            subscribe.onCompleted()
+        })
     }
 }
