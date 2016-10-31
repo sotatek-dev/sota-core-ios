@@ -52,21 +52,21 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
 extension UIViewController {
     
     func showViewController(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
-        let vc = Util.createViewController(storyboardName: Constant.storyboardName, id: id) as! BaseViewController
+        let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
         vc.delegate = delegate
         self.present(vc, animated: true, completion: nil)
     }
     
     func showDialog(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
-        let vc = Util.createViewController(storyboardName: Constant.storyboardName, id: id) as! BaseViewController
+        let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
         vc.delegate = delegate
         self.present(vc, animated: true, completion: nil)
     }
     
     func showRootViewController(_ id: String, data: [String: Any] = [String: Any]()) {
-        let vc = Util.createViewController(storyboardName: Constant.storyboardName, id: id) as! BaseViewController
+        let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
         UIApplication.shared.keyWindow?.rootViewController = vc
     }

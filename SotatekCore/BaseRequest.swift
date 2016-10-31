@@ -196,23 +196,13 @@ open class BaseRequest<T: Serializable> {
     }
     
     func readFile(name: String) -> String {
-        if let filepath = Bundle.main.path(forResource: name, ofType: "js") {
-            do {
-                let contents = try String(contentsOfFile: filepath)
-                return contents
-            } catch {
-                // contents could not be loaded
-            }
-        } else {
-            // example.txt not found!
-        }
-        return ""
+        return Util.readFile(name: name, type: "js")
     }
     
     func executeRequest(method: HTTPVerb, url: String, params: [String: AnyObject], _ completionHandler:@escaping ((Response) -> Void)) {
         do {
             var requestParams = params
-            requestParams[Constant.requestAuthToken] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoic2FpdGFtYUBvbmUuY29tIiwiZXhwIjoxNDc3OTk3MjU4NzYxfQ.RvjsOJJlzSd4QTGV3nuUd5QvV6jKAUCphkBlxcx2wqs" as AnyObject?
+            requestParams[Constant.requestAuthToken] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoic2FpdGFtYUBvbmUuY29tIiwiZXhwIjoxNDc4NDg4MzU3MTUyfQ.PHcR6IFxkw360ZPUvGAX8DbIMlXZQHIjWpHF1vG_clQ" as AnyObject?
             print(url)
             print(requestParams)
             let opt = try HTTP.New(url, method: method, parameters: requestParams)
