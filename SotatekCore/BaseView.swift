@@ -11,31 +11,25 @@ import UIKit
 
 extension UIView {
     open func viewDidAppear() {
-        
+        Notifier.controllerNoitfier.addObserver(self)
+        Notifier.viewNotifier.addObserver(self)
     }
     
     open func viewWillDisappear() {
-        
-    }
-    
-    func getNotifierName() -> String {
-        return ""
-    }
-    
-    func getNotifier() -> Notifier {
-        return Notifier.instance(getNotifierName())
+        Notifier.controllerNoitfier.removeObserver(self)
+        Notifier.viewNotifier.removeObserver(self)
     }
     
     func addObserver(_ observer: Observer) {
-        getNotifier().addObserver(observer)
+        Notifier.viewNotifier.addObserver(observer)
     }
     
     func removeObserver(_ observer: Observer) {
-        getNotifier().removeObserver(observer)
+        Notifier.viewNotifier.removeObserver(observer)
     }
     
     @nonobjc
     func notifyObservers(_ command: Int, data: AnyObject? = nil) {
-        getNotifier().notifyObservers(command, data: data)
+        Notifier.viewNotifier.notifyObservers(command, data: data)
     }
 }

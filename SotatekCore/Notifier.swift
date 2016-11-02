@@ -12,8 +12,9 @@ open class Notifier {
     //open static let SERVICE_NOTIFIER = "service"
     //open static let CONTROLLER_NOTIFIER = "controller"
     
-    open static let serviceNotifier = Notifier.instance("controller")
-    open static let controllerNoitfier = Notifier.instance("service")
+    open static let viewNotifier = Notifier.instance("view")
+    open static let controllerNoitfier = Notifier.instance("controller")
+    open static let serviceNotifier = Notifier.instance("service")
     open static let socketNoitfier = Notifier.instance("socket")
     open static let repositoryNotifier = Notifier.instance("repository")
     
