@@ -16,11 +16,15 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     
     var views = [UIView]()
     
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Notifier.controllerNoitfier.addObserver(self)
+        Notifier.controllerNoitfier.addObserver(self) // listen for events from controller
+        Notifier.viewNotifier.addObserver(self) // listen for events from subviews
         for view in views {
-            view.addObserver(self)
             view.viewDidAppear()
         }
     }
@@ -28,9 +32,9 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     override open func viewWillDisappear(_ animated: Bool)  {
         super.viewWillDisappear(animated)
         Notifier.controllerNoitfier.removeObserver(self)
+        Notifier.viewNotifier.removeObserver(self)
         for view in views {
             view.viewWillDisappear()
-            view.removeObserver(self)
         }
     }
     
