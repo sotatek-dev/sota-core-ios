@@ -45,7 +45,7 @@ open class Notifier {
         }
     }
     
-    func notifyObservers(_ command: Int, data: AnyObject? = nil) {
+    func notifyObservers(_ command: Int, data: Any? = nil) {
         for observer in observers {
             observer.update(command, data: data)
         }

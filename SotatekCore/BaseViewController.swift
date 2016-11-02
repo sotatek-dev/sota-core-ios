@@ -50,7 +50,7 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
             })
     }
     
-    public func update(_ command: Int, data: AnyObject?) {}
+    public func update(_ command: Int, data: Any?) {}
 }
 
 extension UIViewController {
