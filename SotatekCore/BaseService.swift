@@ -15,7 +15,7 @@ open class BaseService: Observer {
         Notifier.socketNoitfier.addObserver(self)
     }
     
-    func notifyObservers(_ command: Int, data: AnyObject? = nil) {
+    func notifyObservers(_ command: Int, data: Any? = nil) {
         notifier.notifyObservers(command, data: data)
     }
     
@@ -27,7 +27,7 @@ open class BaseService: Observer {
         notifier.removeObserver(observer)
     }
     
-    open func update(_ command: Int, data: AnyObject?) {
+    open func update(_ command: Int, data: Any?) {
         switch command {
         case Constant.commandReceiveSocketData:
             onReceiveSocketData(data as! SocketData)

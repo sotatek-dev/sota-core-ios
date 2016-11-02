@@ -15,7 +15,7 @@ open class BaseController: Observer {
         Notifier.serviceNotifier.addObserver(self)
     }
     
-    func notifyObservers(_ command: Int, data: AnyObject? = nil) {
+    func notifyObservers(_ command: Int, data: Any? = nil) {
         notifier.notifyObservers(command, data: data)
     }
     
@@ -27,7 +27,7 @@ open class BaseController: Observer {
         notifier.removeObserver(observer)
     }
     
-    public func update(_ command: Int, data: AnyObject?) {}
+    public func update(_ command: Int, data: Any?) {}
     
     func initialize() {
         

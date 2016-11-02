@@ -74,7 +74,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     func getList(url: String, params: [String: Any], mockFile: String = "") -> Observable<HttpResponse> {
-        return createResponseObservable(method: .GET, url: url, params: [:], mockFile: mockFile)
+        return createResponseObservable(method: .GET, url: url, params: params, mockFile: mockFile)
     }
     
     func getAll(options: [String: Any]) -> Observable<HttpResponse> {
