@@ -13,6 +13,7 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     var initData = [String: Any]()
     var responseData = [String: Any]()
     weak var delegate: ViewControllerDelegate?
+    var viewAppeared = false
     
     var views = [UIView]()
     
@@ -24,9 +25,12 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         super.viewDidAppear(animated)
         Notifier.controllerNoitfier.addObserver(self) // listen for events from controller
         Notifier.viewNotifier.addObserver(self) // listen for events from subviews
-        for view in views {
-            view.viewDidAppear()
+        if !viewAppeared {
+            for view in views {
+                view.viewDidAppear()
+            }
         }
+        viewAppeared = true
     }
     
     override open func viewWillDisappear(_ animated: Bool)  {
