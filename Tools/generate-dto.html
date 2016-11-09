@@ -41,7 +41,7 @@ function getTypeUpperCase(v) {
 }
 
 function generate() {
-className = getTypeUpperCase(document.getElementById('name').value) + 'Entity'
+className = getTypeUpperCase(document.getElementById('name').value) + 'Dto'
 data = JSON.parse(document.getElementById('code').value)
 var data2 = {}
 for (var i in data) {
