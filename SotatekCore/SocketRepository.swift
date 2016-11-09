@@ -12,27 +12,33 @@ import SwiftyJSON
 class SocketRepository {
     let notifier = Notifier.socketNoitfier
     
-    var socketRequest = SocketRequest()
+    var socketRequest = SocketRequest(namespace: Constant.SocketNamespace.liveStream)
     var dtoTypes = [BaseDto.entityName: BaseDto.self]
     var entityTypes = [BaseEntity.entityName: BaseEntity.self]
     
     init(namespace: String) {
     }
     
-    open func connect() {
-        socketRequest.connect()
+    open func connect(roomId: Int) {
+        socketRequest.connect(roomId: roomId)
     }
     
     open func disconnect() {
         socketRequest.disconnect()
     }
     
+    open func joinRoom(roomId: Int) {
+        socketRequest.joinRoom(roomId)
+    }
+    
     open func addDataType(_ type: BaseDto.Type) {
-        dtoTypes[type.self.entityName] = type
+//        dtoTypes[type.self.entityName] = type
+        socketRequest.addDataEvent(type)
     }
     
     open func addDataType(_ type: BaseEntity.Type) {
-        entityTypes[type.self.entityName] = type
+//        entityTypes[type.self.entityName] = type
+        socketRequest.addDataEvent(type)
     }
     
     open func onReceiveSocketData(json: JSON) {
