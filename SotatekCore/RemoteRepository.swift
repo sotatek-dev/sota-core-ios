@@ -48,8 +48,15 @@ class RemoteRepository<T: Serializable> {
     }
     
     func convertJsonToList(_ json: JSON) -> [T] {
+//        var entities = [T]()
+//        let jsonArray = json[T.pluralName].arrayValue
+//        for jsonObject in jsonArray {
+//            let entity = T(fromJson: jsonObject)
+//            entities.append(entity)
+//        }
+//        return entities
         var entities = [T]()
-        let jsonArray = json[T.pluralName].arrayValue
+        let jsonArray = json.arrayValue
         for jsonObject in jsonArray {
             let entity = T(fromJson: jsonObject)
             entities.append(entity)

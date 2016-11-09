@@ -10,14 +10,13 @@ import Foundation
 import SwiftyJSON
 
 class SocketRepository {
-    public static var instance = SocketRepository()
     let notifier = Notifier.socketNoitfier
     
     var socketRequest = SocketRequest()
     var dtoTypes = [BaseDto.entityName: BaseDto.self]
     var entityTypes = [BaseEntity.entityName: BaseEntity.self]
     
-    private init() {
+    init(namespace: String) {
     }
     
     open func connect() {
@@ -38,11 +37,6 @@ class SocketRepository {
     
     open func onReceiveSocketData(json: JSON) {
         for (key,subJson): (String, JSON) in json {
-//            if let baseCache = CacheFactory.getCache(forEntity: key) {
-//                let entity = baseCache.save(subJson) as! Serializable
-//                notifier.notifyObservers(Constant.COMMAND_RECEIVE_DATA, data: SocketData(name: key, data: entity))
-//            }
-//            else
             if let dtoType = dtoTypes[key] {
                 let dto = dtoType.init(fromJson: subJson)
                 notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: key, data: dto))
