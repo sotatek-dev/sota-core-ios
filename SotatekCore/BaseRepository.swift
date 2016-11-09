@@ -161,28 +161,34 @@ open class BaseRepository<T: BaseEntity> {
     
     func saveJsonList(_ json: JSON) -> [T] {
         var entities = [T]()
-        for (key,subJson): (String, JSON) in json {
-            let shouldAddToResult = T.entityName == key || T.pluralName == key
-            let baseCache = CacheFactory.getCache(forEntity: key)
-            guard baseCache != nil else {
-                continue
-            }
-            
-            if let jsonArray = subJson.array {
-                for jsonObject in jsonArray {
-                    let e = baseCache!.save(jsonObject)
-                    if shouldAddToResult {
-                        entities.append(e as! T)
-                    }
-                }
-            } else {
-                let e = baseCache!.save(subJson)
-                if shouldAddToResult {
-                    entities.append(e as! T)
-                }
-
+        if let jsonArray = json.array {
+            for jsonObject in jsonArray {
+                let entity = cache.save(jsonObject) as! T
+                entities.append(entity)
             }
         }
+//        for (key,subJson): (String, JSON) in json {
+//            let shouldAddToResult = T.entityName == key || T.pluralName == key
+//            let baseCache = CacheFactory.getCache(forEntity: key)
+//            guard baseCache != nil else {
+//                continue
+//            }
+//            
+//            if let jsonArray = subJson.array {
+//                for jsonObject in jsonArray {
+//                    let e = baseCache!.save(jsonObject)
+//                    if shouldAddToResult {
+//                        entities.append(e as! T)
+//                    }
+//                }
+//            } else {
+//                let e = baseCache!.save(subJson)
+//                if shouldAddToResult {
+//                    entities.append(e as! T)
+//                }
+//
+//            }
+//        }
         return entities
     }
     
