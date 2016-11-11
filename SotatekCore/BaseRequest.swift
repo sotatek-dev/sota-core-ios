@@ -60,7 +60,7 @@ open class BaseRequest<T: Serializable> {
         })
     }
     
-    open func get(_ id: Int) -> Observable<HttpResponse> {
+    open func get(_ id: Int, options: [String : Any] = [:]) -> Observable<HttpResponse> {
         return createResponseObservable(method: .GET, url: "\(self.entityUrl)/\(id)", params: [:], mockFile: mockEntity)
     }
     

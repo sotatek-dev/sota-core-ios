@@ -25,7 +25,7 @@ function getType(v) {
 	} else if (type == 'string') {
 		return 'String';
 	} else if (type == 'boolean') {
-		return 'Boolean';
+		return 'Bool';
 	} else {
 		return '____';
 	}
@@ -59,7 +59,7 @@ code += 'import SwiftyJSON\n\n';
 code += 'class ' + className + ': BaseDto {\n';
 
 for (var i in data) {
-	code += 'var ' + i + ': ' + getType(data[i]) + '\n';
+	code += 'var ' + i + ': ' + getType(data[i]) + '!\n';
 }
 
 code += '\n';
