@@ -21,8 +21,8 @@ class RemoteRepository<T: Serializable> {
     open func create(_ object: T) -> Observable<T> {
         return request.create(object)
             .flatMap(processMeta)
-            .map({(json: JSON) -> T in
-                let entity = T(fromJson: json)
+            .map({(response: HttpResponse) -> T in
+                let entity = T(fromJson: response.data)
                 return entity
             })
     }
@@ -30,8 +30,8 @@ class RemoteRepository<T: Serializable> {
     open func get(_ id: Int) -> Observable<T> {
         return request.get(id)
             .flatMap(processMeta)
-            .map({(json: JSON) -> T in
-                let entity = T(fromJson: json)
+            .map({(response: HttpResponse) -> T in
+                let entity = T(fromJson: response.data)
                 return entity
             })
 
@@ -40,9 +40,9 @@ class RemoteRepository<T: Serializable> {
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
         return request.getList(count: count, options: options)
             .flatMap(processMeta)
-            .map({(json: JSON) -> [T] in
-                let listDto = ListDto<T>(fromJson: json)
-                self.updateGlobalData(listDto)
+            .map({(response: HttpResponse) -> [T] in
+                let listDto = ListDto<T>(fromJson: response.data)
+                self.updateGlobalData(response)
                 return listDto.data
             })
     }
@@ -70,13 +70,13 @@ class RemoteRepository<T: Serializable> {
 //        return getList(count: count, options: newOptions)
 //    }
     
-    func updateGlobalData(_ listDto: ListDto<T>) {
-        if let data = listDto.global {
+    func updateGlobalData(_ response: HttpResponse) {
+        if let data = response.global {
             notifier.notifyObservers(Constant.commandReceiveGlobalData, data: data)
         }
     }
     
-    open func processMeta(response: HttpResponse) -> Observable<JSON> {
-        return Observable.just(response.data)
+    open func processMeta(response: HttpResponse) -> Observable<HttpResponse> {
+        return Observable.just(response)
     }
 }

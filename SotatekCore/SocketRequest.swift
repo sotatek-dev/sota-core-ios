@@ -55,8 +55,8 @@ public class SocketRequest {
     
     func addDataEvent(_ type: BaseDto.Type) {
         socket.on(type.self.entityName, callback: {data, ack in
-            print(data)
-            let json = JSON(data)
+            print("Data from socket: \(data[0]) --")
+            let json = JSON(data[0])
             let dto = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: dto))
         })

@@ -29,8 +29,8 @@ open class BaseRepository<T: BaseEntity> {
     private func createRemoteFirst(_ entity: T) -> Observable<T> {
         return self.request.create(entity)
             .flatMap(processMeta)
-            .flatMap({(json: JSON) -> Observable<T> in
-                let savedEntity = T(fromJson: json)
+            .flatMap({(response: HttpResponse) -> Observable<T> in
+                let savedEntity = T(fromJson: response.data)
                 return self.cache.saveAsync(savedEntity)
             })
     }
@@ -39,8 +39,8 @@ open class BaseRepository<T: BaseEntity> {
         let cachedEntity = cache.saveAsync(entity)
         let remoteEntity = request.create(entity)
             .flatMap(processMeta)
-            .flatMap({(json: JSON) -> Observable<T> in
-                let savedEntity = T(fromJson: json)
+            .flatMap({(response: HttpResponse) -> Observable<T> in
+                let savedEntity = T(fromJson: response.data)
                 self.didCreateCompleted(savedEntity)
                 return self.cache.saveAsync(savedEntity)
             })
@@ -120,8 +120,8 @@ open class BaseRepository<T: BaseEntity> {
         let cachedEntity = cache.getAsync(id)
         let remoteEntity = request.get(id)
             .flatMap(processMeta)
-            .map({(json: JSON) -> T in
-                let entity = self.saveJsonObject(json)
+            .map({(response: HttpResponse) -> T in
+                let entity = self.saveJsonObject(response.data)
                 return entity
             }
         )
@@ -152,8 +152,8 @@ open class BaseRepository<T: BaseEntity> {
         let cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
         let remoteEntitiesObserver = request.getList(count: count, options: options)
             .flatMap(processMeta)
-            .map({(json: JSON) -> [T] in
-                return self.saveJsonList(json)
+            .map({(response: HttpResponse) -> [T] in
+                return self.saveJsonList(response.data)
             }
         )
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
@@ -196,14 +196,14 @@ open class BaseRepository<T: BaseEntity> {
         let cachedEntitiesObserver = cache.getAllAsync(options: options)
         let remoteEntitiesObserver = request.getAll(options: options)
             .flatMap(processMeta)
-            .map({(json: JSON) -> [T] in
-                return self.saveJsonList(json)
+            .map({(response: HttpResponse) -> [T] in
+                return self.saveJsonList(response.data)
             }
         )
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
     }
     
-    open func processMeta(response: HttpResponse) -> Observable<JSON> {
-        return Observable.just(response.data)
+    open func processMeta(response: HttpResponse) -> Observable<HttpResponse> {
+        return Observable.just(response)
     }
 }
