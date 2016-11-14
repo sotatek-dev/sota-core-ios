@@ -35,13 +35,13 @@ public class SocketRequest {
     }
     
     open func disconnect() {
-        
+        socket.disconnect()
     }
     
     open func joinRoom(_ roomId: Int) {
         self.roomId = roomId
         if socket.status == .connected {
-            self.socket.emit("join-room", self.roomId)
+            self.socket.emit("join-room", roomId)
         }
     }
     
@@ -63,13 +63,7 @@ public class SocketRequest {
     }
     
     open func send(_ data: Serializable) {
-//        if let message = data as? ChatLineEntity {
-//            message.id = Util.currentTime()
-//            let socketData = SocketData(name: "chatLine", data: message)
-//            notifier.notifyObservers(Constant.commandReceiveSocketData, data: socketData)
-//        }
-        let json = JSON(data.toDictionary())
-        socket.emit(type(of: data).entityName, json.rawString()!)
+        socket.emit(type(of: data).entityName, data.toDictionary())
     }
     
     func startMock() {
