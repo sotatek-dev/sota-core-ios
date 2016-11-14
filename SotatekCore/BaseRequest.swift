@@ -65,7 +65,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     func getRequestParams(options: [String: Any]) -> [String: Any] {
-        return [:]
+        return options
     }
     
     func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
