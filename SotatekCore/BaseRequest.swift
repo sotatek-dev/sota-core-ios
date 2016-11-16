@@ -65,7 +65,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     func getRequestParams(options: [String: Any]) -> [String: Any] {
-        return options
+        return options[Constant.RepositoryParam.requestParams] as? [String: Any] ?? [:]
     }
     
     func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
@@ -78,21 +78,8 @@ open class BaseRequest<T: Serializable> {
     }
     
     func getAll(options: [String: Any]) -> Observable<HttpResponse> {
-        return Observable<HttpResponse>.create({subscribe in
-            self.delay({
-                if !self.mockAll.isEmpty {
-                    let json = self.readFile(name: self.mockAll)
-                    print(json)
-                    
-                    let response = HttpResponse(fromJson: JSON.parse(json))
-                    print(response)
-                    
-                    subscribe.onNext(response)
-                }
-                subscribe.onCompleted()
-            })
-            return Disposables.create()
-        })
+        let params = getRequestParams(options: options)
+        return getList(url: self.listUrl, params: params, mockFile: self.mockAll)
     }
     
     func createDummyEntity(_ id: Int, options: [String: Any] = [:]) -> T? {

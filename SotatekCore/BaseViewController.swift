@@ -46,6 +46,10 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         views.append(view)
     }
     
+    open func removeView(_ view: UIView) {
+        views.removeObject(view)
+    }
+    
     func dismissViewController(data: [String: Any] = [:]) {
         responseData = data
         self.dismiss(animated: true, completion: {
