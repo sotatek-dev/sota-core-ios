@@ -16,7 +16,9 @@ extension UIView {
     }
     
     open func viewDidReappear(_ data: Any? = nil) {
-        
+        Notifier.controllerNoitfier.addObserver(self)
+        Notifier.viewNotifier.addObserver(self)
+
     }
     
     open func viewWillDisappear() {
