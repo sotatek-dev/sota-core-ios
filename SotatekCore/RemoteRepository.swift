@@ -37,24 +37,27 @@ class RemoteRepository<T: Serializable> {
 
     }
     
-    func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
+    func getList(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         return request.getList(count: count, options: options)
             .flatMap(processMeta)
-            .map({(response: HttpResponse) -> [T] in
-                let listDto = ListDto<T>(fromJson: response.data)
+            .map({(response: HttpResponse) -> ListDto<T> in
+                let listResponse = ListResponse<T>(fromJson: response.data)
                 self.updateGlobalData(response)
-                return listDto.data
+                return ListDto(data: listResponse.data, pagination: response.pagination)
+            })
+    }
+    
+    func getAll(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
+        return request.getAll(options: options)
+            .flatMap(processMeta)
+            .map({(response: HttpResponse) -> ListDto<T> in
+                let listResponse = ListResponse<T>(fromJson: response.data)
+                self.updateGlobalData(response)
+                return ListDto(data: listResponse.data, pagination: response.pagination)
             })
     }
     
     func convertJsonToList(_ json: JSON) -> [T] {
-//        var entities = [T]()
-//        let jsonArray = json[T.pluralName].arrayValue
-//        for jsonObject in jsonArray {
-//            let entity = T(fromJson: jsonObject)
-//            entities.append(entity)
-//        }
-//        return entities
         var entities = [T]()
         let jsonArray = json.arrayValue
         for jsonObject in jsonArray {
@@ -63,13 +66,7 @@ class RemoteRepository<T: Serializable> {
         }
         return entities
     }
-    
-//    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
-//        var newOptions = options
-//        newOptions[Constant.RepositoryParam.pivot] = pivot
-//        return getList(count: count, options: newOptions)
-//    }
-    
+
     func updateGlobalData(_ response: HttpResponse) {
         if let data = response.global {
             notifier.notifyObservers(Constant.commandReceiveGlobalData, data: data)

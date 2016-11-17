@@ -32,18 +32,12 @@ open class BaseRequest<T: Serializable> {
         }
     }
     
-    open func create(_ entity: T) -> Observable<HttpResponse> {
-        return createResponseObservable(method: .POST, url: self.entityUrl, params: entity.toDictionary(), mockFile: "")
+    open func create(_ entity: T, url: String? = nil) -> Observable<HttpResponse> {
+        return createResponseObservable(method: .POST, url: url ?? self.entityUrl, params: entity.toDictionary(), mockFile: "")
     }
     
-    open func update(_ entity: T) -> Observable<T> {
-        return Observable<T>.create({subscribe in
-            self.delay({
-                subscribe.onNext(entity)
-                subscribe.onCompleted()
-            })
-            return Disposables.create()
-        })
+    open func update(_ entity: T, url: String? = nil) -> Observable<HttpResponse> {
+        return createResponseObservable(method: .PUT, url: url ?? self.entityUrl, params: entity.toDictionary())
     }
     
     open func remove(_ entity: T) -> Observable<T> {

@@ -57,15 +57,17 @@ open class BaseRepository<T: BaseEntity> {
     
     private func updateRemoteFirst(_ entity: T) -> Observable<T> {
         return self.request.update(entity)
-            .flatMap({saveEntity in
-                return self.cache.updateAsync(saveEntity)
+            .flatMap({(response: HttpResponse) -> Observable<T> in
+                let savedEntity = T(fromJson: response.data)
+                return self.cache.updateAsync(savedEntity)
             })
     }
     
     private func updateLocalFirst(_ entity: T) -> Observable<T> {
         return cache.saveAsync(entity).concat(
             request.update(entity)
-                .flatMap({(savedEntity: T) -> Observable<T> in
+                .flatMap({(response: HttpResponse) -> Observable<T> in
+                    let savedEntity = T(fromJson: response.data)
                     self.didUpdateCompleted(savedEntity)
                     return self.cache.saveAsync(savedEntity)
                 })
@@ -148,12 +150,13 @@ open class BaseRepository<T: BaseEntity> {
         return entity
     }
     
-    func getList(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
+    func getList(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         let cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
         let remoteEntitiesObserver = request.getList(count: count, options: options)
             .flatMap(processMeta)
-            .map({(response: HttpResponse) -> [T] in
-                return self.saveJsonList(response.data)
+            .map({(response: HttpResponse) -> ListDto<T> in
+                let entities = self.saveJsonList(response.data)
+                return ListDto(data: entities, pagination: response.pagination)
             }
         )
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
@@ -192,12 +195,13 @@ open class BaseRepository<T: BaseEntity> {
         return entities
     }
     
-    func getAll(options: [String: Any] = [:]) -> Observable<[T]> {
+    func getAll(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         let cachedEntitiesObserver = cache.getAllAsync(options: options)
         let remoteEntitiesObserver = request.getAll(options: options)
             .flatMap(processMeta)
-            .map({(response: HttpResponse) -> [T] in
-                return self.saveJsonList(response.data)
+            .map({(response: HttpResponse) -> ListDto<T> in
+                let entities = self.saveJsonList(response.data)
+                return ListDto<T>(data: entities, pagination: response.pagination)
             }
         )
         return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)

@@ -114,7 +114,7 @@ code += 'super.init(fromJson: json)\n';
 code += '}\n\n';
 
 code += 'override func toDictionary() -> [String: Any] {\n';
-code += 'var dictionary = [String: Any]()\n';
+code += 'var dictionary = super.toDictionary()\n';
 for (var i in data) {
 	//code += 'if ' + i + ' != nil {\n';
 	code += 'dictionary["' + i + '"] = ' + i + '\n';

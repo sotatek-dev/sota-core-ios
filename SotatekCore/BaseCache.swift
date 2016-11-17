@@ -127,8 +127,8 @@ open class BaseCache<T: BaseEntity>: Cache {
         })
     }
     
-    func getListAsync(count: Int, options: [String: Any] = [:]) -> Observable<[T]> {
-        return Observable<[T]>.create({subscribe in
+    func getListAsync(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
+        return Observable<ListDto<T>>.create({subscribe in
             var entities: [T]!
             if let pivot = options[Constant.RepositoryParam.pivot] as? T {
                 entities = self.getNextList(pivot: pivot, count: count, options: options)
@@ -137,18 +137,20 @@ open class BaseCache<T: BaseEntity>: Cache {
             }
             print("Got \(entities.count) from cache")
             if entities.count >= count {
-                subscribe.onNext(entities)
+                //TODO: add paginatin data
+                subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
             }
             subscribe.onCompleted()
             return Disposables.create()
         })
     }
     
-    func getAllAsync(options: [String: Any] = [:]) -> Observable<[T]> {
-        return Observable<[T]>.create({subscribe in
+    func getAllAsync(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
+        return Observable<ListDto<T>>.create({subscribe in
             let entities = self.getAll(options: options)
             if entities.count > 0 {
-                subscribe.onNext(entities)
+                //TODO: add paginatin data
+                subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
             }
             subscribe.onCompleted()
             return Disposables.create()
