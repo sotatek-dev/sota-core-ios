@@ -41,7 +41,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         return entity
     }
     
-    open override func get(_ id: Int) -> TEntity? {
+    open override func get(_ id: DataIdType) -> TEntity? {
         for list in map.values {
             for entity in list {
                 if entity.id == id {

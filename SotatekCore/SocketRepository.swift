@@ -19,7 +19,7 @@ class SocketRepository {
     init(namespace: String) {
     }
     
-    open func connect(roomId: Int) {
+    open func connect(roomId: DataIdType) {
         socketRequest.connect(roomId: roomId)
     }
     
@@ -27,7 +27,7 @@ class SocketRepository {
         socketRequest.disconnect()
     }
     
-    open func joinRoom(roomId: Int) {
+    open func joinRoom(roomId: DataIdType) {
         socketRequest.joinRoom(roomId)
     }
     

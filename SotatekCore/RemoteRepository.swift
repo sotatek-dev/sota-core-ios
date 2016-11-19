@@ -27,7 +27,7 @@ class RemoteRepository<T: Serializable> {
             })
     }
     
-    open func get(_ id: Int, options: [String : Any] = [:]) -> Observable<T> {
+    open func get(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<T> {
         return request.get(id, options: options)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> T in

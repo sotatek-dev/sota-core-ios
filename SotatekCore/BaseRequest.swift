@@ -13,7 +13,6 @@ import SwiftHTTP
 
 open class BaseRequest<T: Serializable> {
     var networkDelay: Int = 1
-    var id: Int = 0
     
     open var mockEntity = ""
     open var mockList = ""
@@ -54,7 +53,7 @@ open class BaseRequest<T: Serializable> {
         })
     }
     
-    open func get(_ id: Int, options: [String : Any] = [:]) -> Observable<HttpResponse> {
+    open func get(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<HttpResponse> {
         return createResponseObservable(method: .GET, url: "\(self.entityUrl)/\(id)", params: [:], mockFile: mockEntity)
     }
     
@@ -74,26 +73,6 @@ open class BaseRequest<T: Serializable> {
     func getAll(options: [String: Any]) -> Observable<HttpResponse> {
         let params = getRequestParams(options: options)
         return getList(url: self.listUrl, params: params, mockFile: self.mockAll)
-    }
-    
-    func createDummyEntity(_ id: Int, options: [String: Any] = [:]) -> T? {
-        self.id += 1
-        let contact = ContactEntity(id: id, name: "Contact \(id)", avatarPath: "", online: true)
-        let conversation = ConversationEntity(id: id, ownerId: 0, name: "Conversation \(id)", participantId: 1, createdAt: 0, unreadCount: 0, lastUpdate: 0, status: Int(0))
-        let message = MessageEntity(id: self.id, conversationId: 0, timestamp: Util.currentTime() + id, text: "Message \(id)", senderId: 0, status: 0)
-        
-        if let contact = contact as? T {
-            print("Get contact \(id) from server")
-            return contact
-        } else if let conversation = conversation as? T {
-            print("Get conversation \(id) from server")
-            return conversation
-        } else if let m = message as? T {
-            print("Get message \(id) from server")
-            message.conversationId = options[Constant.RepositoryParam.groupId] as! Int
-            return m
-        }
-        return nil
     }
     
     func delay(_ f: @escaping () -> Void) {

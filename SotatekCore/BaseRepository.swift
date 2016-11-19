@@ -118,7 +118,7 @@ open class BaseRepository<T: BaseEntity> {
         )
     }
     
-    open func get(_ id: Int) -> Observable<T> {
+    open func get(_ id: DataIdType) -> Observable<T> {
         let cachedEntity = cache.getAsync(id)
         let remoteEntity = request.get(id)
             .flatMap(processMeta)
