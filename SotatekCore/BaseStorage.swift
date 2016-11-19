@@ -30,12 +30,12 @@ public class BaseStorage<T: BaseEntity> {
     }
     
     open func remove(_ entity: T) -> T {
-        let filter = table.filter(T.idColumn == 1)
+        let filter = table.filter(T.idColumn == entity.id)
         try! _ = db.run(filter.delete())
         return entity
     }
     
-    open func get(_ id: Int) -> T? {
+    open func get(_ id: DataIdType) -> T? {
         let filter = table.filter(T.idColumn == id)
         if let row = try! db.pluck(filter) {
             return (T.toEntity(row) as! T)

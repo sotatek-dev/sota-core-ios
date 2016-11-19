@@ -29,7 +29,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         return entity
     }
     
-    open override func get(_ id: Int) -> T? {
+    open override func get(_ id: DataIdType) -> T? {
         var result: T?
         for entity in data {
             if entity.id == id {

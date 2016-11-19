@@ -13,7 +13,7 @@ import SwiftyJSON
 public class SocketRequest {
     let notifier = Notifier.socketNoitfier
     let socket: SocketIOClient!
-    var roomId: Int!
+    var roomId: DataIdType!
     
     init(namespace: String) {
         let connectParams = SocketIOClientOption.connectParams([Constant.requestAuthToken: AppConfig.authToken])
@@ -28,7 +28,7 @@ public class SocketRequest {
         })
     }
     
-    open func connect(roomId: Int) {
+    open func connect(roomId: DataIdType) {
         self.roomId = roomId
         socket.connect()
         //startMock()
@@ -38,7 +38,7 @@ public class SocketRequest {
         socket.disconnect()
     }
     
-    open func joinRoom(_ roomId: Int) {
+    open func joinRoom(_ roomId: DataIdType) {
         self.roomId = roomId
         if socket.status == .connected {
             self.socket.emit("join-room", roomId)

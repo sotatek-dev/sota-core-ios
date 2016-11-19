@@ -11,13 +11,14 @@ import SQLite
 import SwiftyJSON
 
 open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
-    open var id: Int
+    open var id: DataIdType
     open var compareValue: Int = 0
     open var validTime: Int = 0
     
     override open var hashValue: Int {
         get {
-            return id.hashValue
+            //return id.hashValue
+            return 0
         }
     }
     
@@ -39,7 +40,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
         }
     }
     
-    public init(id: Int) {
+    public init(id: DataIdType) {
         self.id = id
     }
     
@@ -49,12 +50,12 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     }
     
     public required init?(coder aDecoder: NSCoder) {
-        self.id = aDecoder.decodeInteger(forKey: "id")
+        self.id = aDecoder.decodeObject(forKey: "id") as! DataIdType
         self.validTime = aDecoder.decodeInteger(forKey: "validTime")
     }
     
     public required init(fromJson json: JSON!) {
-        self.id = json["id"].intValue
+        self.id = json["id"].object as! DataIdType
     }
     
     public func toDictionary() -> [String: Any] {
@@ -69,11 +70,11 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
         return entity
     }
     
-    public static let idColumn = Expression<Int>("id")
+    public static let idColumn = Expression<DataIdType>("id")
     public static let validTimeColumn = Expression<Int>("validTime")
     
     open class func createTable(builder: TableBuilder) {
-        builder.column(Expression<Int>("id"))
+        builder.column(Expression<DataIdType>("id"))
         builder.column(Expression<Int>("validTime"))
     }
     
@@ -94,7 +95,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     
     open var nextFilter: Expression<Bool> {
         get {
-            return BaseEntity.idColumn > 0
+            fatalError("Please implement nextFilter")
         }
     }
 }
