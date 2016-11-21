@@ -27,7 +27,7 @@ open class BaseRequest<T: Serializable> {
     
     open var listUrl: String {
         get {
-            return AppConfig.server + T.pluralName
+            return AppConfig.server + T.entityName
         }
     }
     
@@ -105,7 +105,7 @@ open class BaseRequest<T: Serializable> {
     func executeRequest(method: HTTPVerb, url: String, params: [String: Any], _ completionHandler:@escaping ((Response) -> Void)) {
         do {
             var requestParams = params
-            requestParams[Constant.requestAuthToken] = AppConfig.authToken as AnyObject?
+            //requestParams[Constant.requestAuthToken] = AppConfig.authToken as AnyObject?
             print(url)
             print(requestParams)
             let opt = try HTTP.New(url, method: method, parameters: requestParams)
