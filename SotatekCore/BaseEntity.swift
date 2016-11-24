@@ -55,7 +55,11 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     }
     
     public required init(fromJson json: JSON!) {
-        self.id = json["id"].object as! DataIdType
+        if let test = "" as? DataIdType {
+            self.id = json["id"].stringValue as! DataIdType
+        } else {
+            self.id = json["id"].intValue as! DataIdType
+        }
     }
     
     public func toDictionary() -> [String: Any] {
