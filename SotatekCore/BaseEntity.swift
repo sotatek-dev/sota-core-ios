@@ -11,7 +11,7 @@ import SQLite
 import SwiftyJSON
 
 open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
-    open var id: DataIdType
+    open var id: DataIdType!
     open var compareValue: Int = 0
     open var validTime: Int = 0
     
@@ -55,10 +55,8 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     }
     
     public required init(fromJson json: JSON!) {
-        if let test = "" as? DataIdType {
-            self.id = json["id"].stringValue as! DataIdType
-        } else {
-            self.id = json["id"].intValue as! DataIdType
+        if let value = json["id"].object as? DataIdType {
+            self.id = value
         }
     }
     
