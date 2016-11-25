@@ -29,6 +29,10 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
             for view in views {
                 view.viewDidAppear()
             }
+        } else {
+            for view in views {
+                view.viewDidReappear()
+            }
         }
         viewAppeared = true
     }
