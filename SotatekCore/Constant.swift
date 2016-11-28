@@ -20,4 +20,5 @@ class Constant {
     
     static let commandReceiveSocketData = 1000
     static let commandReceiveGlobalData = 1001
+    static let commandRoomChanged = 1002
 }
