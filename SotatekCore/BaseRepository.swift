@@ -11,7 +11,14 @@ import RxSwift
 import SwiftyJSON
 
 open class BaseRepository<T: BaseEntity> {
-    var settingCacheSingleEntity = true
+    var settingCacheSingleEntity: Bool {
+        get {
+            return cache.settingCacheSingleEntity
+        }
+        set {
+            cache.settingCacheSingleEntity = newValue
+        }
+    }
     var settingSyncRemoteFirst = true
     
     var cache: BaseCache<T>!

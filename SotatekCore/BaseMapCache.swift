@@ -18,11 +18,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
     }
 
     open override func save(_ entity: TEntity) {
-        let key = getGroupId(entity)!
-        var list = map[key] ?? []
-        list.removeObject(entity)
-        list.append(entity)
-        map[key] = list
+        addToCache(entity)
         storage.save(entity)
     }
     
@@ -92,7 +88,16 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         var result = map[groupId] ?? []
         if result.count == 0 {
             result = storage.getAll(options: options)
+            map[groupId] = [] + result
         }
         return result
+    }
+
+    private func addToCache(_ e: TEntity) {
+        let key = getGroupId(e)!
+        var list = map[key] ?? []
+        list.removeObject(e)
+        list.append(e)
+        map[key] = list
     }
 }
