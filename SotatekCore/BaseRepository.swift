@@ -158,15 +158,35 @@ open class BaseRepository<T: BaseEntity> {
     }
     
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
-        let cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
-        let remoteEntitiesObserver = request.getList(count: count, options: options)
-            .flatMap(processMeta)
-            .map({(response: HttpResponse) -> ListDto<T> in
-                let entities = self.saveJsonList(response.data)
-                return ListDto(data: entities, pagination: response.pagination)
+        var cachedEntitiesObserver: Observable<ListDto<T>>!
+        if let _ = options[Constant.RepositoryParam.pivot] as? T {
+            _ = cache.removeAsync(options: options)
+            cachedEntitiesObserver = Observable<ListDto<T>>.create {
+                subcribe in
+                subcribe.onNext(ListDto(data: [], pagination: nil))
+                subcribe.onCompleted()
+                return Disposables.create()
             }
-        )
-        return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
+            let remoteEntitiesObserver = request.getList(count: count, options: options)
+                .flatMap(processMeta)
+                .map{
+                    (response: HttpResponse) -> ListDto<T> in
+                    let entities = self.saveJsonList(response.data)
+                    return ListDto(data: entities, pagination: response.pagination)
+            }
+            return Observable.first(remoteEntitiesObserver, cachedEntitiesObserver)
+        }
+        else {
+            cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
+            let remoteEntitiesObserver = request.getList(count: count, options: options)
+                .flatMap(processMeta)
+                .map{
+                    (response: HttpResponse) -> ListDto<T> in
+                    let entities = self.saveJsonList(response.data)
+                    return ListDto(data: entities, pagination: response.pagination)
+            }
+            return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
+        }
     }
     
     func saveJsonList(_ json: JSON) -> [T] {

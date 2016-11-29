@@ -6,7 +6,7 @@
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
-import Foundation
+import RxSwift
 
 open class BaseListCache<T: BaseEntity>: BaseCache<T> {
     var data = [T]()
@@ -100,7 +100,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         data.removeAll()
         storage.clear()
     }
-
+    
     private func addToCache(_ e: T) {
         data.removeObject(e)
         data.append(e)

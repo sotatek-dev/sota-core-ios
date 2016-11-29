@@ -158,4 +158,17 @@ open class BaseCache<T: BaseEntity>: Cache {
             return Disposables.create()
         })
     }
+    
+    func removeAsync(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
+        return Observable<ListDto<T>>.create {
+            subscribe in
+            let entities = self.storage.remove(options: options)
+            if entities.count > 0 {
+                //TODO: add paginatin data
+                subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
+            }
+            subscribe.onCompleted()
+            return Disposables.create()
+        }
+    }
 }

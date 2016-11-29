@@ -93,4 +93,20 @@ public class BaseStorage<T: BaseEntity> {
     open func clear() {
         try! _ = db.run(table.delete())
     }
+    
+    open func remove(options: [String: Any] = [:]) -> [T] {
+        var query = table!
+        if let pivot = options[Constant.RepositoryParam.pivot] as? T {
+            let filter = getFilter(pivot: pivot, options: options)
+            query = table.filter(filter)
+        }
+        else if let originFilter = options[Constant.RepositoryParam.dbFilter] as? Expression<Bool> {
+            query = table.filter(originFilter)
+        }
+        let result = toEntities(query)
+        
+        try! _ = db.run(query.delete())
+        
+        return result
+    }
 }
