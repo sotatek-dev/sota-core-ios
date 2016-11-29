@@ -27,6 +27,9 @@ public class SocketRequest {
             [unowned self] data, ack in
             self.joinRoom(self.roomId)
         })
+        socket.on("room-changed", callback: {data, ack in
+            self.notifier.notifyObservers(Constant.commandRoomChanged, data: data[0])
+        })
     }
     
     open func connect(roomId: DataIdType) {

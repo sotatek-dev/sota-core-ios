@@ -50,7 +50,9 @@ public class BaseStorage<T: BaseEntity> {
             query = table.filter(filter)
         }
         query = query.limit(count)
-        return toEntities(query)
+        let result = toEntities(query)
+        print("getList: count: \(count) ---> Got \(result.count) entities from \(String(describing: self)))")
+        return result
     }
     
     func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> [T] {
@@ -58,7 +60,9 @@ public class BaseStorage<T: BaseEntity> {
         let filter = getFilter(pivot: pivot, options: options)
         query = table.filter(filter)
         query = query.limit(count)
-        return toEntities(query)
+        let result = toEntities(query)
+        print("getNextList: pivot: \(pivot) count: \(count) ---> Got \(result.count) entites from \(String(describing: self)))")
+        return result
     }
     
     func getAll(options: [String: Any] = [:]) -> [T] {

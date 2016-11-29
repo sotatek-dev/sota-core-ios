@@ -17,8 +17,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     
     override open var hashValue: Int {
         get {
-            //return id.hashValue
-            return 0
+            return id.hashValue
         }
     }
     

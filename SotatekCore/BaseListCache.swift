@@ -36,7 +36,12 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
                 result = entity
             }
         }
-        result = storage.get(id)
+        if result == nil {
+            result = storage.get(id)
+            if result != nil {
+                data.append(result!)
+            }
+        }
         if let result = result {
             if result.validTime > Util.currentTime() {
                 return nil
@@ -53,6 +58,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
             if result.count < count {
                 result = []
             }
+            data += result
         }
         return result
     }
@@ -65,6 +71,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
             if result.count < count {
                 result = []
             }
+            data += result
         }
         return result
     }
@@ -73,6 +80,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         var result = data
         if data.count == 0 {
             result = storage.getAll()
+            data = [] + result
         }
         return result
     }
