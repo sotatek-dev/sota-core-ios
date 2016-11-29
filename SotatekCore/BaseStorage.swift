@@ -23,7 +23,8 @@ public class BaseStorage<T: BaseEntity> {
     
     open func save(_ entity: T) {
         if get(entity.id) != nil {
-            try! _ = db.run(table.update(entity.columnValues))
+            let e = table.filter(T.idColumn == entity.id)
+            try! _ = db.run(e.update(entity.columnValues))
         } else {
             try! _ = db.run(table.insert(entity.columnValues))
         }
