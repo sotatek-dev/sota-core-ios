@@ -159,6 +159,13 @@ open class BaseRepository<T: BaseEntity> {
     
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         var cachedEntitiesObserver: Observable<ListDto<T>>!
+        let remoteEntitiesObserver = request.getList(count: count, options: options)
+            .flatMap(processMeta)
+            .map{
+                (response: HttpResponse) -> ListDto<T> in
+                let entities = self.saveJsonList(response.data)
+                return ListDto(data: entities, pagination: response.pagination)
+        }
         if let _ = options[Constant.RepositoryParam.pivot] as? T {
             _ = cache.removeAsync(options: options)
             cachedEntitiesObserver = Observable<ListDto<T>>.create {
@@ -167,24 +174,11 @@ open class BaseRepository<T: BaseEntity> {
                 subcribe.onCompleted()
                 return Disposables.create()
             }
-            let remoteEntitiesObserver = request.getList(count: count, options: options)
-                .flatMap(processMeta)
-                .map{
-                    (response: HttpResponse) -> ListDto<T> in
-                    let entities = self.saveJsonList(response.data)
-                    return ListDto(data: entities, pagination: response.pagination)
-            }
+            
             return Observable.first(remoteEntitiesObserver, cachedEntitiesObserver)
         }
         else {
             cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
-            let remoteEntitiesObserver = request.getList(count: count, options: options)
-                .flatMap(processMeta)
-                .map{
-                    (response: HttpResponse) -> ListDto<T> in
-                    let entities = self.saveJsonList(response.data)
-                    return ListDto(data: entities, pagination: response.pagination)
-            }
             return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
         }
     }
