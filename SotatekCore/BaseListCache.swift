@@ -12,8 +12,9 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
     var data = [T]()
     
     open override func save(_ entity: T) {
-        data.removeObject(entity)
-        data.append(entity)
+        if settingCacheSingleEntity {
+            addToCache(entity)
+        }
         storage.save(entity)
     }
     
@@ -36,7 +37,14 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
                 result = entity
             }
         }
-        result = storage.get(id)
+        if result == nil {
+            result = storage.get(id)
+            if result != nil {
+                if settingCacheSingleEntity {
+                    addToCache(result!)
+                }
+            }
+        }
         if let result = result {
             if result.validTime > Util.currentTime() {
                 return nil
@@ -53,6 +61,11 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
             if result.count < count {
                 result = []
             }
+            if !settingCacheSingleEntity {
+                for e in result {
+                    addToCache(e)
+                }
+            }
         }
         return result
     }
@@ -65,6 +78,11 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
             if result.count < count {
                 result = []
             }
+            if !settingCacheSingleEntity {
+                for e in result {
+                    addToCache(e)
+                }
+            }
         }
         return result
     }
@@ -73,6 +91,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         var result = data
         if data.count == 0 {
             result = storage.getAll()
+            data = [] + result
         }
         return result
     }
@@ -80,5 +99,10 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
     open override func clear() {
         data.removeAll()
         storage.clear()
+    }
+
+    private func addToCache(_ e: T) {
+        data.removeObject(e)
+        data.append(e)
     }
 }
