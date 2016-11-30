@@ -94,7 +94,7 @@ public class BaseStorage<T: BaseEntity> {
         try! _ = db.run(table.delete())
     }
     
-    open func remove(options: [String: Any] = [:]) -> [T] {
+    open func remove(options: [String: Any]) -> [T] {
         var query = table!
         if let pivot = options[Constant.RepositoryParam.pivot] as? T {
             let filter = getFilter(pivot: pivot, options: options)

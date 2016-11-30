@@ -30,6 +30,13 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         return entity
     }
     
+    open override func remove(options: [String : Any]) -> [T] {
+        let entities = self.storage.remove(options: options)
+        data.removeObjects(entities)
+        
+        return entities
+    }
+    
     open override func get(_ id: DataIdType) -> T? {
         var result: T?
         for entity in data {
