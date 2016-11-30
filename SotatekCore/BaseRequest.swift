@@ -57,12 +57,12 @@ open class BaseRequest<T: Serializable> {
         return createResponseObservable(method: .GET, url: "\(self.entityUrl)/\(id)", params: [:], mockFile: mockEntity)
     }
     
-    func getRequestParams(options: [String: Any]) -> [String: Any] {
+    func createRequestParams(options: [String: Any]) -> [String: Any] {
         return options[Constant.RepositoryParam.requestParams] as? [String: Any] ?? [:]
     }
     
     func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
-        let params = getRequestParams(options: options)
+        let params = createRequestParams(options: options)
         return getList(url: self.listUrl, params: params, mockFile: self.mockList)
     }
     
@@ -71,7 +71,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     func getAll(options: [String: Any]) -> Observable<HttpResponse> {
-        let params = getRequestParams(options: options)
+        let params = createRequestParams(options: options)
         return getList(url: self.listUrl, params: params, mockFile: self.mockAll)
     }
     
@@ -101,14 +101,17 @@ open class BaseRequest<T: Serializable> {
             return Disposables.create()
         })
     }
+
+    func createHeaders() -> [String: String] {
+        return [:]
+    }
     
     func executeRequest(method: HTTPVerb, url: String, params: [String: Any], _ completionHandler:@escaping ((Response) -> Void)) {
         do {
-            var requestParams = params
-            requestParams[Constant.requestAuthToken] = AppConfig.authToken as AnyObject?
             print(url)
-            print(requestParams)
-            let opt = try HTTP.New(url, method: method, parameters: requestParams)
+            print(params)
+            let headers = createHeaders()
+            let opt = try HTTP.New(url, method: method, parameters: params, headers: headers)
             opt.start(completionHandler)
         } catch let error {
             print("got an error creating the request: \(error)")
