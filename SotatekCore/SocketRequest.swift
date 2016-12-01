@@ -12,11 +12,11 @@ import SwiftyJSON
 
 public class SocketRequest {
     let notifier = Notifier.socketNoitfier
-    let socket: SocketIOClient!
+    var socket: SocketIOClient!
     var roomId: DataIdType!
     
     init(namespace: String) {
-        let connectParams = SocketIOClientOption.connectParams([Constant.requestAuthToken: AppConfig.authToken])
+        let connectParams = SocketIOClientOption.connectParams(createConnectParams())
         let config: SocketIOClientConfiguration = [
             SocketIOClientOption.log(true),
             SocketIOClientOption.forcePolling(true),
@@ -30,6 +30,10 @@ public class SocketRequest {
         socket.on("room-changed", callback: {data, ack in
             self.notifier.notifyObservers(Constant.commandRoomChanged, data: data[0])
         })
+    }
+
+    func createConnectParams() -> [String: String] {
+        return [:]
     }
     
     open func connect(roomId: DataIdType) {
