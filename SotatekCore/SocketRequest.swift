@@ -23,7 +23,8 @@ public class SocketRequest {
             connectParams,
             SocketIOClientOption.nsp(namespace)]
         socket = SocketIOClient(socketURL: URL(string: AppConfig.server)!, config: config)
-        socket.on("connect", callback: {data, ack in
+        socket.on("connect", callback: {
+            [unowned self] data, ack in
             self.joinRoom(self.roomId)
         })
         socket.on("room-changed", callback: {data, ack in
@@ -49,15 +50,18 @@ public class SocketRequest {
     }
     
     func addDataEvent(_ type: BaseEntity.Type) {
-        socket.on(type.self.entityName, callback: {data, ack in
-            let json = JSON(data)
+        socket.on(type.self.entityName, callback: {
+            [unowned self] data, ack in
+            print("Data from socket: \(data[0]) --")
+            let json = JSON(data[0])
             let entity = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: entity))
         })
     }
     
     func addDataEvent(_ type: BaseDto.Type) {
-        socket.on(type.self.entityName, callback: {data, ack in
+        socket.on(type.self.entityName, callback: {
+            [unowned self] data, ack in
             print("Data from socket: \(data[0]) --")
             let json = JSON(data[0])
             let dto = type.init(fromJson: json)

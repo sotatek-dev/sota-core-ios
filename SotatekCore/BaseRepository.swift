@@ -161,12 +161,15 @@ open class BaseRepository<T: BaseEntity> {
         let cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
         let remoteEntitiesObserver = request.getList(count: count, options: options)
             .flatMap(processMeta)
-            .map({(response: HttpResponse) -> ListDto<T> in
+            .map{(response: HttpResponse) -> ListDto<T> in
+                if let _ = options[Constant.RepositoryParam.pivot] as? T {
+                    _ = self.cache.remove(options: options)
+                }
                 let entities = self.saveJsonList(response.data)
+                
                 return ListDto(data: entities, pagination: response.pagination)
             }
-        )
-        return Observable.first(cachedEntitiesObserver, remoteEntitiesObserver)
+        return Observable.concat([cachedEntitiesObserver, remoteEntitiesObserver])
     }
     
     func saveJsonList(_ json: JSON) -> [T] {
