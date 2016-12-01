@@ -12,12 +12,16 @@ import SwiftyJSON
 class SocketRepository {
     let notifier = Notifier.socketNoitfier
     
-    var socketRequest: SocketRequest
+    var socketRequest: SocketRequest!
     var dtoTypes = [BaseDto.entityName: BaseDto.self]
     var entityTypes = [BaseEntity.entityName: BaseEntity.self]
     
     init(namespace: String) {
-        socketRequest = SocketRequest(namespace: namespace)
+        socketRequest = createSocketRequest(namespace: namespace)
+    }
+
+    func createSocketRequest(namespace: String) -> SocketRequest {
+        return SocketRequest(namespace: namespace)
     }
     
     open func connect(roomId: DataIdType) {
