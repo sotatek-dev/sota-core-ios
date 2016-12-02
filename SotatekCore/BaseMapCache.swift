@@ -17,8 +17,11 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         fatalError("getGroupId must be implemented")
     }
     
-    func getGroupId(options: [String: Any]) -> TGroupId {
-        fatalError("getGroupId must be implemented")
+    final func getGroupId(options: [String: Any]) -> TGroupId {
+        if let groupId = options[Constant.RepositoryParam.groupId] as? TGroupId {
+            return groupId
+        }
+        fatalError("Parameter options has to contain value for key groupId")
     }
     
     open override func save(_ entity: TEntity) {
@@ -60,8 +63,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
             }
         }
         if let entity = storage.get(id) {
-            let groupId = getGroupId(entity)
-            map[groupId] = map[groupId] ?? [] + [entity]
+            addToCache(entity)
             
             return entity
         }
@@ -85,7 +87,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
             if result.count < count {
                 result = []
             }
-            map[groupId] = map[groupId] ?? [] + result
+            addToCache(result)
         }
         return result
     }
@@ -97,8 +99,8 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
             result = Util.getSetOfBig(list, pivot: pivot, count: count)
         }
         if result.count < count {
-            result = storage.getNextList(pivot: pivot, count: count, options: options)
-            map[groupId] = map[groupId] ?? [] + result
+            result = storage.getNextList(pivot: pivot, count: count - result.count, options: options)
+            addToCache(result)
         }
         return result
     }
@@ -108,7 +110,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         var result = map[groupId] ?? []
         if result.count == 0 {
             result = storage.getAll(options: options)
-            map[groupId] = [] + result
+            map[groupId] = result
         }
         return result
     }
@@ -118,6 +120,22 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         var list = map[key] ?? []
         list.removeObject(e)
         list.append(e)
+        map[key] = list
+    }
+    
+    private func addToCache(_ result: [TEntity]) {
+        guard result.count > 0 else {
+            return
+        }
+        
+        let key = getGroupId(result.first!)
+        var list = map[key] ?? []
+        for el in result {
+            if list.index(of: el) == nil {
+                list.append(el)
+            }
+        }
+        
         map[key] = list
     }
 }
