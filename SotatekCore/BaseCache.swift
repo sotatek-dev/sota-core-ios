@@ -33,6 +33,11 @@ open class BaseCache<T: BaseEntity>: Cache {
         return entity
     }
     
+    open func remove(options: [String: Any]) -> [T] {
+        fail()
+        return []
+    }
+    
     open func get(_ id: DataIdType) -> T? {
         fail()
         return nil
@@ -139,7 +144,7 @@ open class BaseCache<T: BaseEntity>: Cache {
             }
             print("Got \(entities.count) from cache")
             if entities.count >= count {
-                //TODO: add paginatin data
+                //TODO: add pagination data
                 subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
             }
             subscribe.onCompleted()
@@ -151,11 +156,21 @@ open class BaseCache<T: BaseEntity>: Cache {
         return Observable<ListDto<T>>.create({subscribe in
             let entities = self.getAll(options: options)
             if entities.count > 0 {
-                //TODO: add paginatin data
+                //TODO: add pagination data
                 subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
             }
             subscribe.onCompleted()
             return Disposables.create()
         })
+    }
+    
+    func removeAsync(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
+        return Observable<ListDto<T>>.create {
+            subscribe in
+            let entities = self.remove(options: options)
+            subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
+            subscribe.onCompleted()
+            return Disposables.create()
+        }
     }
 }

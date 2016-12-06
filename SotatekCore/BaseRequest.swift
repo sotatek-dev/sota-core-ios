@@ -32,11 +32,19 @@ open class BaseRequest<T: Serializable> {
     }
     
     open func create(_ entity: T, url: String? = nil) -> Observable<HttpResponse> {
-        return createResponseObservable(method: .POST, url: url ?? self.entityUrl, params: entity.toDictionary(), mockFile: "")
+        var params = entity.toDictionary()
+        for (key, value) in createRequestParams(options: [:]) {
+            params[key] = value
+        }
+        return createResponseObservable(method: .POST, url: url ?? self.entityUrl, params: params, mockFile: "")
     }
     
     open func update(_ entity: T, url: String? = nil) -> Observable<HttpResponse> {
-        return createResponseObservable(method: .PUT, url: url ?? self.entityUrl, params: entity.toDictionary())
+        var params = entity.toDictionary()
+        for (key, value) in createRequestParams(options: [:]) {
+            params[key] = value
+        }
+        return createResponseObservable(method: .PUT, url: url ?? self.entityUrl, params: params)
     }
     
     open func remove(_ entity: T) -> Observable<T> {
@@ -54,11 +62,16 @@ open class BaseRequest<T: Serializable> {
     }
     
     open func get(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<HttpResponse> {
-        return createResponseObservable(method: .GET, url: "\(self.entityUrl)/\(id)", params: [:], mockFile: mockEntity)
+        let params = createRequestParams(options: options)
+        return createResponseObservable(method: .GET, url: "\(self.entityUrl)/\(id)", params: params, mockFile: mockEntity)
     }
     
     func createRequestParams(options: [String: Any]) -> [String: Any] {
         return options[Constant.RepositoryParam.requestParams] as? [String: Any] ?? [:]
+    }
+
+    func createDefaultParams() -> [String: Any] {
+        return [:]
     }
     
     func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
@@ -108,10 +121,14 @@ open class BaseRequest<T: Serializable> {
     
     func executeRequest(method: HTTPVerb, url: String, params: [String: Any], _ completionHandler:@escaping ((Response) -> Void)) {
         do {
+            var requestParams = createDefaultParams()
+            for (key, value) in params {
+                requestParams[key] = value
+            }
             print(url)
-            print(params)
+            print(requestParams)
             let headers = createHeaders()
-            let opt = try HTTP.New(url, method: method, parameters: params, headers: headers)
+            let opt = try HTTP.New(url, method: method, parameters: requestParams, headers: headers)
             opt.start(completionHandler)
         } catch let error {
             print("got an error creating the request: \(error)")

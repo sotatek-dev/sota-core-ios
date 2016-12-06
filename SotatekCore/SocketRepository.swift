@@ -12,11 +12,16 @@ import SwiftyJSON
 class SocketRepository {
     let notifier = Notifier.socketNoitfier
     
-    var socketRequest = SocketRequest(namespace: Constant.SocketNamespace.liveStream)
+    var socketRequest: SocketRequest!
     var dtoTypes = [BaseDto.entityName: BaseDto.self]
     var entityTypes = [BaseEntity.entityName: BaseEntity.self]
     
     init(namespace: String) {
+        socketRequest = createSocketRequest(namespace: namespace)
+    }
+
+    func createSocketRequest(namespace: String) -> SocketRequest {
+        return SocketRequest(namespace: namespace)
     }
     
     open func connect(roomId: DataIdType) {
@@ -39,20 +44,6 @@ class SocketRepository {
     open func addDataType(_ type: BaseEntity.Type) {
 //        entityTypes[type.self.entityName] = type
         socketRequest.addDataEvent(type)
-    }
-    
-    open func onReceiveSocketData(json: JSON) {
-        for (key,subJson): (String, JSON) in json {
-            if let dtoType = dtoTypes[key] {
-                let dto = dtoType.init(fromJson: subJson)
-                notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: key, data: dto))
-            } else if let entityType = entityTypes[key] {
-                let entity = entityType.init(fromJson: subJson)
-                notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: key, data: entity))
-            } else {
-                print("Unknown data type: \(key)")
-            }
-        }
     }
     
     open func send(_ data: Serializable) {

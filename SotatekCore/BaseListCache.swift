@@ -6,7 +6,7 @@
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
-import Foundation
+import RxSwift
 
 open class BaseListCache<T: BaseEntity>: BaseCache<T> {
     var data = [T]()
@@ -28,6 +28,13 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         data.removeObject(entity)
         _ = storage.remove(entity)
         return entity
+    }
+    
+    open override func remove(options: [String : Any]) -> [T] {
+        let entities = self.storage.remove(options: options)
+        data.removeObjects(entities)
+        
+        return entities
     }
     
     open override func get(_ id: DataIdType) -> T? {
@@ -100,7 +107,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         data.removeAll()
         storage.clear()
     }
-
+    
     private func addToCache(_ e: T) {
         data.removeObject(e)
         data.append(e)
