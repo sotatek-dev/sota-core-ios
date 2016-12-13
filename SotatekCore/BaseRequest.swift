@@ -67,7 +67,16 @@ open class BaseRequest<T: Serializable> {
     }
     
     func createRequestParams(options: [String: Any]) -> [String: Any] {
-        return options[Constant.RepositoryParam.requestParams] as? [String: Any] ?? [:]
+        var params = options[Constant.RepositoryParam.requestParams] as? [String: Any] ?? [:]
+        params[Constant.RequestParam.Pagination.type] = Constant.RequestParam.Pagination.cursor
+        params[Constant.RequestParam.Pagination.field] = "id"
+        if let pivot = options[Constant.RepositoryParam.pivot] as? BaseEntity {
+            params[Constant.RequestParam.Pagination.before] = pivot.id
+        } else if let pivot = options[Constant.RepositoryParam.pivot] as? BaseDto {
+            params[Constant.RequestParam.Pagination.before] = pivot.id
+        }
+
+        return params
     }
 
     func createDefaultParams() -> [String: Any] {
@@ -75,7 +84,8 @@ open class BaseRequest<T: Serializable> {
     }
     
     func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
-        let params = createRequestParams(options: options)
+        var params = createRequestParams(options: options)
+        params[Constant.RequestParam.Pagination.limit] = count
         return getList(url: self.listUrl, params: params, mockFile: self.mockList)
     }
     
