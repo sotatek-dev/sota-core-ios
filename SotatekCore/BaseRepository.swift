@@ -105,26 +105,31 @@ open class BaseRepository<T: BaseEntity> {
         return cache.saveAsync(entity)
     }
 
-    open func remove(_ entity: T) -> Observable<T> {
-        return settingSyncRemoteFirst ? removeRemoteFirst(entity) : removeLocalFirst(entity)
+    open func remove(_ id: DataIdType) -> Observable<Bool> {
+        //TODO reimplement
+        return request.remove(id).flatMap(processMeta)
+            .flatMap({(response: HttpResponse) -> Observable<Bool> in
+                return Observable.just(true)
+            })
+//        return settingSyncRemoteFirst ? removeRemoteFirst(id) : removeLocalFirst(id)
     }
-    
-    private func removeRemoteFirst(_ entity: T) -> Observable<T> {
-        return request.remove(entity).flatMap({entity in
-            return self.cache.removeAsync(entity)
-        })
-    }
-    
-    private func removeLocalFirst(_ entity: T) -> Observable<T> {
-        return cache.removeAsync(entity).concat(
-            request.remove(entity)
-                .catchError({error in
-                    _ = self.cache.saveAsync(entity)
-                    return Observable.error(error)
-                })
-        )
-    }
-    
+
+//    private func removeRemoteFirst(_ id: DataIdType) -> Observable<Bool> {
+//        return request.remove(id).flatMap({(response: HttpResponse) -> Observable<Bool> in
+//            return self.cache.removeAsync(entity)
+//        })
+//    }
+//    
+//    private func removeLocalFirst(_ id: DataIdType) -> Observable<T> {
+//        return cache.removeAsync(entity).concat(
+//            request.remove(id)
+//                .catchError({error in
+//                    _ = self.cache.saveAsync(entity)
+//                    return Observable.error(error)
+//                })
+//        )
+//    }
+
     open func get(_ id: DataIdType) -> Observable<T> {
         let cachedEntity = cache.getAsync(id)
         let remoteEntity = request.get(id)
