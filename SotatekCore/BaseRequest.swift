@@ -18,6 +18,8 @@ open class BaseRequest<T: Serializable> {
     open var mockList = ""
     open var mockNextList = ""
     open var mockAll = ""
+
+    open var options: [String: Any] = [:]
     
     open var entityUrl: String {
         get {
@@ -59,7 +61,13 @@ open class BaseRequest<T: Serializable> {
     }
     
     func createRequestParams(options: [String: Any]) -> [String: Any] {
-        var params = options[Constant.RepositoryParam.requestParams] as? [String: Any] ?? [:]
+        self.options = options
+        let params = options[Constant.RepositoryParam.requestParams] as? [String: Any] ?? [:]
+        return params
+    }
+
+    func createPaginationParams() -> [String: Any] {
+        var params: [String: Any] = [:]
         params[Constant.RequestParam.Pagination.type] = Constant.RequestParam.Pagination.cursor
         params[Constant.RequestParam.Pagination.field] = "id"
         if let pivot = options[Constant.RepositoryParam.pivot] as? BaseEntity {
@@ -67,7 +75,6 @@ open class BaseRequest<T: Serializable> {
         } else if let pivot = options[Constant.RepositoryParam.pivot] as? BaseDto {
             params[Constant.RequestParam.Pagination.before] = pivot.id
         }
-
         return params
     }
 
@@ -81,7 +88,11 @@ open class BaseRequest<T: Serializable> {
         return getList(url: self.listUrl, params: params, mockFile: self.mockList)
     }
     
-    func getList(url: String, params: [String: Any], mockFile: String = "") -> Observable<HttpResponse> {
+    func getList(url: String, params originParams: [String: Any], mockFile: String = "") -> Observable<HttpResponse> {
+        var params = createPaginationParams()
+        for (key, value) in originParams {
+            params[key] = value
+        }
         return createResponseObservable(method: .GET, url: url, params: params, mockFile: mockFile)
     }
     
