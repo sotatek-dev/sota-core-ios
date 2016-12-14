@@ -47,18 +47,10 @@ open class BaseRequest<T: Serializable> {
         return createResponseObservable(method: .PUT, url: url ?? self.entityUrl, params: params)
     }
     
-    open func remove(_ entity: T) -> Observable<T> {
-        return Observable<T>.create({subscribe in
-            self.delay({
-                if Int.random() % 2 == 0 {
-                    subscribe.onNext(entity)
-                } else {
-                    subscribe.onError(NSError())
-                }
-                subscribe.onCompleted()
-            })
-            return Disposables.create()
-        })
+    open func remove(_ id: DataIdType, url: String? = nil) -> Observable<HttpResponse> {
+        var params = createRequestParams(options: [:])
+        let removeUrl = url ?? "\(self.entityUrl)/\(id)"
+        return createResponseObservable(method: .DELETE, url: removeUrl, params: params)
     }
     
     open func get(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<HttpResponse> {
