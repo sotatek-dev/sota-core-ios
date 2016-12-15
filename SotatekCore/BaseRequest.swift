@@ -20,6 +20,7 @@ open class BaseRequest<T: Serializable> {
     open var mockAll = ""
 
     open var options: [String: Any] = [:]
+    open var count: Int?
     
     open var entityUrl: String {
         get {
@@ -50,7 +51,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     open func remove(_ id: DataIdType, url: String? = nil) -> Observable<HttpResponse> {
-        var params = createRequestParams(options: [:])
+        let params = createRequestParams(options: [:])
         let removeUrl = url ?? "\(self.entityUrl)/\(id)"
         return createResponseObservable(method: .DELETE, url: removeUrl, params: params)
     }
@@ -60,8 +61,9 @@ open class BaseRequest<T: Serializable> {
         return createResponseObservable(method: .GET, url: "\(self.entityUrl)/\(id)", params: params, mockFile: mockEntity)
     }
     
-    func createRequestParams(options: [String: Any]) -> [String: Any] {
+    func createRequestParams(count: Int? = nil, options: [String: Any]) -> [String: Any] {
         self.options = options
+        self.count = count
         let params = options[Constant.RepositoryParam.requestParams] as? [String: Any] ?? [:]
         return params
     }
@@ -75,6 +77,7 @@ open class BaseRequest<T: Serializable> {
         } else if let pivot = options[Constant.RepositoryParam.pivot] as? BaseDto {
             params[Constant.RequestParam.Pagination.before] = pivot.id
         }
+        params[Constant.RequestParam.Pagination.limit] = count
         return params
     }
 
@@ -82,10 +85,9 @@ open class BaseRequest<T: Serializable> {
         return [:]
     }
     
-    func getList(count: Int, options: [String: Any]) -> Observable<HttpResponse> {
-        var params = createRequestParams(options: options)
-        params[Constant.RequestParam.Pagination.limit] = count
-        return getList(url: self.listUrl, params: params, mockFile: self.mockList)
+    func getList(count: Int, options: [String: Any], url: String? = nil) -> Observable<HttpResponse> {
+        let params = createRequestParams(count: count, options: options)
+        return getList(url: url ?? self.listUrl, params: params, mockFile: self.mockList)
     }
     
     func getList(url: String, params originParams: [String: Any], mockFile: String = "") -> Observable<HttpResponse> {
