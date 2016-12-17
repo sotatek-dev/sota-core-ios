@@ -17,6 +17,8 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     
     var views = [UIView]()
     
+    fileprivate var controllers: [BaseController] = []
+    
     override open func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -63,6 +65,10 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     }
     
     public func update(_ command: Int, data: Any?) {}
+
+    deinit {
+        releaseControllers()
+    }
 }
 
 extension UIViewController {
@@ -85,5 +91,17 @@ extension UIViewController {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
         UIApplication.shared.keyWindow?.rootViewController = vc
+    }
+}
+
+extension BaseViewController: ControllerManager {
+    open func addController(_ controller: BaseController) {
+        controllers.append(controller)
+    }
+
+    open func releaseControllers() {
+        for controller in controllers {
+            Notifier.serviceNotifier.removeObserver(controller)
+        }
     }
 }
