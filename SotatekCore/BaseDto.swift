@@ -10,6 +10,8 @@ import Foundation
 import SwiftyJSON
 
 class BaseDto: NSObject, NSCoding, Serializable {
+    open var id: DataIdType!
+
     open static var entityName: String {
         get {
             var name = String(describing: self)
@@ -34,11 +36,15 @@ class BaseDto: NSObject, NSCoding, Serializable {
     override init() {}
     
     public required init?(coder aDecoder: NSCoder) {
+        self.id = aDecoder.decodeObject(forKey: "id") as! DataIdType
     }
     
     public required init(fromJson json: JSON!) {
+        if let value = json["id"].object as? DataIdType {
+            self.id = value
+        }
     }
-    
+
     public func toDictionary() -> [String : Any] {
         let dictionary = [String: Any]()
         return dictionary

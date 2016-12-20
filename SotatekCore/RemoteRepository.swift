@@ -36,6 +36,25 @@ class RemoteRepository<T: Serializable> {
             })
 
     }
+
+    open func update(_ object: T, options: [String : Any] = [:]) -> Observable<T> {
+        return request.update(object)
+            .flatMap(processMeta)
+            .map({(response: HttpResponse) -> T in
+                let entity = T(fromJson: response.data)
+                return entity
+            })
+
+    }
+
+    open func remove(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<Bool> {
+        return request.remove(id)
+            .flatMap(processMeta)
+            .map({(response: HttpResponse) -> Bool in
+                return true
+            })
+
+    }
     
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         return request.getList(count: count, options: options)

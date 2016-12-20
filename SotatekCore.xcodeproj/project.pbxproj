@@ -42,6 +42,7 @@
 		27FEDAE21D8FBF9700DF68F1 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE11D8FBF9700DF68F1 /* Random.swift */; };
 		27FEDAE41D8FCCEB00DF68F1 /* BaseMapCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */; };
 		27FEDAEC1D8FDAB000DF68F1 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAEB1D8FDAB000DF68F1 /* Constant.swift */; };
+		D67A3C411E0399C50086B31B /* ControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D67A3C401E0399C50086B31B /* ControllerManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +104,7 @@
 		27FEDAE11D8FBF9700DF68F1 /* Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseMapCache.swift; sourceTree = "<group>"; };
 		27FEDAEB1D8FDAB000DF68F1 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		D67A3C401E0399C50086B31B /* ControllerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +217,7 @@
 			isa = PBXGroup;
 			children = (
 				27A155621D8125B9000DCA0D /* BaseController.swift */,
+				D67A3C401E0399C50086B31B /* ControllerManager.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -472,6 +475,7 @@
 				27FEDAE41D8FCCEB00DF68F1 /* BaseMapCache.swift in Sources */,
 				27A155631D8125B9000DCA0D /* BaseController.swift in Sources */,
 				27A156371D89695D000DCA0D /* ViewControllerDelegate.swift in Sources */,
+				D67A3C411E0399C50086B31B /* ControllerManager.swift in Sources */,
 				2722B21A1D93E85800A264F3 /* BaseStorage.swift in Sources */,
 				27A1556B1D812615000DCA0D /* Observer.swift in Sources */,
 				27A1B51C1DA3BE0500B9BD8B /* Serializable.swift in Sources */,

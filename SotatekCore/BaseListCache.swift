@@ -31,6 +31,10 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
     }
     
     open override func remove(options: [String : Any]) -> [T] {
+        if settingCacheSingleEntity {
+            return []
+        }
+
         let entities = self.storage.remove(options: options)
         data.removeObjects(entities)
         
@@ -61,6 +65,10 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
     }
     
     open override func getList(count: Int, options: [String: Any] = [:]) -> [T] {
+        if settingCacheSingleEntity {
+            return []
+        }
+
         var result: [T];
         result = Util.getHeadSubSet(data, count: count)
         if result.count < count {
@@ -78,6 +86,10 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
     }
     
     open override func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> [T] {
+        if settingCacheSingleEntity {
+            return []
+        }
+
         var result: [T]
         result = Util.getSetOfBig(data, pivot: pivot, count: count)
         if result.count < count {
