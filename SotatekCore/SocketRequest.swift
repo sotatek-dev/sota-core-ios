@@ -25,7 +25,7 @@ public class SocketRequest {
         socket = SocketIOClient(socketURL: URL(string: AppConfig.server)!, config: config)
         socket.on("connect", callback: {
             [unowned self] data, ack in
-            self.joinRoom(self.roomId)
+            self.onSocketConnected()
         })
         socket.on("room-changed", callback: {data, ack in
             self.notifier.notifyObservers(Constant.commandRoomChanged, data: data[0])
@@ -36,6 +36,9 @@ public class SocketRequest {
         return [:]
     }
     
+    open func onSocketConnected(){
+        
+    }
     open func connect(roomId: DataIdType) {
         self.roomId = roomId
         socket.connect()
@@ -52,7 +55,9 @@ public class SocketRequest {
             self.socket.emit("join-room", roomId)
         }
     }
-    
+    open func joinRooms(listRooms: [String]){
+        
+    }
     func addDataEvent(_ type: BaseEntity.Type) {
         socket.on(type.self.entityName, callback: {
             [unowned self] data, ack in
