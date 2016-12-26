@@ -65,7 +65,7 @@ code += 'import SwiftyJSON\n\n';
 code += 'class ' + className + ': BaseEntity {\n';
 
 for (var i in data) {
-	code += 'var ' + i + ': ' + getType(data[i]) + '\n';
+	code += 'var ' + i + ': ' + getType(data[i]) + '!\n';
 }
 
 code += '\n';
@@ -147,20 +147,18 @@ code += 'entity.validTime = row[BaseEntity.validTimeColumn]\n';
 code += 'return entity\n';
 code += '}\n\n';
 
-code += 'override open var columnValues: [Setter]! {\n';
+code += 'override open var columnValues: [Setter] {\n';
 code += 'get {\n';
-code += 'return super.columnValues + [';
+code += "var result = super.columnValues\n"
 firstProperty = true
 for (var i in data) {
-	if (firstProperty) {
-		firstProperty = false;
-		code += '\n' + className + '.' + i + 'Column <- self.' + i
-	} else {
-		code += ',\n' + className + '.' + i + 'Column <- self.' + i
-	}
+	code += 'if let value = self.' + i + ' {\n';
+	code += 'result.append(' + className + '.' + i + 'Column <- value)\n';
+	code += '}\n';
 }
+code += 'return result';
 
-code += ']\n}\n}\n';
+code += '\n}\n}\n';
 
 code += '}\n';
 
