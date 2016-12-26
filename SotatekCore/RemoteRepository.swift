@@ -18,8 +18,8 @@ class RemoteRepository<T: Serializable> {
         self.request = request
     }
     
-    open func create(_ object: T) -> Observable<T> {
-        return request.create(object)
+    open func create(_ object: T, options: [String : Any] = [:]) -> Observable<T> {
+        return request.create(object, options: options)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> T in
                 let entity = T(fromJson: response.data)

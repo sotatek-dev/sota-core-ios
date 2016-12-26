@@ -25,6 +25,10 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        viewDidAppear()
+    }
+
+    fileprivate func viewDidAppear() {
         Notifier.controllerNoitfier.addObserver(self) // listen for events from controller
         Notifier.viewNotifier.addObserver(self) // listen for events from subviews
         if !viewAppeared {
@@ -41,6 +45,10 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     
     override open func viewWillDisappear(_ animated: Bool)  {
         super.viewWillDisappear(animated)
+        viewWillDisappear()
+    }
+
+    fileprivate func viewWillDisappear() {
         Notifier.controllerNoitfier.removeObserver(self)
         Notifier.viewNotifier.removeObserver(self)
         for view in views {
@@ -83,14 +91,37 @@ extension UIViewController {
     func showDialog(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
-        vc.delegate = delegate
-        self.present(vc, animated: true, completion: nil)
+        vc.delegate = DialogDelegate(viewController: self as? BaseViewController, delegate: delegate)
+        vc.modalPresentationStyle = .custom
+        self.present(vc, animated: true, completion: {
+            if let baseViewController = self as? BaseViewController {
+                baseViewController.viewWillDisappear()
+            }
+        })
     }
     
     func showRootViewController(_ id: String, data: [String: Any] = [String: Any]()) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
         UIApplication.shared.keyWindow?.rootViewController = vc
+    }
+
+    class DialogDelegate: ViewControllerDelegate {
+        var delegate: ViewControllerDelegate?
+        weak var viewController: BaseViewController?
+
+        init(viewController: BaseViewController?, delegate: ViewControllerDelegate?) {
+            self.delegate = delegate
+        }
+
+        func viewControllerDidDismiss(sender: UIViewController, data: [String: Any]) {
+            if let viewController = self.viewController {
+                viewController.viewDidAppear()
+            }
+            if let delegate = delegate {
+                delegate.viewControllerDidDismiss?(sender: sender, data: data)
+            }
+        }
     }
 }
 
