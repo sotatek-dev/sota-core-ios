@@ -2,27 +2,34 @@
 //  BaseController.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/8/16.
+//  Created by Thanh Tran on 9/8/16.
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
 import Foundation
 
-public class BaseController: Observer {
-    var notifier = Notifier.instance
+open class BaseController: Observer {
+    var notifier = Notifier.controllerNoitfier
     
-    func notifyObservers(command: String, data: AnyObject? = nil) {
+    init() {
+        Notifier.serviceNotifier.addObserver(self)
+    }
+    
+    func notifyObservers(_ command: Int, data: Any? = nil) {
         notifier.notifyObservers(command, data: data)
     }
     
-    func addObserver(observer: Observer) {
+    public func addObserver(_ observer: Observer) {
         notifier.addObserver(observer)
     }
     
-    func removeObserver(observer: Observer) {
+    public func removeObserver(_ observer: Observer) {
         notifier.removeObserver(observer)
     }
-    public func update(command: String, data: AnyObject?) {
+    
+    public func update(_ command: Int, data: Any?) {}
+    
+    func initialize() {
         
     }
 }

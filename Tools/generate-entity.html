@@ -1,0 +1,169 @@
+<body>
+<input type='text' id='name'>
+<br /><br />
+<textarea id='code' rows="20" cols="100"></textarea>
+<br /><br />
+aaaaaaaaaaaaaaaaaaaaaabbbbbbbbaaaaaaaaaaaaaaaaaaaaaabbbbbbbb<input type="button" onclick="generate()" value="Generate"/><input type="button" onclick="copy()" value="Copy"/>
+<br /><br />
+<textarea id="output"></textarea>
+<script type="text/javascript">
+	var className = 'SubscriptionEntity';
+	var data = {
+        "name": "Golden",
+        "price": 100,
+        "interval": "m"
+      }
+
+function getType(v) {
+	var type = typeof v
+	if (type == 'number') {
+		return 'Int';
+	} else if (type == 'string') {
+		return 'String';
+	} else if (type == 'boolean') {
+		return 'Bool';
+	} else {
+		return '____';
+	}
+}
+
+function getTypeLowerCase(v) {
+	var type = getType(v);
+	return type.charAt(0).toLowerCase() + type.slice(1);
+}
+
+function getTypeUpperCase(v) {
+	return v.charAt(0).toUpperCase() + v.slice(1);
+}
+
+function copy() {
+
+}
+
+
+function generate() {
+className = getTypeUpperCase(document.getElementById('name').value) + 'Entity'
+data = JSON.parse(document.getElementById('code').value)
+var data2 = {}
+for (var i in data) {
+	if (i == 'id') {
+
+	} else if (i == 'description') {
+		data2['desc'] = data[i];
+	} else {
+		data2[i] = data[i];
+	}
+}
+data = data2;
+
+var firstProperty = true;
+
+var code = '';
+
+code += 'import SQLite\n';
+code += 'import SwiftyJSON\n\n';
+code += 'class ' + className + ': BaseEntity {\n';
+
+for (var i in data) {
+	code += 'var ' + i + ': ' + getType(data[i]) + '!\n';
+}
+
+code += '\n';
+
+code += 'init (id: Int';
+for (var i in data) {
+	code += ', ' + i + ': ' + getType(data[i])
+}
+code += ') {\n';
+
+for (var i in data) {
+	code += 'self.' + i + ' = ' + i + '\n';
+}
+code += 'super.init(id: id)\n';
+
+code += '}\n\n';
+
+code += 'public override func encode(with aCoder: NSCoder) {\n';
+code +='super.encode(with: aCoder)\n';
+for (var i in data) {
+	code += 'aCoder.encode(' + i + ', forKey: "' + i + '")\n';
+}
+code += '}\n';
+
+code += 'public required init?(coder aDecoder: NSCoder) {\n'
+for (var i in data) {
+	var type = getType(data[i])
+	if (type == 'String') {
+		code += 'self.' + i + ' = aDecoder.decodeObject(forKey: "' + i + '") as! String\n';
+	}
+	else if (type == 'Int') {
+		code += 'self.' + i + ' = aDecoder.decodeInteger(forKey: "' + i + '")\n';
+	}
+	else {
+		code += 'self.' + i + ' = aDecoder.decode' + type + '(forKey: "' + i + '")\n';
+	}
+}
+code += 'super.init(coder: aDecoder)\n';
+code += '}\n\n';
+
+code += 'required init(fromJson json: JSON!){\n';
+for (var i in data) {
+	code += i + ' = json["' + i + '"].' + getTypeLowerCase(data[i]) + 'Value\n';
+}
+code += 'super.init(fromJson: json)\n';
+code += '}\n\n';
+
+code += 'override func toDictionary() -> [String: Any] {\n';
+code += 'var dictionary = super.toDictionary()\n';
+for (var i in data) {
+	//code += 'if ' + i + ' != nil {\n';
+	code += 'dictionary["' + i + '"] = ' + i + '\n';
+	//code += '}\n';
+}
+code += 'return dictionary\n';
+code += '}\n\n';
+
+for (var i in data) {
+	code += 'static let ' + i + 'Column = Expression<' + getType(data[i])  + '>("' + i + '")\n'
+}
+
+code += '\n';
+
+code += 'open override class func createTable(builder: TableBuilder) {\n'
+code += 'BaseEntity.createTable(builder: builder)\n'
+for (var i in data) {
+	code += 'builder.column('  + className + '.' + i + 'Column)\n';
+}
+code += '}\n\n\n';
+
+code += 'override public class func toEntity(_ row: Row) -> ' + className+ ' {\n';
+code += 'let entity = ' + className + '(\n';
+code += 'id: row[ContactEntity.idColumn]'
+for (var i in data) {
+	code += ',\n' + i + ': row[' + className + '.' + i + 'Column]'
+}
+code += ')\n'
+code += 'entity.validTime = row[BaseEntity.validTimeColumn]\n';
+code += 'return entity\n';
+code += '}\n\n';
+
+code += 'override open var columnValues: [Setter] {\n';
+code += 'get {\n';
+code += "var result = super.columnValues\n"
+firstProperty = true
+for (var i in data) {
+	code += 'if let value = self.' + i + ' {\n';
+	code += 'result.append(' + className + '.' + i + 'Column <- value)\n';
+	code += '}\n';
+}
+code += 'return result';
+
+code += '\n}\n}\n';
+
+code += '}\n';
+
+code = code.replace(/"desc"/g, '"description"');
+document.getElementById('output').value = code;
+}
+</script>
+<body>

@@ -2,13 +2,13 @@
 //  ViewControllerDelegate.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/14/16.
-//  Copyright © 2016 Thanh Tran. All rights reserved.
+//  Created by Thanh Tran on 9/14/16.
+//  Copyright © 2016 SotaTek. All rights reserved.
 //
 
 import Foundation
 import UIKit
 
-protocol ViewControllerDelegate {
-    func viewControllerDidDismiss(sender: UIViewController, _ data: [String: AnyObject])
+@objc protocol ViewControllerDelegate {
+    @objc optional func viewControllerDidDismiss(sender: UIViewController, data: [String: Any])
 }
