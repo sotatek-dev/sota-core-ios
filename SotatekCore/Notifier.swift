@@ -27,6 +27,10 @@ open class Notifier {
         }
         return instance!
     }
+
+    open static func removeInstance(_ name: String) {
+        instances[name] = nil
+    }
     
     var observers = [Observer]()
     
