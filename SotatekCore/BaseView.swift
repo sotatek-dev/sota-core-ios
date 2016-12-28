@@ -38,3 +38,21 @@ extension UIView {
         Notifier.viewNotifier.notifyObservers(command, data: data)
     }
 }
+
+class BaseView: UIView, ControllerManager {
+    private var controllers: [BaseController] = []
+
+    func addController(_ controller: BaseController) {
+        controllers.append(controller)
+    }
+
+    func releaseControllers() {
+        for controller in controllers {
+            Notifier.serviceNotifier.removeObserver(controller)
+        }
+    }
+
+    deinit {
+        releaseControllers()
+    }
+}

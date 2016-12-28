@@ -85,7 +85,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
         return e
     }
     
-    open var columnValues: [Setter]! {
+    open var columnValues: [Setter] {
         get {
             return [
                 BaseEntity.idColumn <- self.id,

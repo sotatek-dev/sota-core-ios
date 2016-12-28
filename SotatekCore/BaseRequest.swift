@@ -12,7 +12,7 @@ import SwiftyJSON
 import SwiftHTTP
 
 open class BaseRequest<T: Serializable> {
-    var networkDelay: Int = 1
+    var networkDelay: Int = 3
     
     open var mockEntity = ""
     open var mockList = ""
@@ -34,9 +34,9 @@ open class BaseRequest<T: Serializable> {
         }
     }
     
-    open func create(_ entity: T, url: String? = nil) -> Observable<HttpResponse> {
+    open func create(_ entity: T, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
         var params = entity.toDictionary()
-        for (key, value) in createRequestParams(options: [:]) {
+        for (key, value) in createRequestParams(options: options) {
             params[key] = value
         }
         return createResponseObservable(method: .POST, url: url ?? self.entityUrl, params: params, mockFile: "")
@@ -56,9 +56,10 @@ open class BaseRequest<T: Serializable> {
         return createResponseObservable(method: .DELETE, url: removeUrl, params: params)
     }
     
-    open func get(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<HttpResponse> {
+    open func get(_ id: DataIdType, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
         let params = createRequestParams(options: options)
-        return createResponseObservable(method: .GET, url: "\(self.entityUrl)/\(id)", params: params, mockFile: mockEntity)
+        let getUrl = url ?? "\(self.entityUrl)/\(id)"
+        return createResponseObservable(method: .GET, url: getUrl, params: params, mockFile: mockEntity)
     }
     
     func createRequestParams(count: Int? = nil, options: [String: Any]) -> [String: Any] {
@@ -70,13 +71,13 @@ open class BaseRequest<T: Serializable> {
 
     func createPaginationParams() -> [String: Any] {
         var params: [String: Any] = [:]
-        params[Constant.RequestParam.Pagination.type] = Constant.RequestParam.Pagination.cursor
-        params[Constant.RequestParam.Pagination.field] = "id"
-        if let pivot = options[Constant.RepositoryParam.pivot] as? BaseEntity {
-            params[Constant.RequestParam.Pagination.before] = pivot.id
-        } else if let pivot = options[Constant.RepositoryParam.pivot] as? BaseDto {
-            params[Constant.RequestParam.Pagination.before] = pivot.id
-        }
+//        params[Constant.RequestParam.Pagination.type] = Constant.RequestParam.Pagination.cursor
+//        params[Constant.RequestParam.Pagination.field] = "id"
+//        if let pivot = options[Constant.RepositoryParam.pivot] as? BaseEntity {
+//            params[Constant.RequestParam.Pagination.before] = pivot.id
+//        } else if let pivot = options[Constant.RepositoryParam.pivot] as? BaseDto {
+//            params[Constant.RequestParam.Pagination.before] = pivot.id
+//        }
         params[Constant.RequestParam.Pagination.limit] = count
         return params
     }
@@ -151,6 +152,7 @@ open class BaseRequest<T: Serializable> {
     }
     
     func processResponse(response: Response, subscribe: AnyObserver<HttpResponse>) {
+//        self.delay {
         if let error = response.error {
             print(error)
             subscribe.on(.error(error))
@@ -159,8 +161,10 @@ open class BaseRequest<T: Serializable> {
             print(json)
             let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
             subscribe.onNext(jsonResponse)
+
         }
         subscribe.onCompleted()
+//        }
     }
     
     func responseMockData(mockFile: String, subscribe: AnyObserver<HttpResponse>) {
