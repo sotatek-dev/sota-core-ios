@@ -64,6 +64,11 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
         dictionary["id"] = id
         return dictionary
     }
+
+    func toString() -> String {
+        let json = JSON(toDictionary())
+        return json.rawString()!
+    }
     
     public func clone() -> BaseEntity {
         let entity = BaseEntity(id: self.id)
