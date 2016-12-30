@@ -97,7 +97,7 @@ extension UIViewController {
         vc.modalPresentationStyle = .custom
         self.present(vc, animated: true, completion: {
             if let baseViewController = self as? BaseViewController {
-                baseViewController.viewWillDisappear()
+                baseViewController.viewWillDisappear(true)
             }
         })
     }
@@ -119,7 +119,7 @@ extension UIViewController {
 
         func viewControllerDidDismiss(sender: UIViewController, data: [String: Any]) {
             if let viewController = self.viewController {
-                viewController.viewDidAppear()
+                viewController.viewDidAppear(true)
             }
             if let delegate = delegate {
                 delegate.viewControllerDidDismiss?(sender: sender, data: data)
