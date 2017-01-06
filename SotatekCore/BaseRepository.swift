@@ -130,6 +130,10 @@ open class BaseRepository<T: BaseEntity> {
 //        )
 //    }
 
+    open func invalidate(_ id: DataIdType) -> Observable<Bool> {
+        return cache.removeAsync(id)
+    }
+
     open func get(_ id: DataIdType) -> Observable<T> {
         let cachedEntity = cache.getAsync(id)
         let remoteEntity = request.get(id)

@@ -37,6 +37,10 @@ extension UIView {
     func notifyObservers(_ command: Int, data: AnyObject? = nil) {
         Notifier.viewNotifier.notifyObservers(command, data: data)
     }
+
+    func bringToFront() {
+        self.superview?.bringSubview(toFront: self)
+    }
 }
 
 class BaseView: UIView, ControllerManager {

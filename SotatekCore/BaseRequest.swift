@@ -42,16 +42,16 @@ open class BaseRequest<T: Serializable> {
         return createResponseObservable(method: .POST, url: url ?? self.entityUrl, params: params, mockFile: "")
     }
     
-    open func update(_ entity: T, url: String? = nil) -> Observable<HttpResponse> {
+    open func update(_ entity: T, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
         var params = entity.toDictionary()
-        for (key, value) in createRequestParams(options: [:]) {
+        for (key, value) in createRequestParams(options: options) {
             params[key] = value
         }
         return createResponseObservable(method: .PUT, url: url ?? self.entityUrl, params: params)
     }
     
-    open func remove(_ id: DataIdType, url: String? = nil) -> Observable<HttpResponse> {
-        let params = createRequestParams(options: [:])
+    open func remove(_ id: DataIdType, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
+        let params = createRequestParams(options: options)
         let removeUrl = url ?? "\(self.entityUrl)/\(id)"
         return createResponseObservable(method: .DELETE, url: removeUrl, params: params)
     }

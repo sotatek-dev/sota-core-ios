@@ -12,7 +12,7 @@ import UIKit
 open class BaseViewController: UIViewController, ViewControllerDelegate, Observer {
     var initData = [String: Any]()
     var responseData = [String: Any]()
-    weak var delegate: ViewControllerDelegate?
+    var delegate: ViewControllerDelegate?
     var viewAppeared = false
     
     var views = [UIView]()
@@ -66,10 +66,12 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     
     func dismissViewController(data: [String: Any] = [:]) {
         responseData = data
+        // prevent mem leak
+        let delegate = self.delegate
+        self.delegate = nil
         self.dismiss(animated: true, completion: {
-            [unowned self] in
-            self.delegate?.viewControllerDidDismiss?(sender: self, data: data)
-            })
+            delegate?.viewControllerDidDismiss?(sender: self, data: data)
+        })
     }
     
     public func update(_ command: Int, data: Any?) {}
@@ -95,7 +97,7 @@ extension UIViewController {
         vc.modalPresentationStyle = .custom
         self.present(vc, animated: true, completion: {
             if let baseViewController = self as? BaseViewController {
-                baseViewController.viewWillDisappear()
+                baseViewController.viewWillDisappear(true)
             }
         })
     }
@@ -111,12 +113,13 @@ extension UIViewController {
         weak var viewController: BaseViewController?
 
         init(viewController: BaseViewController?, delegate: ViewControllerDelegate?) {
+            self.viewController = viewController
             self.delegate = delegate
         }
 
         func viewControllerDidDismiss(sender: UIViewController, data: [String: Any]) {
             if let viewController = self.viewController {
-                viewController.viewDidAppear()
+                viewController.viewDidAppear(true)
             }
             if let delegate = delegate {
                 delegate.viewControllerDidDismiss?(sender: sender, data: data)

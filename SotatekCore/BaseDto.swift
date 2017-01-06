@@ -49,4 +49,9 @@ class BaseDto: NSObject, NSCoding, Serializable {
         let dictionary = [String: Any]()
         return dictionary
     }
+
+    func toString() -> String {
+        let json = JSON(toDictionary())
+        return json.rawString()!
+    }
 }
