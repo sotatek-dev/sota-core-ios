@@ -42,7 +42,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         return entities
     }
     
-    open override func get(_ id: DataIdType) -> T? {
+    open override func get(_ id: DataIdType, options: [String : Any] = [:]) -> T? {
         var result: T?
         for entity in data {
             if entity.id == id {
@@ -50,7 +50,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
             }
         }
         if result == nil {
-            result = storage.get(id)
+            result = storage.get(id, options: options)
             if result != nil {
                 if settingCacheSingleEntity {
                     addToCache(result!)

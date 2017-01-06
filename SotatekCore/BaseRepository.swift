@@ -134,9 +134,9 @@ open class BaseRepository<T: BaseEntity> {
         return cache.removeAsync(id)
     }
 
-    open func get(_ id: DataIdType) -> Observable<T> {
-        let cachedEntity = cache.getAsync(id)
-        let remoteEntity = request.get(id)
+    open func get(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<T> {
+        let cachedEntity = cache.getAsync(id, options: options)
+        let remoteEntity = request.get(id, options: options)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> T in
                 let entity = self.saveJsonObject(response.data)

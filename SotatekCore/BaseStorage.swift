@@ -36,9 +36,9 @@ public class BaseStorage<T: BaseEntity> {
         return true
     }
     
-    open func get(_ id: DataIdType) -> T? {
-        let filter = table.filter(T.idColumn == id)
-        if let row = try! db.pluck(filter) {
+    open func get(_ id: DataIdType, options: [String : Any] = [:]) -> T? {
+        let filter = options[Constant.RepositoryParam.dbFilter] as? Expression<Bool> ?? (T.idColumn == id)
+        if let row = try! db.pluck(table.filter(filter)) {
             return (T.toEntity(row) as! T)
         } else {
             return nil

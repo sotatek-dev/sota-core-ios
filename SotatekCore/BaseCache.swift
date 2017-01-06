@@ -38,7 +38,7 @@ open class BaseCache<T: BaseEntity>: Cache {
         return []
     }
     
-    open func get(_ id: DataIdType) -> T? {
+    open func get(_ id: DataIdType, options: [String : Any] = [:]) -> T? {
         fail()
         return nil
     }
@@ -127,9 +127,9 @@ open class BaseCache<T: BaseEntity>: Cache {
         })
     }
     
-    open func getAsync(_ id: DataIdType) -> Observable<T> {
+    open func getAsync(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<T> {
         return Observable<T>.create({subscribe in
-            if let entity = self.get(id) {
+            if let entity = self.get(id, options: options) {
                 subscribe.onNext(entity)
             }
             subscribe.onCompleted()
