@@ -2,92 +2,183 @@
 //  BaseCache.swift
 //  SotatekCore
 //
-//  Created by Loc Nguyen on 9/8/16.
+//  Created by Thanh Tran on 9/8/16.
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
 import Foundation
 import RxSwift
-import RxCocoa
+import SwiftyJSON
 
-public class BaseCache<T: BaseEntity> {
-    var data = [T]()
+open class BaseCache<T: BaseEntity>: Cache {
+
+    var settingCacheSingleEntity = true
+    var storage: BaseStorage<T>!
+    var liveTime: Int = 1000 * 60 * 15 // 15 minutes
     
-    public func save(entity: T) {
-        data.removeObject(entity)
-        data.append(entity)
+    init(storage: BaseStorage<T>) {
+        self.storage = storage
     }
     
-    public func save(entities: [T]) {
+    private func fail() {
+        fatalError("Please extend your cache from BaseListCache or BastMapCache.")
+    }
+    
+    open func save(_ entity: T) {
+        fail()
+    }
+    
+    open func remove(_ id: DataIdType) -> Bool {
+        fail()
+        return false
+    }
+    
+    open func remove(options: [String: Any]) -> [T] {
+        fail()
+        return []
+    }
+    
+    open func get(_ id: DataIdType, options: [String : Any] = [:]) -> T? {
+        fail()
+        return nil
+    }
+    
+    func getList(count: Int, options: [String: Any] = [:]) -> [T] {
+        fail()
+        return []
+    }
+    
+    func getNextList(pivot: T, count: Int, options: [String: Any] = [:]) -> [T] {
+        fail()
+        return[]
+    }
+    
+    func getAll(options: [String: Any] = [:]) -> [T] {
+        fail()
+        return[]
+    }
+    
+    open func clear() {
+        fail()
+    }
+    
+    func updateValidTime(_ entity: T) {
+        if liveTime > 0 {
+            entity.validTime = Util.currentTime() + liveTime
+        } else {
+            entity.validTime = Int.max
+        }
+    }
+    
+    func save(_ json: JSON) -> AnyObject {
+        let e = T(fromJson: json)
+        updateValidTime(e)
+        self.save(e)
+        return e
+    }
+    
+    func isCacheForEntity(name: String) -> Bool {
+        return T.entityName == name || T.pluralName == name
+    }
+    
+    open func save(_ entities: [T]) {
         for entity in entities {
             save(entity)
         }
     }
     
-    public func remove(entity: T) -> T {
-        data.removeObject(entity)
-        return entity
-    }
-    
-    public func get(id: Int64) -> T? {
-        for entity in data {
-            if entity.id == id {
-                return entity
-            }
-        }
-        return nil
-    }
-    
-    public func getAll() -> [T] {
-        return [] + data
-    }
-    
-    public func clear() {
-        data.removeAll()
-    }
-    
-    public func saveAsync(entity: T) -> Observable<T> {
+    open func saveAsync(_ entity: T) -> Observable<T> {
         return Observable<T>.create({subscribe in
-            self.data.removeObject(entity)
-            self.data.append(entity)
+            self.save(entity)
             subscribe.onNext(entity)
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
         })
     }
     
-    public func saveAsync(entities: [T]) -> Observable<[T]> {
+    open func saveAsync(_ entities: [T]) -> Observable<[T]> {
         return Observable<[T]>.create({subscribe in
             self.save(entities)
             subscribe.onNext(entities)
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
         })
     }
     
-    public func removeAsync(entity: T) -> Observable<Bool> {
-        return Observable<Bool>.create({subscribe in
-            self.remove(entity)
-            subscribe.onCompleted()
-            return AnonymousDisposable({})
-        })
-    }
-    
-    public func getAsync(id: Int64) -> Observable<T> {
+    open func updateAsync(_ entity: T) -> Observable<T> {
         return Observable<T>.create({subscribe in
-            if let entity = self.get(id) {
+            //TODO implement
+            _ = self.save(entity)
+            subscribe.onNext(entity)
+            subscribe.onCompleted()
+            return Disposables.create()
+        })
+    }
+    
+    open func removeAsync(_ id: DataIdType) -> Observable<Bool> {
+        return Observable<Bool>.create({subscribe in
+            if self.remove(id) {
+                subscribe.onNext(true)
+            } else {
+                subscribe.onError(CacheError.unknown)
+            }
+            subscribe.onCompleted()
+            return Disposables.create()
+        })
+    }
+    
+    open func getAsync(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<T> {
+        return Observable<T>.create({subscribe in
+            if let entity = self.get(id, options: options) {
                 subscribe.onNext(entity)
             }
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
         })
     }
     
-    public func getAll() -> Observable<[T]> {
-        return Observable<[T]>.create({subscribe in
-            subscribe.onNext([] + self.data)
+    func getListAsync(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
+        return Observable<ListDto<T>>.create({subscribe in
+            var entities: [T]!
+            if let pivot = options[Constant.RepositoryParam.pivot] as? T {
+                entities = self.getNextList(pivot: pivot, count: count, options: options)
+            } else {
+                entities = self.getList(count: count, options: options)
+            }
+            print("Got \(entities.count) from cache")
+            if entities.count >= count {
+                //TODO: add pagination data
+                subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
+            }
             subscribe.onCompleted()
-            return AnonymousDisposable({})
+            return Disposables.create()
         })
     }
+    
+    func getAllAsync(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
+        return Observable<ListDto<T>>.create({subscribe in
+            let entities = self.getAll(options: options)
+            if entities.count > 0 {
+                //TODO: add pagination data
+                subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
+            }
+            subscribe.onCompleted()
+            return Disposables.create()
+        })
+    }
+    
+    func removeAsync(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
+        return Observable<ListDto<T>>.create {
+            subscribe in
+            let entities = self.remove(options: options)
+            subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
+            subscribe.onCompleted()
+            return Disposables.create()
+        }
+    }
+}
+
+//TODO error
+enum CacheError: Error {
+    case unknown
 }

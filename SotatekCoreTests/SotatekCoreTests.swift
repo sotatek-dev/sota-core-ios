@@ -2,7 +2,7 @@
 //  SotatekCoreTests.swift
 //  SotatekCoreTests
 //
-//  Created by Loc Nguyen on 9/8/16.
+//  Created by Thanh Tran on 9/8/16.
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
@@ -28,7 +28,7 @@ class SotatekCoreTests: XCTestCase {
     
     func testPerformanceExample() {
         // This is an example of a performance test case.
-        self.measureBlock {
+        self.measure {
             // Put the code you want to measure the time of here.
         }
     }
