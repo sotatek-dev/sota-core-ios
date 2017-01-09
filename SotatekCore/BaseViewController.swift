@@ -64,12 +64,12 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         views.removeObject(view)
     }
     
-    func dismissViewController(data: [String: Any] = [:]) {
+    func dismissViewController(animated: Bool = true, data: [String: Any] = [:]) {
         responseData = data
         // prevent mem leak
         let delegate = self.delegate
         self.delegate = nil
-        self.dismiss(animated: true, completion: {
+        self.dismiss(animated: animated, completion: {
             delegate?.viewControllerDidDismiss?(sender: self, data: data)
         })
     }
@@ -83,11 +83,11 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
 
 extension UIViewController {
     
-    func showViewController(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
+    func showViewController(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil, from: UIViewController? = nil) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
         vc.delegate = delegate
-        self.present(vc, animated: true, completion: nil)
+        (from ?? self).present(vc, animated: true, completion: nil)
     }
     
     func showDialog(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {

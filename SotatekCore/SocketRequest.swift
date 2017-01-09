@@ -18,7 +18,7 @@ public class SocketRequest {
     init(namespace: String) {
         let connectParams = SocketIOClientOption.connectParams(createConnectParams())
         let config: SocketIOClientConfiguration = [
-            SocketIOClientOption.log(true),
+            SocketIOClientOption.log(false),
             SocketIOClientOption.forcePolling(true),
             connectParams,
             SocketIOClientOption.nsp(namespace)]
@@ -62,6 +62,7 @@ public class SocketRequest {
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: entity))
         })
     }
+
     
     func addDataEvent(_ type: BaseDto.Type) {
         socket.on(type.self.entityName, callback: {
@@ -74,6 +75,7 @@ public class SocketRequest {
     }
     
     open func send(_ data: Serializable) {
+        print("Send over socket: \(data.toDictionary)")
         socket.emit(type(of: data).entityName, data.toDictionary())
     }
     
