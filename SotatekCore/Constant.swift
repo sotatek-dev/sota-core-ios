@@ -34,6 +34,7 @@ class Constant {
     }
 
     static let requestAuthToken = "auth_token"
+    static let headerAuthToken = "x-auth-token"
     
     static let commandReceiveSocketData = 1000
     static let commandReceiveGlobalData = 1001
