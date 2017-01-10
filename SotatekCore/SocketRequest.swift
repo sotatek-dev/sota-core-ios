@@ -75,7 +75,7 @@ public class SocketRequest {
     }
     
     open func send(_ data: Serializable) {
-        print("Send over socket: \(data.toDictionary)")
+        print("Send over socket: \(type(of: data).entityName) \(JSON(data.toDictionary()).rawString() ?? "")")
         socket.emit(type(of: data).entityName, data.toDictionary())
     }
     
