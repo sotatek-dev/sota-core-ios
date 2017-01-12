@@ -21,8 +21,22 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     
     override open func viewDidLoad() {
         super.viewDidLoad()
+        self.automaticallyAdjustsScrollViewInsets = false
     }
-    
+
+    override open func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if !viewAppeared {
+            for view in views {
+                view.viewWillAppear()
+            }
+        } else {
+            for view in views {
+                view.viewWillReappear()
+            }
+        }
+    }
+
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewDidAppear()
