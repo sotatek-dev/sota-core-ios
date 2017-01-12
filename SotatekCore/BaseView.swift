@@ -52,7 +52,47 @@ extension UIView {
 }
 
 class BaseView: UIView, ControllerManager {
+    var views = [UIView]()
     private var controllers: [BaseController] = []
+
+    open override func viewWillAppear() {
+        super.viewWillAppear()
+        for view in views {
+            view.viewWillAppear()
+        }
+    }
+
+    open override func viewWillReappear() {
+        super.viewWillReappear()
+        for view in views {
+            view.viewWillReappear()
+        }
+    }
+
+    open override func viewDidAppear(_ data: Any? = nil) {
+        super.viewDidAppear(data)
+        for view in views {
+            view.viewDidAppear(data)
+        }
+    }
+
+    open override func viewDidReappear(_ data: Any? = nil) {
+        super.viewDidReappear(data)
+        for view in views {
+            view.viewDidReappear(data)
+        }
+    }
+
+    override open func viewWillDisappear()  {
+        super.viewWillDisappear()
+        for view in views {
+            view.viewWillDisappear()
+        }
+    }
+
+    open func addView(_ view: UIView) {
+        views.append(view)
+    }
 
     func addController(_ controller: BaseController) {
         controllers.append(controller)
