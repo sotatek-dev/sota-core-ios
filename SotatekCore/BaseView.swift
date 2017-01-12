@@ -10,6 +10,14 @@ import Foundation
 import UIKit
 
 extension UIView {
+    open func viewWillAppear() {
+
+    }
+
+    open func viewWillReappear() {
+        
+    }
+
     open func viewDidAppear(_ data: Any? = nil) {
         Notifier.controllerNoitfier.addObserver(self)
         Notifier.viewNotifier.addObserver(self)
