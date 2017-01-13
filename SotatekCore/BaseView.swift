@@ -49,6 +49,10 @@ extension UIView {
     func bringToFront() {
         self.superview?.bringSubview(toFront: self)
     }
+
+    func autoResize() {
+        self.autoresizingMask = [.flexibleWidth, .flexibleHeight,.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
+    }
 }
 
 class BaseView: UIView, ControllerManager {
