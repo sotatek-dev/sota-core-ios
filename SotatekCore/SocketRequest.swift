@@ -14,8 +14,10 @@ public class SocketRequest {
     let notifier = Notifier.socketNoitfier
     var socket: SocketIOClient!
     var roomId: DataIdType!
+    var namespace: String
     
     init(namespace: String) {
+        self.namespace = namespace
         let connectParams = SocketIOClientOption.connectParams(createConnectParams())
         let config: SocketIOClientConfiguration = [
             SocketIOClientOption.log(false),
@@ -24,8 +26,8 @@ public class SocketRequest {
             SocketIOClientOption.nsp(namespace)]
         socket = SocketIOClient(socketURL: URL(string: AppConfig.server)!, config: config)
         socket.on("connect", callback: {
-            [unowned self] data, ack in
-            self.joinRoom(self.roomId)
+            [weak self] data, ack in
+            self?.joinRoom(self?.roomId ?? 0)
         })
         socket.on("room-changed", callback: {data, ack in
             self.notifier.notifyObservers(Constant.commandRoomChanged, data: data[0])
