@@ -45,7 +45,8 @@ public class SocketRequest {
 
     open func connectIfNeed() {
         if socket.status != .connected && socket.status != .connecting {
-            socket.config = createSocketConfig()
+            let connectParams = SocketIOClientOption.connectParams(createConnectParams())
+            socket.config.insert(connectParams, replacing: true)
             socket.connect()
         }
     }
