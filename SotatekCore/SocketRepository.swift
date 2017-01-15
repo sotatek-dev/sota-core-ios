@@ -35,6 +35,10 @@ class SocketRepository {
     open func joinRoom(roomId: DataIdType) {
         socketRequest.joinRoom(roomId)
     }
+
+    open func connectIfNeed() {
+        socketRequest.connectIfNeed()
+    }
     
     open func addDataType(_ type: BaseDto.Type) {
 //        dtoTypes[type.self.entityName] = type

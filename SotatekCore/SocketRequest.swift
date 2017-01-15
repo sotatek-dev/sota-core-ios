@@ -35,6 +35,12 @@ public class SocketRequest {
     func createConnectParams() -> [String: String] {
         return [:]
     }
+
+    open func connectIfNeed() {
+        if socket.status != .connected && socket.status != .connecting {
+            socket.connect()
+        }
+    }
     
     open func connect(roomId: DataIdType) {
         self.roomId = roomId
@@ -56,8 +62,8 @@ public class SocketRequest {
     func addDataEvent(_ type: BaseEntity.Type) {
         socket.on(type.self.entityName, callback: {
             [unowned self] data, ack in
-            print("Data from socket: \(data[0]) --")
             let json = JSON(data[0])
+            print("Data from socket: \(json.rawString()) --")
             let entity = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: entity))
         })
@@ -67,8 +73,8 @@ public class SocketRequest {
     func addDataEvent(_ type: BaseDto.Type) {
         socket.on(type.self.entityName, callback: {
             [unowned self] data, ack in
-            print("Data from socket: \(data[0]) --")
             let json = JSON(data[0])
+            print("Data from socket: \(json.rawString()) --")
             let dto = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: dto))
         })
