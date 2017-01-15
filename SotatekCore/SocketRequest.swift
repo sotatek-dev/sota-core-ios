@@ -18,13 +18,8 @@ public class SocketRequest {
     
     init(namespace: String) {
         self.namespace = namespace
-        let connectParams = SocketIOClientOption.connectParams(createConnectParams())
-        let config: SocketIOClientConfiguration = [
-            SocketIOClientOption.log(false),
-            SocketIOClientOption.forcePolling(true),
-            connectParams,
-            SocketIOClientOption.nsp(namespace)]
-        socket = SocketIOClient(socketURL: URL(string: AppConfig.server)!, config: config)
+
+        socket = SocketIOClient(socketURL: URL(string: AppConfig.server)!, config: createSocketConfig())
         socket.on("connect", callback: {
             [weak self] data, ack in
             self?.joinRoom(self?.roomId ?? 0)
@@ -34,12 +29,23 @@ public class SocketRequest {
         })
     }
 
+    func createSocketConfig() -> SocketIOClientConfiguration {
+        let connectParams = SocketIOClientOption.connectParams(createConnectParams())
+        let config: SocketIOClientConfiguration = [
+            SocketIOClientOption.log(false),
+            SocketIOClientOption.forcePolling(true),
+            connectParams,
+            SocketIOClientOption.nsp(namespace)]
+        return config
+    }
+
     func createConnectParams() -> [String: String] {
         return [:]
     }
 
     open func connectIfNeed() {
         if socket.status != .connected && socket.status != .connecting {
+            socket.config = createSocketConfig()
             socket.connect()
         }
     }
