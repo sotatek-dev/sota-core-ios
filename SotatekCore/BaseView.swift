@@ -19,17 +19,14 @@ extension UIView {
     }
 
     open func viewDidAppear(_ data: Any? = nil) {
-        Notifier.controllerNoitfier.addObserver(self)
         Notifier.viewNotifier.addObserver(self)
     }
     
     open func viewDidReappear(_ data: Any? = nil) {
-        Notifier.controllerNoitfier.addObserver(self)
         Notifier.viewNotifier.addObserver(self)
     }
     
     open func viewWillDisappear() {
-        Notifier.controllerNoitfier.removeObserver(self)
         Notifier.viewNotifier.removeObserver(self)
     }
     
@@ -53,11 +50,21 @@ extension UIView {
     func autoResize() {
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight,.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
     }
+
+    func removeAllSubViews() {
+        subviews.forEach({
+            $0.removeFromSuperview()
+        })
+    }
 }
 
 class BaseView: UIView, ControllerManager {
     var views = [UIView]()
+    var notifierNames: Set<String> = []
     private var controllers: [BaseController] = []
+
+    let notifierUuid = Util.uuid()
+    var notifierName: String { return String(describing: type(of: self)) + notifierUuid}
 
     open override func viewWillAppear() {
         super.viewWillAppear()
@@ -75,6 +82,14 @@ class BaseView: UIView, ControllerManager {
 
     open override func viewDidAppear(_ data: Any? = nil) {
         super.viewDidAppear(data)
+        if views.count > 0 || controllers.count > 0 {
+            addnotifierName(notifierName)
+        }
+        for channel in notifierNames {
+            Notifier.instance(channel).addObserver(self)
+            print("====================== listen from " + channel)
+        }
+
         for view in views {
             view.viewDidAppear(data)
         }
@@ -82,6 +97,9 @@ class BaseView: UIView, ControllerManager {
 
     open override func viewDidReappear(_ data: Any? = nil) {
         super.viewDidReappear(data)
+        for channel in notifierNames {
+            Notifier.instance(channel).addObserver(self)
+        }
         for view in views {
             view.viewDidReappear(data)
         }
@@ -92,10 +110,28 @@ class BaseView: UIView, ControllerManager {
         for view in views {
             view.viewWillDisappear()
         }
+        for channel in notifierNames {
+            Notifier.instance(channel).removeObserver(self)
+        }
     }
 
     open func addView(_ view: UIView) {
         views.append(view)
+        addnotifierName(notifierName)
+        if let baseView = view as? BaseView {
+            baseView.addnotifierName(notifierName)
+            baseView.addnotifierNames(Array(notifierNames))
+        }
+    }
+
+    open func addnotifierNames(_ channels: [String]) {
+        for channel in channels {
+            notifierNames.insert(channel)
+        }
+    }
+
+    open func addnotifierName(_ channel: String) {
+        notifierNames.insert(channel)
     }
 
     func addController(_ controller: BaseController) {

@@ -9,10 +9,13 @@
 import Foundation
 
 open class BaseController: Observer {
-    var notifier = Notifier.controllerNoitfier
+    private(set) var notifier: Notifier
     
-    init() {
+    init(manager: ControllerManager) {
+        self.notifier = Notifier.instance(manager.notifierName)
+        print("======================+++++++" + manager.notifierName)
         Notifier.serviceNotifier.addObserver(self)
+        manager.addController(self)
     }
     
     func notifyObservers(_ command: Int, data: Any? = nil) {

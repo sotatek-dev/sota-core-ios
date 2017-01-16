@@ -16,7 +16,10 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     var viewAppeared = false
     
     var views = [UIView]()
-    
+    var notifierNames: Set<String> = []
+    let notifierUuid = Util.uuid()
+    public var notifierName: String { return String(describing: type(of: self)) + notifierUuid }
+
     fileprivate var controllers: [BaseController] = []
     
     override open func viewDidLoad() {
@@ -43,7 +46,12 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     }
 
     fileprivate func viewDidAppear() {
-        Notifier.controllerNoitfier.addObserver(self) // listen for events from controller
+        if views.count > 0 || controllers.count > 0 {
+            addnotifierName(notifierName)
+        }
+        for channel in notifierNames {
+            Notifier.instance(channel).addObserver(self)
+        }
         Notifier.viewNotifier.addObserver(self) // listen for events from subviews
         if !viewAppeared {
             for view in views {
@@ -56,26 +64,43 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         }
         viewAppeared = true
     }
-    
+
     override open func viewWillDisappear(_ animated: Bool)  {
         super.viewWillDisappear(animated)
         viewWillDisappear()
     }
 
     fileprivate func viewWillDisappear() {
-        Notifier.controllerNoitfier.removeObserver(self)
+        for channel in notifierNames {
+            Notifier.instance(channel).removeObserver(self)
+        }
         Notifier.viewNotifier.removeObserver(self)
         for view in views {
             view.viewWillDisappear()
         }
     }
-    
+
     open func addView(_ view: UIView) {
         views.append(view)
+        addnotifierName(notifierName)
+        if let baseView = view as? BaseView {
+            baseView.addnotifierName(notifierName)
+            baseView.addnotifierNames(Array(notifierNames))
+        }
     }
     
     open func removeView(_ view: UIView) {
         views.removeObject(view)
+    }
+
+    open func addnotifierNames(_ channels: [String]) {
+        for channel in channels {
+            notifierNames.insert(channel)
+        }
+    }
+
+    open func addnotifierName(_ channel: String) {
+        notifierNames.insert(channel)
     }
     
     func dismissViewController(animated: Bool = true, data: [String: Any] = [:]) {
