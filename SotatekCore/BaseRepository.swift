@@ -24,7 +24,8 @@ open class BaseRepository<T: BaseEntity> {
     var cache: BaseCache<T>!
     var request: BaseRequest<T>!
     
-    init(cache: BaseCache<T>, request: BaseRequest<T>) {
+    
+    init(cache: BaseCache<T>, request: BaseRequest<T>!) {
         self.cache = cache
         self.request = request
     }
