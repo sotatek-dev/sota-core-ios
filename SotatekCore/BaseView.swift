@@ -74,6 +74,9 @@ class BaseView: UIView, ControllerManager {
     }
 
     open override func viewDidAppear(_ data: Any? = nil) {
+        for controller in controllers {
+            controller.isPause = false
+        }
         super.viewDidAppear(data)
         for view in views {
             view.viewDidAppear(data)
@@ -81,6 +84,9 @@ class BaseView: UIView, ControllerManager {
     }
 
     open override func viewDidReappear(_ data: Any? = nil) {
+        for controller in controllers {
+            controller.isPause = false
+        }
         super.viewDidReappear(data)
         for view in views {
             view.viewDidReappear(data)
@@ -91,6 +97,10 @@ class BaseView: UIView, ControllerManager {
         super.viewWillDisappear()
         for view in views {
             view.viewWillDisappear()
+        }
+
+        for controller in controllers {
+            controller.isPause = true
         }
     }
 
