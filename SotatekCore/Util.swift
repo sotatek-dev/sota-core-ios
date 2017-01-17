@@ -46,4 +46,11 @@ open class Util {
         }
         return nil
     }
+
+    static func delay(_ delay: Double, _ function: @escaping (() -> Void)) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delay, execute: {
+            function()
+        })
+    }
+
 }
