@@ -53,6 +53,8 @@ public class SocketRequest {
     
     open func connect(roomId: DataIdType) {
         self.roomId = roomId
+        let connectParams = SocketIOClientOption.connectParams(createConnectParams())
+        socket.config.insert(connectParams, replacing: true)
         socket.connect()
         //startMock()
     }
