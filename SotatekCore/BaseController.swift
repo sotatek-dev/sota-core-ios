@@ -32,8 +32,4 @@ open class BaseController: Observer {
     }
     
     public func update(_ command: Int, data: Any?) {}
-    
-    func initialize() {
-        
-    }
 }
