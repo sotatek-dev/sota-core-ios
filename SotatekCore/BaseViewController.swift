@@ -83,33 +83,18 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     open func removeView(_ view: UIView) {
         views.removeObject(view)
     }
-    
-    func dismissViewController(animated: Bool = true, data: [String: Any] = [:]) {
-        responseData = data
-        // prevent mem leak
-        let delegate = self.delegate
-        self.delegate = nil
-        self.dismiss(animated: animated, completion: {
-            delegate?.viewControllerDidDismiss?(sender: self, data: data)
-        })
-    }
-    
-    public func update(_ command: Int, data: Any?) {}
 
-    deinit {
-        releaseControllers()
+    open func onTouch(_ gesture: UIGestureRecognizer) -> Bool {
+        return GestureUtil.processGesture(gesture, views: views)
     }
-}
 
-extension UIViewController {
-    
     func showViewController(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil, from: UIViewController? = nil) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
         vc.delegate = delegate
         (from ?? self).present(vc, animated: true, completion: nil)
     }
-    
+
     func showDialog(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
@@ -121,7 +106,7 @@ extension UIViewController {
             }
         })
     }
-    
+
     func showRootViewController(_ id: String, data: [String: Any] = [String: Any]()) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
@@ -146,6 +131,25 @@ extension UIViewController {
             }
         }
     }
+
+    func dismissViewController(animated: Bool = true, data: [String: Any] = [:]) {
+        responseData = data
+        // prevent mem leak
+        let delegate = self.delegate
+        self.delegate = nil
+        self.dismiss(animated: animated, completion: {
+            delegate?.viewControllerDidDismiss?(sender: self, data: data)
+        })
+    }
+    
+    public func update(_ command: Int, data: Any?) {}
+
+    deinit {
+        releaseControllers()
+    }
+}
+
+extension UIViewController {
 }
 
 extension BaseViewController: ControllerManager {

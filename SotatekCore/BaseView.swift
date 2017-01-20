@@ -108,6 +108,10 @@ class BaseView: UIView, ControllerManager {
         views.append(view)
     }
 
+    open func onTouch(_ gesture: UIGestureRecognizer) -> Bool {
+        return GestureUtil.processGesture(gesture, views: views)
+    }
+
     func addController(_ controller: BaseController) {
         controllers.append(controller)
     }
