@@ -21,16 +21,19 @@ extension UIView {
     open func viewDidAppear(_ data: Any? = nil) {
         Notifier.controllerNoitfier.addObserver(self)
         Notifier.viewNotifier.addObserver(self)
+        Notifier.globalNotifier.addObserver(self)
     }
     
     open func viewDidReappear(_ data: Any? = nil) {
         Notifier.controllerNoitfier.addObserver(self)
         Notifier.viewNotifier.addObserver(self)
+        Notifier.globalNotifier.addObserver(self)
     }
     
     open func viewWillDisappear() {
         Notifier.controllerNoitfier.removeObserver(self)
         Notifier.viewNotifier.removeObserver(self)
+        Notifier.globalNotifier.removeObserver(self)
     }
     
     func addObserver(_ observer: Observer) {

@@ -45,6 +45,7 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     fileprivate func viewDidAppear() {
         Notifier.controllerNoitfier.addObserver(self) // listen for events from controller
         Notifier.viewNotifier.addObserver(self) // listen for events from subviews
+        Notifier.globalNotifier.addObserver(self)
         for controller in controllers {
             controller.isPause = false
         }
@@ -68,6 +69,7 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     fileprivate func viewWillDisappear() {
         Notifier.controllerNoitfier.removeObserver(self)
         Notifier.viewNotifier.removeObserver(self)
+        Notifier.globalNotifier.removeObserver(self)
         for controller in controllers {
             controller.isPause = true
         }
