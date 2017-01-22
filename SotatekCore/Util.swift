@@ -8,8 +8,15 @@
 
 import Foundation
 import UIKit
+import ReachabilitySwift
 
 open class Util {
+    static let reachability = Reachability()!
+
+    static var isReachable: Bool {
+        return reachability.isReachable
+    }
+
     open static func currentTime() -> Int {
         let time = Date().timeIntervalSince1970
         return Int(time * 1000)
