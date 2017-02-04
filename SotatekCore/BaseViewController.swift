@@ -109,10 +109,10 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         })
     }
 
-    func showRootViewController(_ id: String, data: [String: Any] = [String: Any]()) {
+    static func showRootViewController(_ id: String, data: [String: Any] = [String: Any]()) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
-        UIApplication.shared.keyWindow?.rootViewController = vc
+        UIApplication.shared.keyWindow?.set(rootViewController: vc)
     }
 
     class DialogDelegate: ViewControllerDelegate {
