@@ -20,6 +20,7 @@ class RemoteRepository<T: Serializable> {
     
     open func create(_ object: T, options: [String : Any] = [:]) -> Observable<T> {
         return request.create(object, options: options)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> T in
                 let entity = T(fromJson: response.data)
@@ -29,6 +30,7 @@ class RemoteRepository<T: Serializable> {
     
     open func get(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<T> {
         return request.get(id, options: options)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> T in
                 let entity = T(fromJson: response.data)
@@ -39,6 +41,7 @@ class RemoteRepository<T: Serializable> {
 
     open func update(_ object: T, options: [String : Any] = [:]) -> Observable<T> {
         return request.update(object, options: options)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> T in
                 let entity = T(fromJson: response.data)
@@ -49,6 +52,7 @@ class RemoteRepository<T: Serializable> {
 
     open func remove(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<Bool> {
         return request.remove(id, options: options)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> Bool in
                 return true
@@ -58,6 +62,7 @@ class RemoteRepository<T: Serializable> {
     
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         return request.getList(count: count, options: options)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> ListDto<T> in
                 let listResponse = ListResponse<T>(fromJson: response.data)
@@ -68,6 +73,7 @@ class RemoteRepository<T: Serializable> {
     
     func getAll(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         return request.getAll(options: options)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> ListDto<T> in
                 let listResponse = ListResponse<T>(fromJson: response.data)
@@ -94,5 +100,8 @@ class RemoteRepository<T: Serializable> {
     
     open func processMeta(response: HttpResponse) -> Observable<HttpResponse> {
         return Observable.just(response)
+    }
+
+    open func onError(error: Error) {
     }
 }
