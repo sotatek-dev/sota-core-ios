@@ -27,6 +27,10 @@ public class SocketRequest {
         socket.on("room-changed", callback: {data, ack in
             self.notifier.notifyObservers(Constant.commandRoomChanged, data: data[0])
         })
+        socket.on("error", callback: {
+            [weak self] data, ack in
+            print("Socket error: \(data)")
+        })
     }
 
     func createSocketConfig() -> SocketIOClientConfiguration {
@@ -74,7 +78,7 @@ public class SocketRequest {
         socket.on(type.self.entityName, callback: {
             [unowned self] data, ack in
             let json = JSON(data[0])
-            print("Data from socket: \(json.rawString()) --")
+            print("Data from socket: \(type.self.entityName) => \(json.rawString()) --")
             let entity = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: entity))
         })
@@ -85,7 +89,7 @@ public class SocketRequest {
         socket.on(type.self.entityName, callback: {
             [unowned self] data, ack in
             let json = JSON(data[0])
-            print("Data from socket: \(json.rawString()) --")
+            print("Data from socket: \(type.self.entityName) => \(json.rawString()) --")
             let dto = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: dto))
         })
