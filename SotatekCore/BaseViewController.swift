@@ -93,14 +93,14 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     func showViewController(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil, from: UIViewController? = nil) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
-        vc.delegate = delegate
+        vc.delegate = delegate ?? self
         (from ?? self).present(vc, animated: true, completion: nil)
     }
 
     func showDialog(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
-        vc.delegate = DialogDelegate(viewController: self as? BaseViewController, delegate: delegate)
+        vc.delegate = DialogDelegate(viewController: self as? BaseViewController, delegate: delegate ?? self)
         vc.modalPresentationStyle = .custom
         self.present(vc, animated: true, completion: {
             if let baseViewController = self as? BaseViewController {
