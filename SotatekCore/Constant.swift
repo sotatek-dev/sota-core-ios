@@ -22,6 +22,7 @@ class Constant {
             // Type
             static let cursor = "cursor"
             static let brute = "brute"
+            static let cursor2 = "cursor2"
 
             // Main params
             static let type = "p_type"
