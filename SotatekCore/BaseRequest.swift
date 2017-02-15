@@ -155,7 +155,13 @@ open class BaseRequest<T: Serializable> {
 //        self.delay {
         if let error = response.error {
             print(error)
-            subscribe.on(.error(error))
+            if let json = response.text, !json.isEmpty {
+                print(json)
+                let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
+                subscribe.on(.error(jsonResponse.meta))
+            } else {
+                subscribe.on(.error(error))
+            }
         } else {
             let json = response.text!
             print(json)
