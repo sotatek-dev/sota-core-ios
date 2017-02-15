@@ -158,7 +158,11 @@ open class BaseRequest<T: Serializable> {
             if let json = response.text, !json.isEmpty {
                 print(json)
                 let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-                subscribe.on(.error(jsonResponse.meta))
+                if let meta = jsonResponse.meta {
+                    subscribe.on(.error(meta))
+                } else {
+                    subscribe.on(.error(error))
+                }
             } else {
                 subscribe.on(.error(error))
             }
