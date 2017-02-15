@@ -58,7 +58,7 @@ extension UIView {
     }
 }
 
-class BaseView: UIView, ControllerManager {
+class BaseView: UIControl, ControllerManager {
     var views = [UIView]()
     private var controllers: [BaseController] = []
 
