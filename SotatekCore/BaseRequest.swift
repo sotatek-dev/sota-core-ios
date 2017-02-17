@@ -159,6 +159,8 @@ open class BaseRequest<T: Serializable> {
                 print(json)
                 let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
                 if let meta = jsonResponse.meta {
+                    //TODO fix me
+                    meta.httpCode = (error as NSError).code
                     subscribe.on(.error(meta))
                 } else {
                     subscribe.on(.error(error))
