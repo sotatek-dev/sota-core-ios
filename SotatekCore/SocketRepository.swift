@@ -50,7 +50,7 @@ class SocketRepository {
         socketRequest.addDataEvent(type)
     }
     
-    open func send(_ data: Serializable) {
-        socketRequest.send(data)
+    open func send(_ data: Serializable) -> Bool {
+        return socketRequest.send(data)
     }
 }
