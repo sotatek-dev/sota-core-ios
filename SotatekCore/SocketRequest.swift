@@ -103,9 +103,13 @@ public class SocketRequest {
         })
     }
     
-    open func send(_ data: Serializable) {
+    open func send(_ data: Serializable) -> Bool {
+        if socket.status != .connected {
+            return false
+        }
         print("Send over socket: \(type(of: data).entityName) \(JSON(data.toDictionary()).rawString() ?? "")")
         socket.emit(type(of: data).entityName, data.toDictionary())
+        return true
     }
     
     func startMock() {
