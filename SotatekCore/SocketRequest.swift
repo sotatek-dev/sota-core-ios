@@ -18,7 +18,38 @@ public class SocketRequest {
     
     init(namespace: String) {
         self.namespace = namespace
+        createSocket()
+    }
 
+    func createSocketConfig() -> SocketIOClientConfiguration {
+        let connectParams = SocketIOClientOption.connectParams(createConnectParams())
+        let config: SocketIOClientConfiguration = [
+            SocketIOClientOption.log(false),
+            SocketIOClientOption.forcePolling(true),
+            connectParams,
+            SocketIOClientOption.nsp(namespace)]
+        return config
+    }
+
+    func createConnectParams() -> [String: String] {
+        return [:]
+    }
+
+    open func connectIfNeed() {
+        if socket.status != .connected && socket.status != .connecting {
+            createSocket()
+            socket.connect()
+        }
+    }
+    
+    open func connect(roomId: DataIdType) {
+        self.roomId = roomId
+        createSocket()
+        socket.connect()
+        //startMock()
+    }
+
+    func createSocket() {
         socket = SocketIOClient(socketURL: URL(string: AppConfig.server)!, config: createSocketConfig())
         socket.on("connect", callback: {
             [weak self] data, ack in
@@ -39,38 +70,10 @@ public class SocketRequest {
             let dto = SocketErrorDto(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: SocketErrorDto.entityName, data: dto))
         })
+
+        addDataEvents()
     }
 
-    func createSocketConfig() -> SocketIOClientConfiguration {
-        let connectParams = SocketIOClientOption.connectParams(createConnectParams())
-        let config: SocketIOClientConfiguration = [
-            SocketIOClientOption.log(false),
-            SocketIOClientOption.forcePolling(true),
-            connectParams,
-            SocketIOClientOption.nsp(namespace)]
-        return config
-    }
-
-    func createConnectParams() -> [String: String] {
-        return [:]
-    }
-
-    open func connectIfNeed() {
-        if socket.status != .connected && socket.status != .connecting {
-            let connectParams = SocketIOClientOption.connectParams(createConnectParams())
-            socket.config.insert(connectParams, replacing: true)
-            socket.connect()
-        }
-    }
-    
-    open func connect(roomId: DataIdType) {
-        self.roomId = roomId
-        let connectParams = SocketIOClientOption.connectParams(createConnectParams())
-        socket.config.insert(connectParams, replacing: true)
-        socket.connect()
-        //startMock()
-    }
-    
     open func disconnect() {
         socket.disconnect()
     }
@@ -81,26 +84,49 @@ public class SocketRequest {
             self.socket.emit("join-room", roomId)
         }
     }
-    
+
+    var entityEvents: [
+        (
+            type: BaseEntity.Type,
+            callback: (([Any], SocketAckEmitter) -> Void)
+        )
+        ] = []
+
+    var dtoEvents: [
+        (
+            type: BaseDto.Type,
+            callback: (([Any], SocketAckEmitter) -> Void)
+        )
+        ] = []
+
     func addDataEvent(_ type: BaseEntity.Type) {
-        socket.on(type.self.entityName, callback: {
+        entityEvents.append((type: type, callback: {
             [unowned self] data, ack in
             let json = JSON(data[0])
             print("Data from socket: \(type.self.entityName) => \(json.rawString()) --")
             let entity = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: entity))
-        })
+        }))
     }
 
     
     func addDataEvent(_ type: BaseDto.Type) {
-        socket.on(type.self.entityName, callback: {
+        dtoEvents.append((type: type, callback: {
             [unowned self] data, ack in
             let json = JSON(data[0])
             print("Data from socket: \(type.self.entityName) => \(json.rawString()) --")
             let dto = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: dto))
-        })
+        }))
+    }
+
+    func addDataEvents() {
+        for event in entityEvents {
+            socket.on(event.type.self.entityName, callback: event.callback)
+        }
+        for event in dtoEvents {
+            socket.on(event.type.self.entityName, callback: event.callback)
+        }
     }
     
     open func send(_ data: Serializable) -> Bool {
