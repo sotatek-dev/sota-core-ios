@@ -13,7 +13,7 @@ import SwiftyJSON
 open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     open var id: DataIdType!
     open var compareValue: Int = 0
-    open var validTime: Int = 0
+    open var validTime: Int64 = 0
     
     override open var hashValue: Int {
         get {
@@ -50,7 +50,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     
     public required init?(coder aDecoder: NSCoder) {
         self.id = aDecoder.decodeObject(forKey: "id") as! DataIdType
-        self.validTime = aDecoder.decodeInteger(forKey: "validTime")
+        self.validTime = aDecoder.decodeInt64(forKey: "validTime")
     }
     
     public required init(fromJson json: JSON!) {
@@ -77,7 +77,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
     }
     
     public static let idColumn = Expression<DataIdType>("id")
-    public static let validTimeColumn = Expression<Int>("validTime")
+    public static let validTimeColumn = Expression<Int64>("validTime")
     
     open class func createTable(builder: TableBuilder) {
         builder.column(Expression<DataIdType>("id"))

@@ -66,7 +66,7 @@ open class BaseCache<T: BaseEntity>: Cache {
         if liveTime > 0 {
             entity.validTime = Util.currentTime() + liveTime
         } else {
-            entity.validTime = Int.max
+            entity.validTime = Int64.max
         }
     }
     
