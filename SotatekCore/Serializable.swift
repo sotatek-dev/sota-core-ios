@@ -10,6 +10,8 @@ import Foundation
 import SwiftyJSON
 
 public protocol Serializable: class {
+    var id: DataIdType! { get set }
+
     static var entityName: String {
         get
     }
