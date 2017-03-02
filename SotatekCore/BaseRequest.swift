@@ -39,7 +39,8 @@ open class BaseRequest<T: Serializable> {
         for (key, value) in createRequestParams(options: options) {
             params[key] = value
         }
-        return createResponseObservable(method: .POST, url: url ?? self.entityUrl, params: params, mockFile: "")
+        let progressHandler = options[Constant.RepositoryParam.progressHandler] as? ((Float) -> Swift.Void)
+        return createResponseObservable(method: .POST, url: url ?? self.entityUrl, params: params, mockFile: "", progressHandler: progressHandler)
     }
     
     open func update(_ entity: T, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
@@ -118,24 +119,24 @@ open class BaseRequest<T: Serializable> {
         return Util.readTextFile(name: name, type: "js")
     }
     
-    open func createResponseObservable(method: HTTPVerb, url: String, params: [String: Any], mockFile: String = "") -> Observable<HttpResponse> {
+    open func createResponseObservable(method: HTTPVerb, url: String, params: [String: Any], mockFile: String = "", progressHandler: ((Float) -> Void)? = nil) -> Observable<HttpResponse> {
         return Observable<HttpResponse>.create({subscribe in
             if AppConfig.useMockResponse && !mockFile.isEmpty {
                 self.responseMockData(mockFile: mockFile, subscribe: subscribe)
             } else {
-                self.executeRequest(method: method, url: url, params: params, {response in
+                self.executeRequest(method: method, url: url, params: params, progressHandler: progressHandler, {response in
                     self.processResponse(response: response, subscribe: subscribe)
                 })
             }
             return Disposables.create()
         })
     }
-
+    
     func createHeaders() -> [String: String] {
         return [:]
     }
     
-    func executeRequest(method: HTTPVerb, url: String, params: [String: Any], _ completionHandler:@escaping ((Response) -> Void)) {
+    func executeRequest(method: HTTPVerb, url: String, params: [String: Any], progressHandler: ((Float) -> Void)?, _ completionHandler:@escaping ((Response) -> Void)) {
         do {
             var requestParams = createDefaultParams()
             for (key, value) in params {
@@ -145,6 +146,7 @@ open class BaseRequest<T: Serializable> {
             print(requestParams)
             let headers = createHeaders()
             let opt = try HTTP.New(url, method: method, parameters: requestParams, headers: headers)
+            opt.progress = progressHandler
             opt.start(completionHandler)
         } catch let error {
             print("got an error creating the request: \(error)")
