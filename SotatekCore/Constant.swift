@@ -15,8 +15,9 @@ class Constant {
         static let dbFilter = "db_filter"
         static let cacheFilter = "cache_filter"
         static let pivot = "pivot"
+        static let progressHandler = "progressHandler"
     }
-
+    
     class RequestParam {
         class Pagination {
             // Type
@@ -33,7 +34,7 @@ class Constant {
             static let offset = "p_offset"
         }
     }
-
+    
     static let requestAuthToken = "auth_token"
     static let headerAuthToken = "x-auth-token"
     static let headerVersion = "x-client-version"
