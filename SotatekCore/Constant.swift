@@ -22,6 +22,7 @@ class Constant {
             // Type
             static let cursor = "cursor"
             static let brute = "brute"
+            static let cursor2 = "cursor2"
 
             // Main params
             static let type = "p_type"
@@ -34,8 +35,11 @@ class Constant {
     }
 
     static let requestAuthToken = "auth_token"
+    static let headerAuthToken = "x-auth-token"
+    static let headerVersion = "x-client-version"
     
     static let commandReceiveSocketData = 1000
-    static let commandReceiveGlobalData = 1001
-    static let commandRoomChanged = 1002
+    static let commandSocketError = 1001
+    static let commandReceiveGlobalData = 1002
+    static let commandRoomChanged = 1003
 }

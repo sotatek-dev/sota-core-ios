@@ -24,10 +24,11 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         }
     }
     
-    open override func remove(_ entity: T) -> T {
-        data.removeObject(entity)
-        _ = storage.remove(entity)
-        return entity
+    open override func remove(_ id: DataIdType) -> Bool {
+        if let index = data.index(where: {$0.id == id}) {
+            data.remove(at: index)
+        }
+        return storage.remove(id)
     }
     
     open override func remove(options: [String : Any]) -> [T] {
@@ -57,7 +58,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
             }
         }
         if let result = result {
-            if result.validTime > Util.currentTime() {
+            if result.validTime < Util.currentTime() {
                 return nil
             }
         }

@@ -10,19 +10,30 @@ import Foundation
 import UIKit
 
 extension UIView {
+    open func viewWillAppear() {
+
+    }
+
+    open func viewWillReappear() {
+        
+    }
+
     open func viewDidAppear(_ data: Any? = nil) {
         Notifier.controllerNoitfier.addObserver(self)
         Notifier.viewNotifier.addObserver(self)
+        Notifier.globalNotifier.addObserver(self)
     }
     
     open func viewDidReappear(_ data: Any? = nil) {
         Notifier.controllerNoitfier.addObserver(self)
         Notifier.viewNotifier.addObserver(self)
+        Notifier.globalNotifier.addObserver(self)
     }
     
     open func viewWillDisappear() {
         Notifier.controllerNoitfier.removeObserver(self)
         Notifier.viewNotifier.removeObserver(self)
+        Notifier.globalNotifier.removeObserver(self)
     }
     
     func addObserver(_ observer: Observer) {
@@ -37,10 +48,72 @@ extension UIView {
     func notifyObservers(_ command: Int, data: AnyObject? = nil) {
         Notifier.viewNotifier.notifyObservers(command, data: data)
     }
+
+    func bringToFront() {
+        self.superview?.bringSubview(toFront: self)
+    }
+
+    func autoResize() {
+        self.autoresizingMask = [.flexibleWidth, .flexibleHeight,.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
+    }
 }
 
 class BaseView: UIView, ControllerManager {
+    var views = [UIView]()
     private var controllers: [BaseController] = []
+
+    open override func viewWillAppear() {
+        super.viewWillAppear()
+        for view in views {
+            view.viewWillAppear()
+        }
+    }
+
+    open override func viewWillReappear() {
+        super.viewWillReappear()
+        for view in views {
+            view.viewWillReappear()
+        }
+    }
+
+    open override func viewDidAppear(_ data: Any? = nil) {
+        for controller in controllers {
+            controller.isPause = false
+        }
+        super.viewDidAppear(data)
+        for view in views {
+            view.viewDidAppear(data)
+        }
+    }
+
+    open override func viewDidReappear(_ data: Any? = nil) {
+        for controller in controllers {
+            controller.isPause = false
+        }
+        super.viewDidReappear(data)
+        for view in views {
+            view.viewDidReappear(data)
+        }
+    }
+
+    override open func viewWillDisappear()  {
+        super.viewWillDisappear()
+        for view in views {
+            view.viewWillDisappear()
+        }
+
+        for controller in controllers {
+            controller.isPause = true
+        }
+    }
+
+    open func addView(_ view: UIView) {
+        views.append(view)
+    }
+
+    open func onTouch(_ gesture: UIGestureRecognizer) -> Bool {
+        return GestureUtil.processGesture(gesture, views: views)
+    }
 
     func addController(_ controller: BaseController) {
         controllers.append(controller)
@@ -54,5 +127,44 @@ class BaseView: UIView, ControllerManager {
 
     deinit {
         releaseControllers()
+    }
+}
+
+extension UIWindow {
+
+    /// Fix for http://stackoverflow.com/a/27153956/849645
+    func set(rootViewController newRootViewController: UIViewController, withTransition transition: CATransition? = nil) {
+
+        let previousViewController = rootViewController
+
+        if let transition = transition {
+            // Add the transition
+            layer.add(transition, forKey: kCATransition)
+        }
+
+        rootViewController = newRootViewController
+
+        // Update status bar appearance using the new view controllers appearance - animate if needed
+        if UIView.areAnimationsEnabled {
+            UIView.animate(withDuration: CATransaction.animationDuration()) {
+                newRootViewController.setNeedsStatusBarAppearanceUpdate()
+            }
+        } else {
+            newRootViewController.setNeedsStatusBarAppearanceUpdate()
+        }
+
+        /// The presenting view controllers view doesn't get removed from the window as its currently transistioning and presenting a view controller
+        if let transitionViewClass = NSClassFromString("UITransitionView") {
+            for subview in subviews where subview.isKind(of: transitionViewClass) {
+                subview.removeFromSuperview()
+            }
+        }
+        if let previousViewController = previousViewController {
+            // Allow the view controller to be deallocated
+            previousViewController.dismiss(animated: false) {
+                // Remove the root view in case its still showing
+                previousViewController.view.removeFromSuperview()
+            }
+        }
     }
 }

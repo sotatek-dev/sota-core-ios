@@ -35,6 +35,10 @@ class SocketRepository {
     open func joinRoom(roomId: DataIdType) {
         socketRequest.joinRoom(roomId)
     }
+
+    open func connectIfNeed() {
+        socketRequest.connectIfNeed()
+    }
     
     open func addDataType(_ type: BaseDto.Type) {
 //        dtoTypes[type.self.entityName] = type
@@ -46,7 +50,7 @@ class SocketRepository {
         socketRequest.addDataEvent(type)
     }
     
-    open func send(_ data: Serializable) {
-        socketRequest.send(data)
+    open func send(_ data: Serializable) -> Bool {
+        return socketRequest.send(data)
     }
 }

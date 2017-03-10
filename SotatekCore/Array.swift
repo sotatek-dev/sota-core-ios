@@ -11,7 +11,16 @@ import Foundation
 extension Array where Element : Equatable {
     // Remove first collection element that is equal to the given `object`:
     mutating func removeObject(_ object : Element) {
-        if let index = self.index(of: object) {
+        var index = self.index(where: { element in
+            if let entity = object as? BaseEntity, let element = element as? BaseEntity {
+                return entity.id == element.id
+            }
+            return false
+        })
+        if index == nil {
+            index = self.index(of: object)
+        }
+        if let index = index {
             self.remove(at: index)
         }
     }

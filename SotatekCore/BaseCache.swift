@@ -28,9 +28,9 @@ open class BaseCache<T: BaseEntity>: Cache {
         fail()
     }
     
-    open func remove(_ entity: T) -> T {
+    open func remove(_ id: DataIdType) -> Bool {
         fail()
-        return entity
+        return false
     }
     
     open func remove(options: [String: Any]) -> [T] {
@@ -66,7 +66,7 @@ open class BaseCache<T: BaseEntity>: Cache {
         if liveTime > 0 {
             entity.validTime = Util.currentTime() + liveTime
         } else {
-            entity.validTime = Int.max
+            entity.validTime = Int64.max
         }
     }
     
@@ -115,10 +115,13 @@ open class BaseCache<T: BaseEntity>: Cache {
         })
     }
     
-    open func removeAsync(_ entity: T) -> Observable<T> {
-        return Observable<T>.create({subscribe in
-            _ = self.remove(entity)
-            subscribe.onNext(entity)
+    open func removeAsync(_ id: DataIdType) -> Observable<Bool> {
+        return Observable<Bool>.create({subscribe in
+            if self.remove(id) {
+                subscribe.onNext(true)
+            } else {
+                subscribe.onError(CacheError.unknown)
+            }
             subscribe.onCompleted()
             return Disposables.create()
         })
@@ -173,4 +176,9 @@ open class BaseCache<T: BaseEntity>: Cache {
             return Disposables.create()
         }
     }
+}
+
+//TODO error
+enum CacheError: Error {
+    case unknown
 }

@@ -11,7 +11,8 @@ import Foundation
 open class Notifier {
     //open static let SERVICE_NOTIFIER = "service"
     //open static let CONTROLLER_NOTIFIER = "controller"
-    
+
+    open static let globalNotifier = Notifier.instance("global")
     open static let viewNotifier = Notifier.instance("view")
     open static let controllerNoitfier = Notifier.instance("controller")
     open static let serviceNotifier = Notifier.instance("service")
@@ -26,6 +27,10 @@ open class Notifier {
             instances[name] = instance
         }
         return instance!
+    }
+
+    open static func removeInstance(_ name: String) {
+        instances[name] = nil
     }
     
     var observers = [Observer]()

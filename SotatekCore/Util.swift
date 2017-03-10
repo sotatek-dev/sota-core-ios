@@ -8,11 +8,18 @@
 
 import Foundation
 import UIKit
+import ReachabilitySwift
 
 open class Util {
-    open static func currentTime() -> Int {
+    static let reachability = Reachability()!
+
+    static var isReachable: Bool {
+        return reachability.isReachable
+    }
+
+    open static func currentTime() -> Int64 {
         let time = Date().timeIntervalSince1970
-        return Int(time * 1000)
+        return Int64(time * 1000)
     }
     
     open static func uuid() -> String {
@@ -46,4 +53,11 @@ open class Util {
         }
         return nil
     }
+
+    static func delay(_ delay: Double, _ function: @escaping (() -> Void)) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delay, execute: {
+            function()
+        })
+    }
+
 }

@@ -138,7 +138,7 @@ code += '}\n\n\n';
 
 code += 'override public class func toEntity(_ row: Row) -> ' + className+ ' {\n';
 code += 'let entity = ' + className + '(\n';
-code += 'id: row[ContactEntity.idColumn]'
+code += 'id: row[BaseEntity.idColumn]'
 for (var i in data) {
 	code += ',\n' + i + ': row[' + className + '.' + i + 'Column]'
 }

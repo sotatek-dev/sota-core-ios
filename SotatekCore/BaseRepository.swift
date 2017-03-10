@@ -36,6 +36,7 @@ open class BaseRepository<T: BaseEntity> {
     
     private func createRemoteFirst(_ entity: T) -> Observable<T> {
         return self.request.create(entity)
+            .do(onError: onError)
             .flatMap(processMeta)
             .flatMap({(response: HttpResponse) -> Observable<T> in
                 let savedEntity = T(fromJson: response.data)
@@ -46,6 +47,7 @@ open class BaseRepository<T: BaseEntity> {
     private func createLocalFirst(_ entity: T) -> Observable<T> {
         let cachedEntity = cache.saveAsync(entity)
         let remoteEntity = request.create(entity)
+            .do(onError: onError)
             .flatMap(processMeta)
             .flatMap({(response: HttpResponse) -> Observable<T> in
                 let savedEntity = T(fromJson: response.data)
@@ -108,7 +110,9 @@ open class BaseRepository<T: BaseEntity> {
 
     open func remove(_ id: DataIdType) -> Observable<Bool> {
         //TODO reimplement
-        return request.remove(id).flatMap(processMeta)
+        return request.remove(id)
+            .do(onError: onError)
+            .flatMap(processMeta)
             .flatMap({(response: HttpResponse) -> Observable<Bool> in
                 return Observable.just(true)
             })
@@ -131,9 +135,14 @@ open class BaseRepository<T: BaseEntity> {
 //        )
 //    }
 
+    open func invalidate(_ id: DataIdType) -> Observable<Bool> {
+        return cache.removeAsync(id)
+    }
+
     open func get(_ id: DataIdType) -> Observable<T> {
         let cachedEntity = cache.getAsync(id)
         let remoteEntity = request.get(id)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> T in
                 let entity = self.saveJsonObject(response.data)
@@ -166,6 +175,7 @@ open class BaseRepository<T: BaseEntity> {
     func getList(count: Int, options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         let cachedEntitiesObserver = cache.getListAsync(count: count, options: options)
         let remoteEntitiesObserver = request.getList(count: count, options: options)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map{(response: HttpResponse) -> ListDto<T> in
                 if let _ = options[Constant.RepositoryParam.pivot] as? T {
@@ -214,6 +224,7 @@ open class BaseRepository<T: BaseEntity> {
     func getAll(options: [String: Any] = [:]) -> Observable<ListDto<T>> {
         let cachedEntitiesObserver = cache.getAllAsync(options: options)
         let remoteEntitiesObserver = request.getAll(options: options)
+            .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> ListDto<T> in
                 let entities = self.saveJsonList(response.data)
@@ -225,5 +236,8 @@ open class BaseRepository<T: BaseEntity> {
     
     open func processMeta(response: HttpResponse) -> Observable<HttpResponse> {
         return Observable.just(response)
+    }
+
+    open func onError(error: Error) {
     }
 }

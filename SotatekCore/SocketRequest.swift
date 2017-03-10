@@ -14,34 +14,66 @@ public class SocketRequest {
     let notifier = Notifier.socketNoitfier
     var socket: SocketIOClient!
     var roomId: DataIdType!
+    var namespace: String
     
     init(namespace: String) {
+        self.namespace = namespace
+        createSocket()
+    }
+
+    func createSocketConfig() -> SocketIOClientConfiguration {
         let connectParams = SocketIOClientOption.connectParams(createConnectParams())
         let config: SocketIOClientConfiguration = [
-            SocketIOClientOption.log(true),
+            SocketIOClientOption.log(false),
             SocketIOClientOption.forcePolling(true),
             connectParams,
             SocketIOClientOption.nsp(namespace)]
-        socket = SocketIOClient(socketURL: URL(string: AppConfig.server)!, config: config)
-        socket.on("connect", callback: {
-            [unowned self] data, ack in
-            self.joinRoom(self.roomId)
-        })
-        socket.on("room-changed", callback: {data, ack in
-            self.notifier.notifyObservers(Constant.commandRoomChanged, data: data[0])
-        })
+        return config
     }
 
     func createConnectParams() -> [String: String] {
         return [:]
     }
+
+    open func connectIfNeed() {
+        if socket.status != .connected && socket.status != .connecting {
+            createSocket()
+            socket.connect()
+        }
+    }
     
     open func connect(roomId: DataIdType) {
         self.roomId = roomId
+        createSocket()
         socket.connect()
         //startMock()
     }
-    
+
+    func createSocket() {
+        socket = SocketIOClient(socketURL: URL(string: AppConfig.server)!, config: createSocketConfig())
+        socket.on("connect", callback: {
+            [weak self] data, ack in
+            self?.joinRoom(self?.roomId ?? 0)
+        })
+        socket.on("room-changed", callback: {data, ack in
+            self.notifier.notifyObservers(Constant.commandRoomChanged, data: data[0])
+        })
+        socket.on("error", callback: {
+            data, ack in
+            print("Socket error: \(data)")
+        })
+
+        socket.on("socketError", callback: {
+            [unowned self] data, ack in
+            let json = JSON(data[0])
+            print("Data from socket: socketError => \(json.rawString()) --")
+            let dto = SocketErrorDto(fromJson: json)
+            self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: SocketErrorDto.entityName, data: dto))
+        })
+
+        addDataEvents()
+    }
+
     open func disconnect() {
         socket.disconnect()
     }
@@ -52,29 +84,58 @@ public class SocketRequest {
             self.socket.emit("join-room", roomId)
         }
     }
-    
+
+    var entityEvents: [
+        (
+            type: BaseEntity.Type,
+            callback: (([Any], SocketAckEmitter) -> Void)
+        )
+        ] = []
+
+    var dtoEvents: [
+        (
+            type: BaseDto.Type,
+            callback: (([Any], SocketAckEmitter) -> Void)
+        )
+        ] = []
+
     func addDataEvent(_ type: BaseEntity.Type) {
-        socket.on(type.self.entityName, callback: {
+        entityEvents.append((type: type, callback: {
             [unowned self] data, ack in
-            print("Data from socket: \(data[0]) --")
             let json = JSON(data[0])
+            print("Data from socket: \(type.self.entityName) => \(json.rawString()) --")
             let entity = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: entity))
-        })
+        }))
     }
+
     
     func addDataEvent(_ type: BaseDto.Type) {
-        socket.on(type.self.entityName, callback: {
+        dtoEvents.append((type: type, callback: {
             [unowned self] data, ack in
-            print("Data from socket: \(data[0]) --")
             let json = JSON(data[0])
+            print("Data from socket: \(type.self.entityName) => \(json.rawString()) --")
             let dto = type.init(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: type.self.entityName, data: dto))
-        })
+        }))
+    }
+
+    func addDataEvents() {
+        for event in entityEvents {
+            socket.on(event.type.self.entityName, callback: event.callback)
+        }
+        for event in dtoEvents {
+            socket.on(event.type.self.entityName, callback: event.callback)
+        }
     }
     
-    open func send(_ data: Serializable) {
+    open func send(_ data: Serializable) -> Bool {
+        if socket.status != .connected {
+            return false
+        }
+        print("Send over socket: \(type(of: data).entityName) \(JSON(data.toDictionary()).rawString() ?? "")")
         socket.emit(type(of: data).entityName, data.toDictionary())
+        return true
     }
     
     func startMock() {

@@ -35,13 +35,16 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
         }
     }
     
-    open override func remove(_ entity: TEntity) -> TEntity {
-        let key = getGroupId(entity)
-        if var list = map[key] {
-            list.removeObject(entity)
+    open override func remove(_ id: DataIdType) -> Bool {
+        for (key, list) in map {
+            if let index = list.index(where: {$0.id == id}) {
+                var newList = list
+                newList.remove(at: index)
+                map[key] = newList
+                break
+            }
         }
-        _ = storage.remove(entity)
-        return entity
+        return storage.remove(id)
     }
     
     open override func remove(options: [String : Any]) -> [TEntity] {
