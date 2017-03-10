@@ -192,7 +192,7 @@ open class BaseRepository<T: BaseEntity> {
         var entities = [T]()
         if let jsonArray = json.array {
             for jsonObject in jsonArray {
-                let entity = cache.save(jsonObject) as! T
+                let entity = T(fromJson: jsonObject)
                 entities.append(entity)
             }
         }
