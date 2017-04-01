@@ -141,9 +141,12 @@ open class BaseRequest<T: Serializable> {
             for (key, value) in params {
                 requestParams[key] = value
             }
-            print(url)
-            print(requestParams)
+            print("====================")
+            print("\(method): \(url)")
+            print("params: \(requestParams)")
             let headers = createHeaders()
+            print("header: \(headers)")
+            print("====================")
             let opt = try HTTP.New(url, method: method, parameters: requestParams, headers: headers)
             opt.start(completionHandler)
         } catch let error {
