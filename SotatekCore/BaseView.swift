@@ -52,9 +52,17 @@ extension UIView {
     func bringToFront() {
         self.superview?.bringSubview(toFront: self)
     }
-
-    func autoResize() {
-        self.autoresizingMask = [.flexibleWidth, .flexibleHeight,.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleBottomMargin]
+    
+    func forceConstraintToSuperView() {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Set constraint to self
+        let top = NSLayoutConstraint(item: self, attribute: .top, relatedBy: .equal, toItem: self.superview, attribute: .top, multiplier: 1, constant: 0)
+        let leading = NSLayoutConstraint(item: self, attribute: .leading, relatedBy: .equal, toItem: self.superview, attribute: .leading, multiplier: 1, constant: 0)
+        let trailing = NSLayoutConstraint(item: self, attribute: .trailing, relatedBy: .equal, toItem: self.superview, attribute: .trailing, multiplier: 1, constant: 0)
+        let bottom = NSLayoutConstraint(item: self, attribute: .bottom, relatedBy: .equal, toItem: self.superview, attribute: .bottom, multiplier: 1, constant: 0)
+        
+        self.superview?.addConstraints([top, leading, trailing, bottom])
     }
 }
 
