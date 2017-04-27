@@ -153,14 +153,21 @@ open class BaseRequest<T: Serializable> {
             if let fileUpload = self.getFileUpload(params: params) {
                 upload(multipartFormData: {
                     multipartFormData in
-                    do {
-                        multipartFormData.append(fileUpload.fileUrl!, withName: fileUpload.fileName!, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
-                        for (key, value) in params {
-                            multipartFormData.append((value as AnyObject).data, withName: key)
+                    if let data = fileUpload.data {
+                        multipartFormData.append(data, withName: fileUpload.fileName!, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+                    }
+                    else if fileUpload.fileUrl != nil, let data = fileUpload.getData() {
+                        multipartFormData.append(data, withName: fileUpload.fileName!, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+                    }
+                    for (key, value) in params {
+                        if let data = (value as AnyObject).data?(using: String.Encoding.utf8.rawValue) {
+                            multipartFormData.append(data, withName: key)
                         }
                     }
-                    catch {}
-                }, to: url, encodingCompletion: {
+                },
+                to: url,
+                headers: headers,
+                encodingCompletion: {
                     encodingResult in
                     switch encodingResult {
                     case .success(let upload, _, _):
@@ -206,10 +213,13 @@ open class BaseRequest<T: Serializable> {
         switch response {
         case .success(let value):
             if let dict = value as? NSDictionary {
+                print(dict as! [String: Any])
                 let jsonResponse = HttpResponse(fromJson: JSON(dict))
                 subscribe.onNext(jsonResponse)
+                subscribe.onCompleted()
             }
         case .failure(let error):
+            print(error)
             let jsonResponse = HttpResponse(fromJson: JSON(error))
             if let meta = jsonResponse.meta {
                 //TODO fix me
@@ -219,7 +229,6 @@ open class BaseRequest<T: Serializable> {
                 subscribe.on(.error(error))
             }
         }
-        subscribe.onCompleted()
     }
     
     func responseMockData(mockFile: String, subscribe: AnyObserver<HttpResponse>) {

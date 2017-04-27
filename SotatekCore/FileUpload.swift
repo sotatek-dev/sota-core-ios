@@ -31,16 +31,20 @@ class FileUpload:  NSObject, NSCoding {
     /**
      Reads the data from disk or from memory. Throws an error if no data or file is found.
      */
-    func getData() throws -> Data? {
+    func getData() -> Data? {
         if let d = data {
             return d
         }
         guard let url = fileUrl else { return nil}
         fileName = url.lastPathComponent
-        let d = try Data(contentsOf: url, options: NSData.ReadingOptions.mappedIfSafe)
-        data = d
-        getMimeType()
-        return d
+        do {
+            let d = try Data(contentsOf: url, options: NSData.ReadingOptions.mappedIfSafe)
+            data = d
+            getMimeType()
+            return d
+        }
+        catch {}
+        return nil
     }
     
     /**
