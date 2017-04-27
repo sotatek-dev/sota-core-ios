@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 import SwiftyJSON
-import SwiftHTTP
+import Alamofire
 
 open class BaseRequest<T: Serializable> {
     var networkDelay: Int = 3
@@ -40,7 +40,7 @@ open class BaseRequest<T: Serializable> {
             params[key] = value
         }
         let progressHandler = options[Constant.RepositoryParam.progressHandler] as? ((Float) -> Swift.Void)
-        return createResponseObservable(method: .POST, url: url ?? self.entityUrl, params: params, mockFile: "", progressHandler: progressHandler)
+        return createResponseObservable(method: .post, url: url ?? self.entityUrl, params: params, mockFile: "", progressHandler: progressHandler)
     }
     
     open func update(_ entity: T, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
@@ -48,19 +48,19 @@ open class BaseRequest<T: Serializable> {
         for (key, value) in createRequestParams(options: options) {
             params[key] = value
         }
-        return createResponseObservable(method: .PUT, url: url ?? self.entityUrl, params: params)
+        return createResponseObservable(method: .put, url: url ?? self.entityUrl, params: params)
     }
     
     open func remove(_ id: DataIdType, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
         let params = createRequestParams(options: options)
         let removeUrl = url ?? "\(self.entityUrl)/\(id)"
-        return createResponseObservable(method: .DELETE, url: removeUrl, params: params)
+        return createResponseObservable(method: .delete, url: removeUrl, params: params)
     }
     
     open func get(_ id: DataIdType, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
         let params = createRequestParams(options: options)
         let getUrl = url ?? "\(self.entityUrl)/\(id)"
-        return createResponseObservable(method: .GET, url: getUrl, params: params, mockFile: mockEntity)
+        return createResponseObservable(method: .get, url: getUrl, params: params, mockFile: mockEntity)
     }
     
     func createRequestParams(count: Int? = nil, options: [String: Any]) -> [String: Any] {
@@ -97,7 +97,7 @@ open class BaseRequest<T: Serializable> {
         for (key, value) in originParams {
             params[key] = value
         }
-        return createResponseObservable(method: .GET, url: url, params: params, mockFile: mockFile)
+        return createResponseObservable(method: .get, url: url, params: params, mockFile: mockFile)
     }
     
     func getAll(options: [String: Any]) -> Observable<HttpResponse> {
@@ -119,69 +119,107 @@ open class BaseRequest<T: Serializable> {
         return Util.readTextFile(name: name, type: "js")
     }
     
-    open func createResponseObservable(method: HTTPVerb, url: String, params: [String: Any], mockFile: String = "", progressHandler: ((Float) -> Void)? = nil) -> Observable<HttpResponse> {
-        return Observable<HttpResponse>.create({subscribe in
-            if AppConfig.useMockResponse && !mockFile.isEmpty {
+    open func createResponseObservable(method: HTTPMethod, url: String, params: [String: Any], mockFile: String = "", progressHandler: ((Float) -> Void)? = nil) -> Observable<HttpResponse> {
+        if AppConfig.useMockResponse && !mockFile.isEmpty {
+            return Observable<HttpResponse>.create({subscribe in
                 self.responseMockData(mockFile: mockFile, subscribe: subscribe)
-            } else {
-                self.executeRequest(method: method, url: url, params: params, progressHandler: progressHandler, {response in
-                    self.processResponse(response: response, subscribe: subscribe)
-                })
-            }
-            return Disposables.create()
-        })
+                return Disposables.create()
+            })
+        }
+        else {
+            return self.executeRequest(method: method, url: url, params: params, progressHandler: progressHandler)
+        }
     }
     
     func createHeaders() -> [String: String] {
         return [:]
     }
     
-    func executeRequest(method: HTTPVerb, url: String, params: [String: Any], progressHandler: ((Float) -> Void)?, _ completionHandler:@escaping ((Response) -> Void)) {
-        do {
-            var requestParams = createDefaultParams()
-            for (key, value) in params {
-                requestParams[key] = value
+    func executeRequest(method: HTTPMethod, url: String, params: [String: Any], progressHandler: ((Float) -> Void)?) -> Observable<HttpResponse> {
+        var requestParams = createDefaultParams()
+        for (key, value) in params {
+            requestParams[key] = value
+        }
+        print("====================")
+        print("\(method): \(url)")
+        print("params: \(requestParams)")
+        let headers = createHeaders()
+        print("header: \(headers)")
+        print("====================")
+        
+        return Observable<HttpResponse>.create {
+            observer in
+            
+            if let fileUpload = self.getFileUpload(params: params) {
+                upload(multipartFormData: {
+                    multipartFormData in
+                    do {
+                        multipartFormData.append(fileUpload.fileUrl!, withName: fileUpload.fileName!, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+                        for (key, value) in params {
+                            multipartFormData.append((value as AnyObject).data, withName: key)
+                        }
+                    }
+                    catch {}
+                }, to: url, encodingCompletion: {
+                    encodingResult in
+                    switch encodingResult {
+                    case .success(let upload, _, _):
+                        upload.responseJSON { response in
+                            self.processResponse(response: response.result, subscribe: observer)
+                        }
+                        if let progressHandler = progressHandler {
+                            upload.uploadProgress(closure: {
+                                progress in
+                                progressHandler((Float)(progress.completedUnitCount) / (Float)(progress.totalUnitCount))
+                            })
+                        }
+                    case .failure(let _):
+                        break
+                    }
+                })
             }
-            print("====================")
-            print("\(method): \(url)")
-            print("params: \(requestParams)")
-            let headers = createHeaders()
-            print("header: \(headers)")
-            print("====================")
-            let opt = try HTTP.New(url, method: method, parameters: requestParams, headers: headers)
-            opt.progress = progressHandler
-            opt.start(completionHandler)
-        } catch let error {
-            print("got an error creating the request: \(error)")
+            else {
+                request(url, method: method, parameters: requestParams, headers: headers).responseJSON {
+                    [unowned self] response in
+                    print(response)
+                    
+                    self.processResponse(response: response.result, subscribe: observer)
+                }
+            }
+            
+            return Disposables.create()
         }
     }
     
-    func processResponse(response: Response, subscribe: AnyObserver<HttpResponse>) {
-//        self.delay {
-        if let error = response.error {
-            print(error)
-            if let json = response.text, !json.isEmpty {
-                print(json)
-                let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-                if let meta = jsonResponse.meta {
-                    //TODO fix me
-                    meta.httpCode = (error as NSError).code
-                    subscribe.on(.error(meta))
-                } else {
-                    subscribe.on(.error(error))
-                }
+    func getFileUpload(params: [String: Any]) -> FileUpload? {
+        let values = Array(params.values)
+        for value in values {
+            if value is FileUpload {
+                return value as? FileUpload
+            }
+        }
+        
+        return nil
+    }
+    
+    func processResponse(response: Result<Any>, subscribe: AnyObserver<HttpResponse>) {
+        switch response {
+        case .success(let value):
+            if let dict = value as? NSDictionary {
+                let jsonResponse = HttpResponse(fromJson: JSON(dict))
+                subscribe.onNext(jsonResponse)
+            }
+        case .failure(let error):
+            let jsonResponse = HttpResponse(fromJson: JSON(error))
+            if let meta = jsonResponse.meta {
+                //TODO fix me
+                meta.httpCode = (error as NSError).code
+                subscribe.on(.error(meta))
             } else {
                 subscribe.on(.error(error))
             }
-        } else {
-            let json = response.text!
-            print(json)
-            let jsonResponse = HttpResponse(fromJson: JSON.parse(json))
-            subscribe.onNext(jsonResponse)
-
         }
         subscribe.onCompleted()
-//        }
     }
     
     func responseMockData(mockFile: String, subscribe: AnyObserver<HttpResponse>) {
