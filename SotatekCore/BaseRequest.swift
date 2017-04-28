@@ -185,7 +185,7 @@ open class BaseRequest<T: Serializable> {
                                     progressHandler((Float)(progress.completedUnitCount) / (Float)(progress.totalUnitCount))
                                 })
                             }
-                        case .failure(let _):
+                        case .failure(_):
                             break
                         }
                     })
