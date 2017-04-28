@@ -176,8 +176,8 @@ open class BaseRequest<T: Serializable> {
                         encodingResult in
                         switch encodingResult {
                         case .success(let upload, _, _):
-                            upload.validate().responseJSON { response in
-                                self.processResponse(response: response.result, subscribe: observer)
+                            upload.responseJSON { response in
+                                self.processResponse(response: response, subscribe: observer)
                             }
                             if let progressHandler = progressHandler {
                                 upload.uploadProgress(closure: {
@@ -193,11 +193,11 @@ open class BaseRequest<T: Serializable> {
                 catch {}
             }
             else {
-                request(url, method: method, parameters: requestParams, headers: headers).validate().responseJSON {
+                request(url, method: method, parameters: requestParams, headers: headers).responseJSON {
                     [unowned self] response in
                     print(response)
                     
-                    self.processResponse(response: response.result, subscribe: observer)
+                    self.processResponse(response: response, subscribe: observer)
                 }
             }
             
@@ -216,14 +216,26 @@ open class BaseRequest<T: Serializable> {
         return nil
     }
     
-    func processResponse(response: Result<Any>, subscribe: AnyObserver<HttpResponse>) {
-        switch response {
+    func processResponse(response: DataResponse<Any>, subscribe: AnyObserver<HttpResponse>) {
+        switch response.result {
         case .success(let value):
             if let dict = value as? NSDictionary {
                 print(dict)
                 let jsonResponse = HttpResponse(fromJson: JSON(dict))
-                subscribe.onNext(jsonResponse)
-                subscribe.onCompleted()
+                if let statusCode = response.response?.statusCode {
+                    if statusCode >= 200 && statusCode < 300 {
+                        subscribe.onNext(jsonResponse)
+                        subscribe.onCompleted()
+                    }
+                    else {
+                        if let meta = jsonResponse.meta {
+                            meta.httpCode = statusCode
+                            subscribe.on(.error(meta))
+                        } else {
+                            subscribe.on(.error(response.response as! Error))
+                        }
+                    }
+                }
             }
         case .failure(let error):
             print(error)
