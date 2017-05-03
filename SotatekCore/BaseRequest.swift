@@ -162,10 +162,8 @@ open class BaseRequest<T: Serializable> {
                         }
                         
                         for (key, value) in params {
-                            if !(value is FileUpload) {
-                            var valueRaw = value as AnyObject
-                                multipartFormData.append(Data(bytes: &valueRaw,
-                                                          count: MemoryLayout.size(ofValue: valueRaw)), withName: key)
+                            if !(value is FileUpload), let data = String(describing: value).data(using: .utf8) {
+                                multipartFormData.append(data, withName: key)
                             }
                         }
                     },
