@@ -152,26 +152,25 @@ open class BaseRequest<T: Serializable> {
             
             if let fileUpload = self.getFileUpload(params: params) {
                 do {
-                    var urlRequest = try URLRequest(url: url, method: .post, headers: headers)
-                    var lastestParams = params
-                    for (key, value) in lastestParams {
-                        if value is FileUpload {
-                            lastestParams[key] = nil
-                        }
-                    }
-                    
-                    urlRequest.httpBody = try JSONSerialization.data(withJSONObject: lastestParams, options: .prettyPrinted)
-                    
                     upload(multipartFormData: {
                         multipartFormData in
                         if let data = fileUpload.data {
-                            multipartFormData.append(data, withName: fileUpload.fileName!, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+                            multipartFormData.append(data, withName: "file", fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
                         }
                         else if fileUpload.fileUrl != nil, let data = fileUpload.getData() {
-                            multipartFormData.append(data, withName: fileUpload.fileName!, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+                            multipartFormData.append(data, withName: "file", fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+                        }
+                        
+                        for (key, value) in params {
+                            if !(value is FileUpload) {
+                            var valueRaw = value as AnyObject
+                                multipartFormData.append(Data(bytes: &valueRaw,
+                                                          count: MemoryLayout.size(ofValue: valueRaw)), withName: key)
+                            }
                         }
                     },
-                    with: urlRequest,
+                    to: url,
+                    headers: headers,
                     encodingCompletion: {
                         encodingResult in
                         switch encodingResult {
