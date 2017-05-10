@@ -126,6 +126,7 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
 
         func viewControllerDidDismiss(sender: UIViewController, data: [String: Any]) {
             if let viewController = self.viewController {
+                viewController.setNeedsStatusBarAppearanceUpdate()
                 viewController.viewDidAppear(true)
             }
             if let delegate = delegate {
