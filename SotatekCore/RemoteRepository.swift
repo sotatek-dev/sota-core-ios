@@ -27,16 +27,33 @@ class RemoteRepository<T: Serializable> {
                 return entity
             })
     }
-    
+
+    var getMap: [DataIdType: Observable<T>] = [:]
     open func get(_ id: DataIdType, options: [String : Any] = [:]) -> Observable<T> {
-        return request.get(id, options: options)
+        if let observable = getMap[id] {
+            return observable
+        }
+
+        let result = request.get(id, options: options)
             .do(onError: onError)
             .flatMap(processMeta)
             .map({(response: HttpResponse) -> T in
                 let entity = T(fromJson: response.data)
                 return entity
-            })
+            }).shareReplay(1)
+        
+        getMap[id] = result
 
+        _ = result
+            .subscribe(
+                onError: { error in
+                    self.getMap[id] = nil
+            },
+                onCompleted: {
+                    self.getMap[id] = nil
+            }
+        )
+        return result
     }
 
     open func update(_ object: T, options: [String : Any] = [:]) -> Observable<T> {
