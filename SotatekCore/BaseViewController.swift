@@ -96,19 +96,24 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         vc.delegate = delegate ?? self
         (from ?? self).present(vc, animated: true, completion: nil)
     }
-
+    
+    func pushViewController(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
+        let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
+        vc.initData = data
+        vc.delegate = delegate ?? self
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func showDialog(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
-        vc.delegate = DialogDelegate(viewController: self as? BaseViewController, delegate: delegate ?? self)
+        vc.delegate = DialogDelegate(viewController: self, delegate: delegate ?? self)
         vc.modalPresentationStyle = .custom
         self.present(vc, animated: true, completion: {
-            if let baseViewController = self as? BaseViewController {
-                baseViewController.viewWillDisappear(true)
-            }
+            self.viewWillDisappear(true)
         })
     }
-
+    
     static func showRootViewController(_ id: String, data: [String: Any] = [String: Any]()) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
