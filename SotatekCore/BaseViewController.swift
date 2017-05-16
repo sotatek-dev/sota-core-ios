@@ -119,14 +119,35 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         vc.initData = data
         UIApplication.shared.keyWindow?.set(rootViewController: vc)
     }
+    
+    class DialogDelegate: ViewControllerDelegate {
+        private(set) var delegate: ViewControllerDelegate?
+        private(set) weak var viewController: BaseViewController?
+        
+        init(viewController: BaseViewController?, delegate: ViewControllerDelegate?) {
+            self.viewController = viewController
+            self.delegate = delegate
+        }
+        
+        func viewControllerDidDismiss(sender: UIViewController, data: [String: Any]) {
+            if let viewController = self.viewController {
+                viewController.setNeedsStatusBarAppearanceUpdate()
+                viewController.viewDidAppear(true)
+            }
+            if let delegate = delegate {
+                delegate.viewControllerDidDismiss?(sender: sender, data: data)
+            }
+        }
+    }
 
-    func dismissViewController(animated: Bool = true, data: [String: Any] = [:]) {
+    func dismissViewController(animated: Bool = true, data: [String: Any] = [:], completion: (()->Void)? = nil) {
         responseData = data
         // prevent mem leak
         let delegate = self.delegate
         self.delegate = nil
         self.dismiss(animated: animated, completion: {
             delegate?.viewControllerDidDismiss?(sender: self, data: data)
+            completion?()
         })
     }
     
@@ -134,26 +155,6 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
 
     deinit {
         releaseControllers()
-    }
-}
-
-class DialogDelegate: ViewControllerDelegate {
-    private(set) var delegate: ViewControllerDelegate?
-    private(set) weak var viewController: BaseViewController?
-    
-    init(viewController: BaseViewController?, delegate: ViewControllerDelegate?) {
-        self.viewController = viewController
-        self.delegate = delegate
-    }
-    
-    func viewControllerDidDismiss(sender: UIViewController, data: [String: Any]) {
-        if let viewController = self.viewController {
-            viewController.setNeedsStatusBarAppearanceUpdate()
-            viewController.viewDidAppear(true)
-        }
-        if let delegate = delegate {
-            delegate.viewControllerDidDismiss?(sender: sender, data: data)
-        }
     }
 }
 
