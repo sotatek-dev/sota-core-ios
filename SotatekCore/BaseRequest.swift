@@ -150,64 +150,43 @@ open class BaseRequest<T: Serializable> {
         return Observable<HttpResponse>.create {
             observer in
             
-            if let fileUpload = self.getFileUpload(params: params) {
-                if params.keys.count > 1 {
-                    upload(multipartFormData: {
-                        multipartFormData in
-                        if let data = fileUpload.data {
-                            multipartFormData.append(data, withName: "file", fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
-                        }
-                        else if fileUpload.fileUrl != nil, let data = fileUpload.getData() {
-                            multipartFormData.append(data, withName: "file", fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
-                        }
-                        
-                        for (key, value) in params {
-                            if !(value is FileUpload), let data = String(describing: value).data(using: .utf8) {
-                                multipartFormData.append(data, withName: key)
-                            }
-                        }
-                    },
-                    to: url,
-                    headers: headers,
-                    encodingCompletion: {
-                        encodingResult in
-                        switch encodingResult {
-                        case .success(let upload, _, _):
-                            upload.responseJSON { response in
-                                self.processResponse(response: response, subscribe: observer)
-                            }
-                            if let progressHandler = progressHandler {
-                                upload.uploadProgress(closure: {
-                                    progress in
-                                    progressHandler((Float)(progress.completedUnitCount) / (Float)(progress.totalUnitCount))
-                                })
-                            }
-                        case .failure(_):
-                            break
-                        }
-                    })
-                }
-                else { // Only contains image
-                    var uploadRequest: UploadRequest!
+            if let fileUpload = self.getFileUpload(params: params), let name = self.getKeyWithFileUpload(params: params) {
+                upload(multipartFormData: {
+                    multipartFormData in
+                    
                     if let data = fileUpload.data {
-                        uploadRequest = upload(data, to: url, headers: headers)
+                        multipartFormData.append(data, withName: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
                     }
-                    else if fileUpload.fileUrl != nil {
-                        uploadRequest = upload(fileUpload.fileUrl!, to: url, headers: headers)
+                    else if fileUpload.fileUrl != nil, let data = fileUpload.getData() {
+                        multipartFormData.append(data, withName: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
                     }
                     
-                    uploadRequest
-                    .uploadProgress {
-                        progress in
-                        progressHandler?((Float)(progress.completedUnitCount) / (Float)(progress.totalUnitCount))
+                    for (key, value) in params {
+                        if !(value is FileUpload), let data = String(describing: value).data(using: .utf8) {
+                            multipartFormData.append(data, withName: key)
+                        }
                     }
-                    .responseJSON {
-                        [unowned self] response in
-                        print(response)
-                        
-                        self.processResponse(response: response, subscribe: observer)
+                },
+                to: url,
+                headers: headers,
+                encodingCompletion: {
+                    encodingResult in
+                    switch encodingResult {
+                    case .success(let upload, _, _):
+                        upload.responseJSON { response in
+                            print(response)
+                            self.processResponse(response: response, subscribe: observer)
+                        }
+                        if let progressHandler = progressHandler {
+                            upload.uploadProgress(closure: {
+                                progress in
+                                progressHandler((Float)(progress.completedUnitCount) / (Float)(progress.totalUnitCount))
+                            })
+                        }
+                    case .failure(_):
+                        break
                     }
-                }
+                })
             }
             else {
                 request(url, method: method, parameters: requestParams, headers: headers)
@@ -234,11 +213,20 @@ open class BaseRequest<T: Serializable> {
         return nil
     }
     
+    func getKeyWithFileUpload(params: [String: Any]) -> String? {
+        for (key, value) in params {
+            if value is FileUpload {
+                return key
+            }
+        }
+        
+        return nil
+    }
+    
     func processResponse(response: DataResponse<Any>, subscribe: AnyObserver<HttpResponse>) {
         switch response.result {
         case .success(let value):
             if let dict = value as? NSDictionary {
-                print(dict)
                 let jsonResponse = HttpResponse(fromJson: JSON(dict))
                 if let statusCode = response.response?.statusCode {
                     if statusCode >= 200 && statusCode < 300 {

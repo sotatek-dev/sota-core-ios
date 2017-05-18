@@ -43,7 +43,9 @@ class FileUpload:  NSObject, NSCoding {
             getMimeType()
             return d
         }
-        catch {}
+        catch {
+            print(error.localizedDescription)
+        }
         return nil
     }
     
