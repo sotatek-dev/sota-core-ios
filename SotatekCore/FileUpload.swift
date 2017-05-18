@@ -14,6 +14,7 @@ class FileUpload:  NSObject, NSCoding {
     private(set) var mimeType: String?
     private(set) var data: Data?
     private(set) var fileName: String?
+    private var size: UInt64 = 0
     
     /**
      Tries to determine the mime type from the fileUrl extension.
@@ -47,6 +48,29 @@ class FileUpload:  NSObject, NSCoding {
             print(error.localizedDescription)
         }
         return nil
+    }
+    
+    func getFileSize() -> UInt64 {
+        if size > 0 {
+            return size
+        }
+        
+        guard let url = fileUrl else {
+            if let data = getData() {
+                size = UInt64(data.count)
+            }
+            
+            return size
+        }
+        
+        do {
+            let attr = try FileManager.default.attributesOfItem(atPath: url.absoluteString)
+            size = attr[FileAttributeKey.size] as! UInt64
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        return size
     }
     
     /**
