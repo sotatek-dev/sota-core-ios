@@ -64,10 +64,10 @@ class FileUpload:  NSObject, NSCoding {
         }
         
         do {
-            let attr = try FileManager.default.attributesOfItem(atPath: url.absoluteString)
-            size = attr[FileAttributeKey.size] as! UInt64
+            let resource = try url.resourceValues(forKeys: [.fileSizeKey])
+            size = UInt64(resource.fileSize!)
         } catch {
-            print(error.localizedDescription)
+            print("================== File error", error.localizedDescription)
         }
         
         return size
@@ -103,10 +103,11 @@ class FileUpload:  NSObject, NSCoding {
      
      -parameter fileUrl: The fileUrl is a standard url path to a file.
      */
-    convenience init(fileUrl: URL, fileName: String) {
+    convenience init(fileUrl: URL, fileName: String, size: UInt64 = 0) {
         self.init()
         self.fileUrl = fileUrl
         self.fileName = fileName
+        self.size = size
         getMimeType()
     }
     
