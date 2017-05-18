@@ -151,7 +151,7 @@ open class BaseRequest<T: Serializable> {
             observer in
             
             if let fileUpload = self.getFileUpload(params: params) {
-                do {
+                if params.keys.count > 1 {
                     upload(multipartFormData: {
                         multipartFormData in
                         if let data = fileUpload.data {
@@ -187,10 +187,31 @@ open class BaseRequest<T: Serializable> {
                         }
                     })
                 }
-                catch {}
+                else { // Only contains image
+                    var uploadRequest: UploadRequest!
+                    if let data = fileUpload.data {
+                        uploadRequest = upload(data, to: url, headers: headers)
+                    }
+                    else if fileUpload.fileUrl != nil {
+                        uploadRequest = upload(fileUpload.fileUrl!, to: url, headers: headers)
+                    }
+                    
+                    uploadRequest
+                    .uploadProgress {
+                        progress in
+                        progressHandler?((Float)(progress.completedUnitCount) / (Float)(progress.totalUnitCount))
+                    }
+                    .responseJSON {
+                        [unowned self] response in
+                        print(response)
+                        
+                        self.processResponse(response: response, subscribe: observer)
+                    }
+                }
             }
             else {
-                request(url, method: method, parameters: requestParams, headers: headers).responseJSON {
+                request(url, method: method, parameters: requestParams, headers: headers)
+                .responseJSON {
                     [unowned self] response in
                     print(response)
                     
