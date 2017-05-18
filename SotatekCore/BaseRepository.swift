@@ -138,7 +138,13 @@ open class BaseRepository<T: BaseEntity> {
         return cache.removeAsync(id)
     }
 
+
+    var getMap: [DataIdType: Observable<T>] = [:]
     open func get(_ id: DataIdType) -> Observable<T> {
+        if let observable = getMap[id] {
+            return observable
+        }
+
         let cachedEntity = cache.getAsync(id)
         let remoteEntity = request.get(id)
             .do(onError: onError)
@@ -148,7 +154,18 @@ open class BaseRepository<T: BaseEntity> {
                 return entity
             }
         )
-        return Observable.first(cachedEntity, remoteEntity)
+        let result = Observable.first(cachedEntity, remoteEntity).shareReplay(1)
+        getMap[id] = result
+        _ = result
+            .subscribe(
+                onError: { error in
+                    self.getMap[id] = nil
+                },
+                onCompleted: {
+                    self.getMap[id] = nil
+                }
+            )
+        return result
     }
     
     private func saveJsonObject(_ json: JSON) -> T {

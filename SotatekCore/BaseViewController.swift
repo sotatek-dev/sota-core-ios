@@ -96,36 +96,42 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         vc.delegate = delegate ?? self
         (from ?? self).present(vc, animated: true, completion: nil)
     }
-
+    
+    func pushViewController(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
+        let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
+        vc.initData = data
+        vc.delegate = delegate ?? self
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func showDialog(_ id: String, data: [String: Any] = [String: Any](), delegate: ViewControllerDelegate? = nil) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
-        vc.delegate = DialogDelegate(viewController: self as? BaseViewController, delegate: delegate ?? self)
+        vc.delegate = DialogDelegate(viewController: self, delegate: delegate ?? self)
         vc.modalPresentationStyle = .custom
         self.present(vc, animated: true, completion: {
-            if let baseViewController = self as? BaseViewController {
-                baseViewController.viewWillDisappear(true)
-            }
+            self.viewWillDisappear(true)
         })
     }
-
+    
     static func showRootViewController(_ id: String, data: [String: Any] = [String: Any]()) {
         let vc = Util.createViewController(storyboardName: AppConfig.storyboardName, id: id) as! BaseViewController
         vc.initData = data
         UIApplication.shared.keyWindow?.set(rootViewController: vc)
     }
-
+    
     class DialogDelegate: ViewControllerDelegate {
-        var delegate: ViewControllerDelegate?
-        weak var viewController: BaseViewController?
-
+        private(set) var delegate: ViewControllerDelegate?
+        private(set) weak var viewController: BaseViewController?
+        
         init(viewController: BaseViewController?, delegate: ViewControllerDelegate?) {
             self.viewController = viewController
             self.delegate = delegate
         }
-
+        
         func viewControllerDidDismiss(sender: UIViewController, data: [String: Any]) {
             if let viewController = self.viewController {
+                viewController.setNeedsStatusBarAppearanceUpdate()
                 viewController.viewDidAppear(true)
             }
             if let delegate = delegate {
@@ -134,13 +140,14 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
         }
     }
 
-    func dismissViewController(animated: Bool = true, data: [String: Any] = [:]) {
+    func dismissViewController(animated: Bool = true, data: [String: Any] = [:], completion: (()->Void)? = nil) {
         responseData = data
         // prevent mem leak
         let delegate = self.delegate
         self.delegate = nil
         self.dismiss(animated: animated, completion: {
             delegate?.viewControllerDidDismiss?(sender: self, data: data)
+            completion?()
         })
     }
     
