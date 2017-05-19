@@ -131,4 +131,32 @@ class FileUpload:  NSObject, NSCoding {
         self.fileName = fileName
         self.mimeType = mimeType
     }
+    
+    func copyToLocal() {
+        let fileManager = FileManager.default
+        
+        do {
+            let documents = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let destinationURL = documents.appendingPathComponent(fileUrl!.lastPathComponent)
+            
+            // but just copy from the video URL to the destination URL
+            
+            try fileManager.copyItem(at: fileUrl!, to: destinationURL)
+            fileUrl = destinationURL
+        }
+        catch {
+            print("========== File error", error.localizedDescription)
+        }
+    }
+    
+    func removeLocal() {
+        let fileManager = FileManager.default
+        
+        do {
+            try fileManager.removeItem(at: fileUrl!)
+        }
+        catch {
+            print("========== File error", error.localizedDescription)
+        }
+    }
 }
