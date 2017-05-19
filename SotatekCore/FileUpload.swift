@@ -68,6 +68,12 @@ class FileUpload:  NSObject, NSCoding {
             size = UInt64(resource.fileSize!)
         } catch {
             print("================== File error", error.localizedDescription)
+            
+            if let data = getData() {
+                size = UInt64(data.count)
+            }
+            
+            return size
         }
         
         return size
