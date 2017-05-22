@@ -133,16 +133,20 @@ class FileUpload:  NSObject, NSCoding {
     }
     
     func copyToLocal() {
+        guard let fileUrl = self.fileUrl else {
+            return
+        }
+        
         let fileManager = FileManager.default
         
         do {
             let documents = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            let destinationURL = documents.appendingPathComponent(fileUrl!.lastPathComponent)
+            let destinationURL = documents.appendingPathComponent(fileUrl.lastPathComponent)
             
             // but just copy from the video URL to the destination URL
             
-            try fileManager.copyItem(at: fileUrl!, to: destinationURL)
-            fileUrl = destinationURL
+            try fileManager.copyItem(at: fileUrl, to: destinationURL)
+            self.fileUrl = destinationURL
         }
         catch {
             print("========== File error", error.localizedDescription)
@@ -150,10 +154,14 @@ class FileUpload:  NSObject, NSCoding {
     }
     
     func removeLocal() {
+        guard let fileUrl = self.fileUrl else {
+            return
+        }
+        
         let fileManager = FileManager.default
         
         do {
-            try fileManager.removeItem(at: fileUrl!)
+            try fileManager.removeItem(at: fileUrl)
         }
         catch {
             print("========== File error", error.localizedDescription)

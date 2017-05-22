@@ -184,6 +184,7 @@ open class BaseRequest<T: Serializable> {
                             })
                         }
                     case .failure(let error):
+                        print("============ AFError", (error as? AFError)?.errorDescription)
                         observer.onError(error)
                     }
                 })
