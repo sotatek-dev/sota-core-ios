@@ -52,6 +52,8 @@ class FileUpload:  NSObject, NSCoding {
     
     func getFileSize() -> UInt64 {
         if size > 0 {
+            print("============== File size", size)
+            
             return size
         }
         
@@ -60,6 +62,7 @@ class FileUpload:  NSObject, NSCoding {
                 size = UInt64(data.count)
             }
             
+            print("============== File size", size)
             return size
         }
         
@@ -73,9 +76,11 @@ class FileUpload:  NSObject, NSCoding {
                 size = UInt64(data.count)
             }
             
+            print("============== File size", size)
             return size
         }
         
+        print("============== File size", size)
         return size
     }
     
@@ -112,6 +117,7 @@ class FileUpload:  NSObject, NSCoding {
     convenience init(fileUrl: URL, fileName: String, size: UInt64 = 0) {
         self.init()
         self.fileUrl = fileUrl
+        self.fileUrl?.resolveSymlinksInPath()
         self.fileName = fileName
         self.size = size
         getMimeType()
@@ -141,6 +147,7 @@ class FileUpload:  NSObject, NSCoding {
         
         do {
             let documents = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            print("============== URL documents", documents.absoluteString)
             let destinationURL = documents.appendingPathComponent(fileUrl.lastPathComponent)
             
             // but just copy from the video URL to the destination URL

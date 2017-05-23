@@ -158,8 +158,13 @@ open class BaseRequest<T: Serializable> {
                         multipartFormData.append(data, withName: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
                     }
                     else if let fileUrl = fileUpload.fileUrl {
+                        _ = fileUrl.startAccessingSecurityScopedResource()
                         multipartFormData.append(fileUrl, withName: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+                        fileUrl.stopAccessingSecurityScopedResource()
                     }
+//                    else if let fileUrl = fileUpload.fileUrl, let inputStream = InputStream(url: fileUrl) {
+//                        multipartFormData.append(inputStream, withLength: fileUpload.getFileSize(), name: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+//                    }
                     
                     for (key, value) in params {
                         if !(value is FileUpload), let data = String(describing: value).data(using: .utf8) {
@@ -178,13 +183,14 @@ open class BaseRequest<T: Serializable> {
                             self.processResponse(response: response, subscribe: observer)
                         }
                         if let progressHandler = progressHandler {
-                            upload.uploadProgress(closure: {
+                            upload.uploadProgress {
                                 progress in
                                 progressHandler((Float)(progress.completedUnitCount) / (Float)(progress.totalUnitCount))
-                            })
+                            }
                         }
                     case .failure(let error):
-                        print("============ AFError", (error as? AFError)?.errorDescription)
+                        print("============ AFError", (error as? AFError)?.errorDescription ?? "")
+                        
                         observer.onError(error)
                     }
                 })
