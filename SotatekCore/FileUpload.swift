@@ -118,6 +118,7 @@ class FileUpload:  NSObject, NSCoding {
         self.init()
         self.fileUrl = fileUrl
         self.fileUrl?.resolveSymlinksInPath()
+        self.fileUrl?.standardize()
         self.fileName = fileName
         self.size = size
         getMimeType()
