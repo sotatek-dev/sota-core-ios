@@ -6,7 +6,6 @@
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
-import Foundation
 import RxSwift
 import SwiftyJSON
 import Alamofire
@@ -158,9 +157,7 @@ open class BaseRequest<T: Serializable> {
                         multipartFormData.append(data, withName: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
                     }
                     else if let fileUrl = fileUpload.fileUrl {
-                        _ = fileUrl.startAccessingSecurityScopedResource()
                         multipartFormData.append(fileUrl, withName: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
-                        fileUrl.stopAccessingSecurityScopedResource()
                     }
 //                    else if let fileUrl = fileUpload.fileUrl, let inputStream = InputStream(url: fileUrl) {
 //                        multipartFormData.append(inputStream, withLength: fileUpload.getFileSize(), name: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)

@@ -117,8 +117,6 @@ class FileUpload:  NSObject, NSCoding {
     convenience init(fileUrl: URL, fileName: String, size: UInt64 = 0) {
         self.init()
         self.fileUrl = fileUrl
-        self.fileUrl?.resolveSymlinksInPath()
-        self.fileUrl?.standardize()
         self.fileName = fileName
         self.size = size
         getMimeType()
@@ -145,20 +143,26 @@ class FileUpload:  NSObject, NSCoding {
         }
         
         let fileManager = FileManager.default
+        let tempDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory())
+        let directoryURL = tempDirectoryURL.appendingPathComponent("org.alamofire.manager/multipart.form.data")
+        let destinationURL = directoryURL.appendingPathComponent(fileUrl.lastPathComponent)
         
         do {
-            let documents = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            print("============== URL documents", documents.absoluteString)
-            let destinationURL = documents.appendingPathComponent(fileUrl.lastPathComponent)
-            
-            // but just copy from the video URL to the destination URL
-            
+            // Create directory inside serial queue to ensure two threads don't do this in parallel
+            try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+        }
+        catch {
+            print("========== File error", error.localizedDescription)
+        }
+        
+        do {    // but just copy from the video URL to the destination URL
             try fileManager.copyItem(at: fileUrl, to: destinationURL)
             self.fileUrl = destinationURL
         }
         catch {
             print("========== File error", error.localizedDescription)
         }
+        
     }
     
     func removeLocal() {
