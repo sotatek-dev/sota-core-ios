@@ -40,6 +40,11 @@ function getTypeUpperCase(v) {
 	return v.charAt(0).toUpperCase() + v.slice(1);
 }
 
+function convertSnakeToCamel(s) {
+	let r = s.toString();
+	return r.replace(/(\_\w)/g, function(m){return m[1].toUpperCase();});
+}
+
 function generate() {
 className = getTypeUpperCase(document.getElementById('name').value) + 'Dto'
 data = JSON.parse(document.getElementById('code').value)
@@ -48,7 +53,7 @@ for (var i in data) {
 	if (i == 'description') {
 		data2['desc'] = data[i];
 	} else {
-		data2[i] = data[i];
+		data2[convertSnakeToCamel(i)] = data[i];
 	}
 }
 data = data2;
