@@ -145,7 +145,7 @@ class FileUpload:  NSObject, NSCoding {
         let fileManager = FileManager.default
         let tempDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory())
         let directoryURL = tempDirectoryURL.appendingPathComponent("org.alamofire.manager/multipart.form.data")
-        let destinationURL = directoryURL.appendingPathComponent(fileUrl.lastPathComponent)
+        let destinationURL = directoryURL.appendingPathComponent(UUID().uuidString)
         
         do {
             // Create directory inside serial queue to ensure two threads don't do this in parallel
@@ -162,7 +162,6 @@ class FileUpload:  NSObject, NSCoding {
         catch {
             print("========== File error", error.localizedDescription)
         }
-        
     }
     
     func removeLocal() {
