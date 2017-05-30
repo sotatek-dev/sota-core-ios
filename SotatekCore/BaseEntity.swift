@@ -104,6 +104,10 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
             fatalError("Please implement nextFilter")
         }
     }
+
+    class func migrate(_ table: Table, fromVersion: Int, toVersion: Int) -> String? {
+        return nil
+    }
 }
 
 public func < (lhs: BaseEntity, rhs: BaseEntity) -> Bool {

@@ -9,7 +9,7 @@
 import Foundation
 import SQLite
 
-public class BaseStorage<T: BaseEntity> {
+public class BaseStorage<T: BaseEntity>: Storage {
     let db: Connection!
     let table: Table!
     
@@ -108,5 +108,11 @@ public class BaseStorage<T: BaseEntity> {
         try! _ = db.run(query.delete())
         
         return result
+    }
+
+    func migrate(fromVersion: Int, toVersion: Int) {
+        if let statement = T.migrate(table, fromVersion: fromVersion, toVersion: toVersion) {
+            try! db.run(statement)
+        }
     }
 }
