@@ -42,6 +42,7 @@
 		27FEDAE21D8FBF9700DF68F1 /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE11D8FBF9700DF68F1 /* Random.swift */; };
 		27FEDAE41D8FCCEB00DF68F1 /* BaseMapCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */; };
 		27FEDAEC1D8FDAB000DF68F1 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEDAEB1D8FDAB000DF68F1 /* Constant.swift */; };
+		D651ECEC1EDD5F7500EA964A /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D651ECEB1EDD5F7500EA964A /* Storage.swift */; };
 		D67A3C411E0399C50086B31B /* ControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D67A3C401E0399C50086B31B /* ControllerManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -104,6 +105,7 @@
 		27FEDAE11D8FBF9700DF68F1 /* Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		27FEDAE31D8FCCEB00DF68F1 /* BaseMapCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseMapCache.swift; sourceTree = "<group>"; };
 		27FEDAEB1D8FDAB000DF68F1 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		D651ECEB1EDD5F7500EA964A /* Storage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		D67A3C401E0399C50086B31B /* ControllerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -135,6 +137,7 @@
 		2722B2181D93E0F900A264F3 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				D651ECEB1EDD5F7500EA964A /* Storage.swift */,
 				2722B2191D93E85800A264F3 /* BaseStorage.swift */,
 			);
 			name = Storage;
@@ -480,6 +483,7 @@
 				27A1556B1D812615000DCA0D /* Observer.swift in Sources */,
 				27A1B51C1DA3BE0500B9BD8B /* Serializable.swift in Sources */,
 				27D57D3F1DA3467E00028910 /* BaseView.swift in Sources */,
+				D651ECEC1EDD5F7500EA964A /* Storage.swift in Sources */,
 				27A154F71D81248E000DCA0D /* AppDelegate.swift in Sources */,
 				276A369C1D8FEBC80080A74A /* BaseListCache.swift in Sources */,
 			);
