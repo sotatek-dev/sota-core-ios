@@ -68,6 +68,7 @@ extension UIView {
 
 class BaseView: UIView, ControllerManager {
     var views = [UIView]()
+    var touchableViews: [UIView] = []
     private var controllers: [BaseController] = []
 
     open override func viewWillAppear() {
@@ -120,7 +121,7 @@ class BaseView: UIView, ControllerManager {
     }
 
     open func onTouch(_ gesture: UIGestureRecognizer) -> Bool {
-        return GestureUtil.processGesture(gesture, views: views)
+        return GestureUtil.processGesture(gesture, views: touchableViews)
     }
 
     func addController(_ controller: BaseController) {
