@@ -111,8 +111,6 @@ public class BaseStorage<T: BaseEntity>: Storage {
     }
 
     func migrate(fromVersion: Int, toVersion: Int) {
-        if let statement = T.migrate(table, fromVersion: fromVersion, toVersion: toVersion) {
-            try! db.run(statement)
-        }
+        T.migrate(db: db, table: table, fromVersion: fromVersion, toVersion: toVersion)
     }
 }

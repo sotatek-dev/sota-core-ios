@@ -105,8 +105,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
         }
     }
 
-    class func migrate(_ table: Table, fromVersion: Int, toVersion: Int) -> String? {
-        return nil
+    class func migrate(db: Connection, table: Table, fromVersion: Int, toVersion: Int) {
     }
 }
 

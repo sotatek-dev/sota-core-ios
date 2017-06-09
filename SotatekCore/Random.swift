@@ -10,8 +10,8 @@ import Foundation
 
 public extension Int {
     public static func random(lower: Int = min, upper: Int = max) -> Int {
-        let r = Int(arc4random()) % max
-        return Int(Int(r) + lower)
+        let r = Int(arc4random()) % (upper - lower)
+        return Int(r + lower)
     }
 }
 
