@@ -116,7 +116,9 @@ class BaseView: UIView, ControllerManager {
     }
 
     open func addView(_ view: UIView) {
-        views.append(view)
+        if views.index(of: view) == nil {
+            views.append(view)
+        }
     }
 
     open func onTouch(_ gesture: UIGestureRecognizer) -> Bool {

@@ -79,7 +79,9 @@ open class BaseViewController: UIViewController, ViewControllerDelegate, Observe
     }
     
     open func addView(_ view: UIView) {
-        views.append(view)
+        if views.index(of: view) == nil {
+            views.append(view)
+        }
     }
     
     open func removeView(_ view: UIView) {
