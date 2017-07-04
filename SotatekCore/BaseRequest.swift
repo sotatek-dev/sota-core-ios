@@ -70,14 +70,15 @@ open class BaseRequest<T: Serializable> {
     }
 
     func createPaginationParams() -> [String: Any] {
+
         var params: [String: Any] = [:]
-//        params[Constant.RequestParam.Pagination.type] = Constant.RequestParam.Pagination.cursor
-//        params[Constant.RequestParam.Pagination.field] = "id"
-//        if let pivot = options[Constant.RepositoryParam.pivot] as? BaseEntity {
-//            params[Constant.RequestParam.Pagination.before] = pivot.id
-//        } else if let pivot = options[Constant.RepositoryParam.pivot] as? BaseDto {
-//            params[Constant.RequestParam.Pagination.before] = pivot.id
-//        }
+        params[Constant.RequestParam.Pagination.type] = Constant.RequestParam.Pagination.cursor
+        params[Constant.RequestParam.Pagination.field] = "id"
+        if let pivot = options[Constant.RepositoryParam.pivot] as? BaseEntity {
+            params[Constant.RequestParam.Pagination.before] = pivot.id
+        } else if let pivot = options[Constant.RepositoryParam.pivot] as? BaseDto {
+            params[Constant.RequestParam.Pagination.before] = pivot.id
+        }
         params[Constant.RequestParam.Pagination.limit] = count
         return params
     }
