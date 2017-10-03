@@ -66,7 +66,7 @@ public class SocketRequest {
         socket.on("socketError", callback: {
             [unowned self] data, ack in
             let json = JSON(data[0])
-            print("Data from socket: socketError => \(json.rawString()) --")
+            print("Data from socket: socketError => \(json.rawString() ?? "") --")
             let dto = SocketErrorDto(fromJson: json)
             self.notifier.notifyObservers(Constant.commandReceiveSocketData, data: SocketData(name: SocketErrorDto.entityName, data: dto))
         })
