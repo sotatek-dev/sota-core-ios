@@ -156,6 +156,9 @@ open class BaseRequest<T: Serializable> {
                     if let data = fileUpload.data {
                         multipartFormData.append(data, withName: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
                     }
+                    else if let inputStream = fileUpload.inputStream {
+                        multipartFormData.append(inputStream, withLength: fileUpload.getFileSize(), name: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
+                    }
                     else if let fileUrl = fileUpload.fileUrl {
                         multipartFormData.append(fileUrl, withName: name, fileName: fileUpload.fileName!, mimeType: fileUpload.mimeType!)
                     }

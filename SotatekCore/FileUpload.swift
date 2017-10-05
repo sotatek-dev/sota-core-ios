@@ -6,15 +6,33 @@
 //  Copyright © 2016 SotaTek. All rights reserved.
 //
 
-import Foundation
+import Photos
+import AVKit
 import MobileCoreServices
+import AssetsLibrary
+import PHAssetResourceInputStream
 
 class FileUpload:  NSObject, NSCoding {
     private(set) var fileUrl: URL?
     private(set) var mimeType: String?
     private(set) var data: Data?
     private(set) var fileName: String?
+    private(set) var inputStream: InputStream?
     private var size: UInt64 = 0
+    
+    var asset: PHAsset? {
+        didSet {
+            guard let asset = self.asset else {
+                return
+            }
+            
+            if let resource = PHAssetResource.assetResources(for: asset).first {
+                inputStream = InputStream.inputStream(withAssetResource: resource)
+                let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong
+                size = UInt64(unsignedInt64!)
+            }
+        }
+    }
     
     /**
      Tries to determine the mime type from the fileUrl extension.
@@ -55,6 +73,15 @@ class FileUpload:  NSObject, NSCoding {
             print("============== File size", size)
             
             return size
+        }
+        
+        if let asset = self.asset {
+            if let resource = PHAssetResource.assetResources(for: asset).first {
+                let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong
+                size = UInt64(unsignedInt64!)
+                
+                return size
+            }
         }
         
         guard let url = fileUrl else {
