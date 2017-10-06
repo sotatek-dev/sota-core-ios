@@ -26,10 +26,31 @@ class FileUpload:  NSObject, NSCoding {
                 return
             }
             
-            if let resource = PHAssetResource.assetResources(for: asset).first {
+            let resources = PHAssetResource.assetResources(for: asset)
+            if let resource = resources.first {
                 inputStream = InputStream.inputStream(withAssetResource: resource)
-                let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong
-                size = UInt64(unsignedInt64!)
+                
+                if #available(iOS 10, *) {
+                    if let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong {
+                        size = UInt64(unsignedInt64)
+                    }
+                }
+                else {
+                    guard let fileUrl = self.fileUrl else {
+                        return
+                    }
+                    
+                    var keys = Set<URLResourceKey>()
+                    keys.insert(URLResourceKey.totalFileSizeKey)
+                    keys.insert(URLResourceKey.fileSizeKey)
+                    do {
+                        let URLResourceValues = try fileUrl.resourceValues(forKeys: keys)
+                        if let fileSize = URLResourceValues.fileSize {
+                            size = UInt64(fileSize)
+                        }
+                    }
+                    catch {}
+                }
             }
         }
     }
