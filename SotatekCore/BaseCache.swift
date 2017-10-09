@@ -14,7 +14,7 @@ open class BaseCache<T: BaseEntity>: Cache {
 
     var settingCacheSingleEntity = true
     var storage: BaseStorage<T>!
-    var liveTime: Int = 1000 * 60 * 15 // 15 minutes
+    var liveTime: Int64 = 1000 * 60 * 15 // 15 minutes
     
     init(storage: BaseStorage<T>) {
         self.storage = storage
