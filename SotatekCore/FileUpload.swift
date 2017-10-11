@@ -55,6 +55,20 @@ class FileUpload:  NSObject, NSCoding {
         }
     }
     
+    func reloadInputStreamFromAssetData(_ completion: (() -> Void)? = nil) {
+        guard let asset = self.asset else {
+            return
+        }
+        
+        ImageUtil.loadOnlyData(asset, completion: {
+            _data in
+            if let data = _data {
+                self.inputStream = InputStream(data: data)
+                completion?()
+            }
+        })
+    }
+    
     /**
      Tries to determine the mime type from the fileUrl extension.
      */
