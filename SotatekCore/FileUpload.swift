@@ -20,6 +20,8 @@ class FileUpload:  NSObject, NSCoding {
     private(set) var inputStream: InputStream?
     private var size: UInt64 = 0
     
+    private var assetResource: PHAssetResource?
+    
     var asset: PHAsset? {
         didSet {
             guard let asset = self.asset else {
@@ -29,6 +31,7 @@ class FileUpload:  NSObject, NSCoding {
             let resources = PHAssetResource.assetResources(for: asset)
             if let resource = resources.first {
                 inputStream = InputStream.inputStream(withAssetResource: resource)
+                assetResource = resource
                 
                 if #available(iOS 10, *) {
                     if let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong {
@@ -56,17 +59,32 @@ class FileUpload:  NSObject, NSCoding {
     }
     
     func reloadInputStreamFromAssetData(_ completion: (() -> Void)? = nil) {
-        guard let asset = self.asset else {
+        guard let asset = self.asset, let url = self.fileUrl else {
             return
         }
         
-        ImageUtil.loadOnlyData(asset, completion: {
-            _data in
-            if let data = _data {
-                self.inputStream = InputStream(data: data)
+        let loadOnlyData = {
+            ImageUtil.loadOnlyData(asset, completion: {
+                _data in
+                if let data = _data {
+                    self.inputStream = InputStream(data: data)
+                    completion?()
+                }
+            })
+        }
+        
+        if let inputStream = InputStream(url: url) {
+            if inputStream.hasBytesAvailable {
+                self.inputStream = inputStream
                 completion?()
             }
-        })
+            else {
+                loadOnlyData()
+            }
+        }
+        else {
+            loadOnlyData()
+        }
     }
     
     /**
@@ -110,7 +128,7 @@ class FileUpload:  NSObject, NSCoding {
             return size
         }
         
-        if let asset = self.asset {
+        if #available(iOS 10, *), let asset = self.asset {
             if let resource = PHAssetResource.assetResources(for: asset).first {
                 let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong
                 size = UInt64(unsignedInt64!)
@@ -200,7 +218,7 @@ class FileUpload:  NSObject, NSCoding {
     }
     
     func copyToLocal() {
-        guard let fileUrl = self.fileUrl else {
+        guard let fileUrl = self.fileUrl, let assetResource = self.assetResource else {
             return
         }
         
@@ -217,13 +235,16 @@ class FileUpload:  NSObject, NSCoding {
             print("========== File error", error.localizedDescription)
         }
         
-        do {    // but just copy from the video URL to the destination URL
-            try fileManager.copyItem(at: fileUrl, to: destinationURL)
-            self.fileUrl = destinationURL
-        }
-        catch {
-            print("========== File error", error.localizedDescription)
-        }
+        // but just copy from the video URL to the destination URL
+        let options = PHAssetResourceRequestOptions()
+        options.isNetworkAccessAllowed = true
+        
+        PHAssetResourceManager.default().writeData(for: assetResource, toFile: destinationURL, options: options, completionHandler: {
+            error in
+            print(error?.localizedDescription)
+        })
+        self.fileUrl = destinationURL
+        self.inputStream = InputStream(url: destinationURL)
     }
     
     func removeLocal() {
