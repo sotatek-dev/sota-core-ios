@@ -13,6 +13,12 @@ import AssetsLibrary
 import PHAssetResourceInputStream
 
 class FileUpload:  NSObject, NSCoding {
+    
+    static let tempDirectoryURL: URL = {
+        let tempDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory())
+        return tempDirectoryURL.appendingPathComponent("org.alamofire.manager/multipart.form.data")
+    }()
+    
     private(set) var fileUrl: URL?
     private(set) var mimeType: String?
     private(set) var data: Data?
@@ -217,7 +223,7 @@ class FileUpload:  NSObject, NSCoding {
         self.mimeType = mimeType
     }
     
-    func copyToLocal() {
+    func copyToLocal(_ completion: @escaping () -> Void) {
         guard let fileUrl = self.fileUrl, let assetResource = self.assetResource else {
             return
         }
@@ -241,10 +247,14 @@ class FileUpload:  NSObject, NSCoding {
         
         PHAssetResourceManager.default().writeData(for: assetResource, toFile: destinationURL, options: options, completionHandler: {
             error in
+            if error == nil {
+                self.fileUrl = destinationURL
+                self.inputStream = InputStream(url: destinationURL)
+                
+                completion()
+            }
             print(error?.localizedDescription)
         })
-        self.fileUrl = destinationURL
-        self.inputStream = InputStream(url: destinationURL)
     }
     
     func removeLocal() {
