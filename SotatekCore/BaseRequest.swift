@@ -195,7 +195,7 @@ open class BaseRequest<T: Serializable> {
             else {
                 request(url, method: method, parameters: requestParams, headers: headers)
                 .responseJSON {
-                    [unowned self] response in
+                    response in
                     print(response)
                     
                     self.processResponse(response: response, subscribe: observer)
@@ -242,7 +242,8 @@ open class BaseRequest<T: Serializable> {
                             meta.httpCode = statusCode
                             subscribe.on(.error(meta))
                         } else {
-                            subscribe.on(.error(response.response as! Error))
+                            let responseData = response.response!
+                            subscribe.on(.error(NSError(domain: dict["msg"] as? String ?? "", code: responseData.statusCode, userInfo: nil)))
                         }
                     }
                 }
