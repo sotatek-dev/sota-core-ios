@@ -9,6 +9,6 @@
 import Foundation
 import UIKit
 
-@objc protocol ViewControllerDelegate {
+@objc protocol ViewControllerDelegate: class {
     @objc optional func viewControllerDidDismiss(sender: UIViewController, data: [String: Any])
 }
