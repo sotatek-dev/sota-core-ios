@@ -38,7 +38,7 @@ open class BaseRequest<T: Serializable> {
         for (key, value) in createRequestParams(options: options) {
             params[key] = value
         }
-        let progressHandler = options[Constant.RepositoryParam.progressHandler] as? ((Float) -> Swift.Void)
+        let progressHandler = options[Constant.RepositoryParam.progressHandler] as? ((Double) -> Swift.Void)
         return createResponseObservable(method: .post, url: url ?? self.entityUrl, params: params, mockFile: "", progressHandler: progressHandler)
     }
     
@@ -119,7 +119,7 @@ open class BaseRequest<T: Serializable> {
         return Util.readTextFile(name: name, type: "js")
     }
     
-    open func createResponseObservable(method: HTTPMethod, url: String, params: [String: Any], mockFile: String = "", progressHandler: ((Float) -> Void)? = nil) -> Observable<HttpResponse> {
+    open func createResponseObservable(method: HTTPMethod, url: String, params: [String: Any], mockFile: String = "", progressHandler: ((Double) -> Void)? = nil) -> Observable<HttpResponse> {
         if AppConfig.useMockResponse && !mockFile.isEmpty {
             return Observable<HttpResponse>.create({subscribe in
                 self.responseMockData(mockFile: mockFile, subscribe: subscribe)
@@ -135,7 +135,7 @@ open class BaseRequest<T: Serializable> {
         return [:]
     }
     
-    func executeRequest(method: HTTPMethod, url: String, params: [String: Any], progressHandler: ((Float) -> Void)?) -> Observable<HttpResponse> {
+    func executeRequest(method: HTTPMethod, url: String, params: [String: Any], progressHandler: ((Double) -> Void)?) -> Observable<HttpResponse> {
         var requestParams = createDefaultParams()
         for (key, value) in params {
             requestParams[key] = value
@@ -150,6 +150,7 @@ open class BaseRequest<T: Serializable> {
         return Observable<HttpResponse>.create {
             observer in
             
+            // Upload
             if let fileUpload = self.getFileUpload(params: params), let name = self.getKeyWithFileUpload(params: params) {
                 upload(multipartFormData: {
                     multipartFormData in
@@ -183,7 +184,7 @@ open class BaseRequest<T: Serializable> {
                         if let progressHandler = progressHandler {
                             upload.uploadProgress {
                                 progress in
-                                progressHandler((Float)(progress.completedUnitCount) / (Float)(progress.totalUnitCount))
+                                progressHandler((Double)(progress.completedUnitCount) / (Double)(progress.totalUnitCount))
                             }
                         }
                     case .failure(let error):
@@ -193,6 +194,40 @@ open class BaseRequest<T: Serializable> {
                     }
                 })
             }
+            // Download
+            else if let fileDownload = self.getFileDownload(params: params), method == .get {
+                var downloadRequest: DownloadRequest
+                if fileDownload.isResume, let data = fileDownload.resumeData {
+                    downloadRequest = download(resumingWith: data)
+                }
+                else {
+                    var params: [String: Any] = [:]
+                    for (key, value) in requestParams {
+                        if !(value is FileDownload) {
+                            params[key] = value
+                        }
+                    }
+                    
+                    downloadRequest = download(url, method: method, parameters: params, headers: headers)
+                }
+                
+                if let progressHandler = progressHandler {
+                    downloadRequest.downloadProgress {
+                        progress in
+                        progressHandler((Double)(progress.completedUnitCount) / (Double)(progress.totalUnitCount))
+                    }
+                }
+                downloadRequest.responseJSON {
+                    response in
+                    print(response)
+                    
+                    
+                    fileDownload.tempUrl = response.temporaryURL
+                    
+                    self.processResponse(response: response, subscribe: observer)
+                }
+            }
+            // Other request
             else {
                 request(url, method: method, parameters: requestParams, headers: headers)
                 .responseJSON {
@@ -218,6 +253,17 @@ open class BaseRequest<T: Serializable> {
         return nil
     }
     
+    func getFileDownload(params: [String: Any]) -> FileDownload? {
+        let values = Array(params.values)
+        for value in values {
+            if value is FileDownload {
+                return value as? FileDownload
+            }
+        }
+        
+        return nil
+    }
+    
     func getKeyWithFileUpload(params: [String: Any]) -> String? {
         for (key, value) in params {
             if value is FileUpload {
@@ -229,6 +275,40 @@ open class BaseRequest<T: Serializable> {
     }
     
     func processResponse(response: DataResponse<Any>, subscribe: AnyObserver<HttpResponse>) {
+        switch response.result {
+        case .success(let value):
+            if let dict = value as? NSDictionary {
+                let jsonResponse = HttpResponse(fromJson: JSON(dict))
+                if let statusCode = response.response?.statusCode {
+                    if statusCode >= 200 && statusCode < 300 {
+                        subscribe.onNext(jsonResponse)
+                        subscribe.onCompleted()
+                    }
+                    else {
+                        if let meta = jsonResponse.meta {
+                            meta.httpCode = statusCode
+                            subscribe.on(.error(meta))
+                        } else {
+                            let responseData = response.response!
+                            subscribe.on(.error(NSError(domain: dict["msg"] as? String ?? "", code: responseData.statusCode, userInfo: nil)))
+                        }
+                    }
+                }
+            }
+        case .failure(let error):
+            print(error)
+            let jsonResponse = HttpResponse(fromJson: JSON(error))
+            if let meta = jsonResponse.meta {
+                //TODO fix me
+                meta.httpCode = (error as NSError).code
+                subscribe.on(.error(meta))
+            } else {
+                subscribe.on(.error(error))
+            }
+        }
+    }
+    
+    func processResponse(response: DownloadResponse<Any>, subscribe: AnyObserver<HttpResponse>) {
         switch response.result {
         case .success(let value):
             if let dict = value as? NSDictionary {
