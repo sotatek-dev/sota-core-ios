@@ -221,7 +221,7 @@ open class BaseRequest<T: Serializable> {
                     response in
                     print(response)
                     
-                    
+                    fileDownload.fileUrl = response.destinationURL
                     fileDownload.tempUrl = response.temporaryURL
                     
                     self.processResponse(response: response, subscribe: observer)
