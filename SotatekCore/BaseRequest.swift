@@ -195,7 +195,7 @@ open class BaseRequest<T: Serializable> {
                 })
             }
             // Download
-            else if let fileDownload = self.getFileDownload(params: params), method == .get {
+            else if let fileDownload = self.getFileDownload(params: params) {
                 var downloadRequest: DownloadRequest
                 if fileDownload.isResume, let data = fileDownload.resumeData {
                     downloadRequest = download(resumingWith: data)
