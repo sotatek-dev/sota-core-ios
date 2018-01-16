@@ -208,7 +208,10 @@ open class BaseRequest<T: Serializable> {
                         }
                     }
                     
-                    downloadRequest = download(url, method: method, parameters: params, headers: headers)
+                    downloadRequest = download(url, method: method, parameters: params, headers: headers) {
+                        _, _ in
+                        return (destinationURL: fileDownload.fileUrl!, options: .createIntermediateDirectories)
+                    }
                 }
                 
                 if let progressHandler = progressHandler {
@@ -221,7 +224,6 @@ open class BaseRequest<T: Serializable> {
                     response in
                     print(response)
                     
-                    fileDownload.fileUrl = response.destinationURL
                     fileDownload.tempUrl = response.temporaryURL
                     
                     self.processResponse(response: response, subscribe: observer)
