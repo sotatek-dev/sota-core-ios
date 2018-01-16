@@ -74,9 +74,9 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         result = Util.getHeadSubSet(data, count: count)
         if result.count < count {
             result = storage.getList(count: count, options: options)
-            if result.count < count {
-                result = []
-            }
+//            if result.count < count {
+//                result = []
+//            }
             if !settingCacheSingleEntity {
                 for e in result {
                     addToCache(e)

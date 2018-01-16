@@ -146,10 +146,10 @@ open class BaseCache<T: BaseEntity>: Cache {
                 entities = self.getList(count: count, options: options)
             }
             print("Got \(entities.count) from cache")
-            if entities.count >= count {
+//            if entities.count >= count {
                 //TODO: add pagination data
                 subscribe.onNext(ListDto<T>(data: entities, pagination: nil))
-            }
+//            }
             subscribe.onCompleted()
             return Disposables.create()
         })
