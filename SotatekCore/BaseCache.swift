@@ -120,7 +120,7 @@ open class BaseCache<T: BaseEntity>: Cache {
             if self.remove(id) {
                 subscribe.onNext(true)
             } else {
-                subscribe.onError(CacheError.unknown)
+                subscribe.onError(RxError.unknown)
             }
             subscribe.onCompleted()
             return Disposables.create()
@@ -131,6 +131,9 @@ open class BaseCache<T: BaseEntity>: Cache {
         return Observable<T>.create({subscribe in
             if let entity = self.get(id) {
                 subscribe.onNext(entity)
+            }
+            else {
+                subscribe.onError(RxError.noElements)
             }
             subscribe.onCompleted()
             return Disposables.create()
@@ -176,9 +179,4 @@ open class BaseCache<T: BaseEntity>: Cache {
             return Disposables.create()
         }
     }
-}
-
-//TODO error
-enum CacheError: Error {
-    case unknown
 }
