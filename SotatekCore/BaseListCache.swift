@@ -15,6 +15,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         if settingCacheSingleEntity {
             addToCache(entity)
         }
+        updateValidTime(entity)
         storage.save(entity)
     }
     
@@ -47,6 +48,7 @@ open class BaseListCache<T: BaseEntity>: BaseCache<T> {
         for entity in data {
             if entity.id == id {
                 result = entity
+                break
             }
         }
         if result == nil {
