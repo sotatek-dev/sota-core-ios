@@ -72,7 +72,6 @@ open class BaseCache<T: BaseEntity>: Cache {
     
     func save(_ json: JSON) -> AnyObject {
         let e = T(fromJson: json)
-        updateValidTime(e)
         self.save(e)
         return e
     }

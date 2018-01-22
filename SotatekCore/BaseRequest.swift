@@ -220,7 +220,7 @@ open class BaseRequest<T: Serializable> {
                         progressHandler((Double)(progress.completedUnitCount) / (Double)(progress.totalUnitCount))
                     }
                 }
-                downloadRequest.responseJSON {
+                downloadRequest.response {
                     response in
                     print(response)
                     
@@ -310,28 +310,8 @@ open class BaseRequest<T: Serializable> {
         }
     }
     
-    func processResponse(response: DownloadResponse<Any>, subscribe: AnyObserver<HttpResponse>) {
-        switch response.result {
-        case .success(let value):
-            if let dict = value as? NSDictionary {
-                let jsonResponse = HttpResponse(fromJson: JSON(dict))
-                if let statusCode = response.response?.statusCode {
-                    if statusCode >= 200 && statusCode < 300 {
-                        subscribe.onNext(jsonResponse)
-                        subscribe.onCompleted()
-                    }
-                    else {
-                        if let meta = jsonResponse.meta {
-                            meta.httpCode = statusCode
-                            subscribe.on(.error(meta))
-                        } else {
-                            let responseData = response.response!
-                            subscribe.on(.error(NSError(domain: dict["msg"] as? String ?? "", code: responseData.statusCode, userInfo: nil)))
-                        }
-                    }
-                }
-            }
-        case .failure(let error):
+    func processResponse(response: DefaultDownloadResponse, subscribe: AnyObserver<HttpResponse>) {
+        if let error = response.error {
             print(error)
             let jsonResponse = HttpResponse(fromJson: JSON(error))
             if let meta = jsonResponse.meta {
@@ -341,6 +321,11 @@ open class BaseRequest<T: Serializable> {
             } else {
                 subscribe.on(.error(error))
             }
+        }
+        else {
+            let jsonResponse = HttpResponse(fromJson: JSON(response.response!))
+            subscribe.onNext(jsonResponse)
+            subscribe.onCompleted()
         }
     }
     

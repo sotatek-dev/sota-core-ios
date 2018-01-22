@@ -26,6 +26,7 @@ open class BaseMapCache<TGroupId: Hashable, TEntity: BaseEntity>: BaseCache<TEnt
     
     open override func save(_ entity: TEntity) {
         addToCache(entity)
+        updateValidTime(entity)
         storage.save(entity)
     }
     
