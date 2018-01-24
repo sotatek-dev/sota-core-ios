@@ -59,7 +59,8 @@ open class BaseRequest<T: Serializable> {
     open func get(_ id: DataIdType, url: String? = nil, options: [String : Any] = [:]) -> Observable<HttpResponse> {
         let params = createRequestParams(options: options)
         let getUrl = url ?? "\(self.entityUrl)/\(id)"
-        return createResponseObservable(method: .get, url: getUrl, params: params, mockFile: mockEntity)
+        let progressHandler = options[Constant.RepositoryParam.progressHandler] as? ((Double) -> Swift.Void)
+        return createResponseObservable(method: .get, url: getUrl, params: params, mockFile: mockEntity, progressHandler: progressHandler)
     }
     
     func createRequestParams(count: Int? = nil, options: [String: Any]) -> [String: Any] {
