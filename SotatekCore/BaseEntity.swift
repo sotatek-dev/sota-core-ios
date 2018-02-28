@@ -29,7 +29,11 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
             if name.hasSuffix("Entity") {
                 name = name.substring(to: name.index(name.endIndex, offsetBy: -"Entity".characters.count))
             }
-            return name
+            let pattern = "([a-z0-9])([A-Z])"
+            
+            let regex = try? NSRegularExpression(pattern: pattern, options: [])
+            let range = NSRange(location: 0, length: name.count)
+            return regex?.stringByReplacingMatches(in: name, options: [], range: range, withTemplate: "$1_$2").lowercased() ?? name
         }
     }
     
