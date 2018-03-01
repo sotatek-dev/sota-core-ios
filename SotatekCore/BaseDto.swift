@@ -18,14 +18,9 @@ class BaseDto: NSObject, NSCoding, Serializable {
             let lowercase = String(name[name.startIndex]).lowercased()
             name.replaceSubrange(name.startIndex...name.startIndex, with: lowercase)
             if name.hasSuffix("Dto") {
-                name = name.substring(to: name.index(name.endIndex, offsetBy: -"Dto".count))
+                name = name.substring(to: name.index(name.endIndex, offsetBy: -"Dto".characters.count))
             }
-            
-            let pattern = "([a-z0-9])([A-Z])"
-            
-            let regex = try? NSRegularExpression(pattern: pattern, options: [])
-            let range = NSRange(location: 0, length: name.count)
-            return regex?.stringByReplacingMatches(in: name, options: [], range: range, withTemplate: "$1_$2").lowercased() ?? name
+            return name
         }
     }
     
