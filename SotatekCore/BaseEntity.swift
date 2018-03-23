@@ -27,7 +27,7 @@ open class BaseEntity: NSObject, Comparable, NSCoding, Serializable {
             let lowercase = String(name[name.startIndex]).lowercased()
             name.replaceSubrange(name.startIndex...name.startIndex, with: lowercase)
             if name.hasSuffix("Entity") {
-                name = name.substring(to: name.index(name.endIndex, offsetBy: -"Entity".characters.count))
+                name = name.substring(to: name.index(name.endIndex, offsetBy: -"Entity".count))
             }
             return name
         }
