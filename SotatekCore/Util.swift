@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import ReachabilitySwift
+import Reachability
 
 open class Util {
     static let reachability = Reachability()!
