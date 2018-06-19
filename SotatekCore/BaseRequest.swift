@@ -195,41 +195,6 @@ open class BaseRequest<T: Serializable> {
                     }
                 })
             }
-            // Download
-            else if let fileDownload = self.getFileDownload(params: params) {
-                var downloadRequest: DownloadRequest
-                if fileDownload.isResume, let data = fileDownload.resumeData {
-                    downloadRequest = download(resumingWith: data)
-                }
-                else {
-                    var params: [String: Any] = [:]
-                    for (key, value) in requestParams {
-                        if !(value is FileDownload) {
-                            params[key] = value
-                        }
-                    }
-                    
-                    downloadRequest = download(url, method: method, parameters: params, headers: headers) {
-                        _, _ in
-                        return (destinationURL: fileDownload.fileUrl!, options: .createIntermediateDirectories)
-                    }
-                }
-                
-                if let progressHandler = progressHandler {
-                    downloadRequest.downloadProgress {
-                        progress in
-                        progressHandler((Double)(progress.completedUnitCount) / (Double)(progress.totalUnitCount))
-                    }
-                }
-                downloadRequest.response {
-                    response in
-                    print(response)
-                    
-                    fileDownload.tempUrl = response.temporaryURL
-                    
-                    self.processResponse(response: response, subscribe: observer)
-                }
-            }
             // Other request
             else {
                 request(url, method: method, parameters: requestParams, headers: headers)
@@ -250,17 +215,6 @@ open class BaseRequest<T: Serializable> {
         for value in values {
             if value is FileUpload {
                 return value as? FileUpload
-            }
-        }
-        
-        return nil
-    }
-    
-    func getFileDownload(params: [String: Any]) -> FileDownload? {
-        let values = Array(params.values)
-        for value in values {
-            if value is FileDownload {
-                return value as? FileDownload
             }
         }
         
